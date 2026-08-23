@@ -1,7 +1,7 @@
 {
  "key": "solveit_16_special_functions",
  "title": "The special-function library, reached through ordinary calls",
- "source": "version-7.8.0/scripts/solveit/16_special_functions.posim",
+ "source": "scripts/solveit/16_special_functions.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/16_special_functions.posim",
  "abstract": "16. The special-function library, reached through ordinary calls. Five identities that a wrong implementation cannot accidentally pass. (a) J_0 vanishes at its first zero, j_{0,1} = 2.404825557695773",

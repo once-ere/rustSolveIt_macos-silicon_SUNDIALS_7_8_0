@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_polhode_quarter_period",
  "title": "Routh II.Art.150a \u2014 the quarter period of the polhode, as an elliptic",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_polhode_quarter_period.posim",
+ "source": "dynamic_notebooks/routh_p2_polhode_quarter_period.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_polhode_quarter_period.posim",
  "abstract": "Routh II.Art.150a \u2014 the quarter period of the polhode, as an elliptic integral \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "video_ball_joint_chain",
  "title": "A four-link chain hung on BALL joints, whirling as it collapses",
- "source": "version-7.8.0/videos/scenes/ball_joint_chain.posim",
+ "source": "videos/scenes/ball_joint_chain.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/ball_joint_chain.posim",
  "abstract": "A four-link chain hung on BALL joints, whirling as it collapses.",

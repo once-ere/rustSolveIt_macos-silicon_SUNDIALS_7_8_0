@@ -1,7 +1,7 @@
 {
  "key": "collision_05_billiard_break",
  "title": "A billiard break: the cue ball strikes the apex of a",
- "source": "version-7.8.0/scripts/collisions/05_billiard_break.posim",
+ "source": "scripts/collisions/05_billiard_break.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/05_billiard_break.posim",
  "abstract": "Example 5 \u2014 a billiard break: the cue ball strikes the apex of a three-ball triangle at e = 0.95. Each outgoing direction lies along the line of centers of its collision (read the normals!), and total momentum is conserved through the whole multi-ball cascade.",

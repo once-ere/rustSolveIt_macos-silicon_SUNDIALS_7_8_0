@@ -1,7 +1,7 @@
 {
  "key": "video_tumbling_racket",
  "title": "The tennis-racket theorem (Dzhanibekov effect): a torque-free body",
- "source": "version-7.8.0/videos/scenes/tumbling_racket.posim",
+ "source": "videos/scenes/tumbling_racket.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/tumbling_racket.posim",
  "abstract": "The tennis-racket theorem (Dzhanibekov effect): a torque-free body spun about its intermediate principal axis flips over and over, while L stays exactly constant.",

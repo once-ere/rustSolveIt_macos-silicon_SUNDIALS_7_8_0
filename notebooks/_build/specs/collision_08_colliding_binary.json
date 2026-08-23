@@ -1,7 +1,7 @@
 {
  "key": "collision_08_colliding_binary",
  "title": "Gravity AND collisions together: two spheres on a bound",
- "source": "version-7.8.0/scripts/collisions/08_colliding_binary.posim",
+ "source": "scripts/collisions/08_colliding_binary.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/08_colliding_binary.posim",
  "abstract": "Example 8 \u2014 gravity AND collisions together: two spheres on a bound elliptical orbit whose pericenter (0.5) is SMALLER than the sum of radii (0.6). Gravity pulls them together, the impact fires at the exact touch, an e = 0.6 bounce robs energy, and the orbit shrinks \u2014 but momentum stays exactly zero throughout.",

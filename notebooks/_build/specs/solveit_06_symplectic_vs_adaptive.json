@@ -1,7 +1,7 @@
 {
  "key": "solveit_06_symplectic_vs_adaptive",
  "title": "Symplectic (SPRK) versus adaptive multistep (Adams) over a long",
- "source": "version-7.8.0/scripts/solveit/06_symplectic_vs_adaptive.posim",
+ "source": "scripts/solveit/06_symplectic_vs_adaptive.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/06_symplectic_vs_adaptive.posim",
  "abstract": "6. Symplectic (SPRK) versus adaptive multistep (Adams) over a long eccentric orbit. Same system, same span; compare |dE/E|.",

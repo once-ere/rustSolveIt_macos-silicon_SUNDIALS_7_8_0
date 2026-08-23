@@ -1,7 +1,7 @@
 {
  "key": "dynamic_spin_up",
  "title": "Off-center impact spins up a box: L = r x J",
- "source": "version-7.8.0/dynamic_notebooks/spin_up.posim",
+ "source": "dynamic_notebooks/spin_up.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/spin_up.posim",
  "abstract": "Off-center impact spins up a box: L = r x J \u2014 dynamic notebook",

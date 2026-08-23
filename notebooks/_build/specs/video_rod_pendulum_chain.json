@@ -1,7 +1,7 @@
 {
  "key": "video_rod_pendulum_chain",
  "title": "Four bobs on four rods, released from rest and left to go chaotic",
- "source": "version-7.8.0/videos/scenes/rod_pendulum_chain.posim",
+ "source": "videos/scenes/rod_pendulum_chain.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/rod_pendulum_chain.posim",
  "abstract": "Four bobs on four rods, released from rest and left to go chaotic.",

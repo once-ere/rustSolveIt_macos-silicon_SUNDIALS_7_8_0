@@ -1,7 +1,7 @@
 {
  "key": "dynamic_tumbling_body",
  "title": "The tennis-racket theorem: unstable intermediate-axis tumbling",
- "source": "version-7.8.0/dynamic_notebooks/tumbling_body.posim",
+ "source": "dynamic_notebooks/tumbling_body.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/tumbling_body.posim",
  "abstract": "The tennis-racket theorem: unstable intermediate-axis tumbling \u2014 dynamic notebook",

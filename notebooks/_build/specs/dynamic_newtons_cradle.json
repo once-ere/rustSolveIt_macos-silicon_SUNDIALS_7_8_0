@@ -1,7 +1,7 @@
 {
  "key": "dynamic_newtons_cradle",
  "title": "Newton's cradle: five spheres, one incomer, only the far ball exits",
- "source": "version-7.8.0/dynamic_notebooks/newtons_cradle.posim",
+ "source": "dynamic_notebooks/newtons_cradle.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/newtons_cradle.posim",
  "abstract": "Newton's cradle: five spheres, one incomer, only the far ball exits \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_apsidal_symmetry",
  "title": "Routh I.Arts.419-420 \u2014 an apsidal radius divides the orbit symmetrically,",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_apsidal_symmetry.posim",
+ "source": "dynamic_notebooks/routh_p1_apsidal_symmetry.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_apsidal_symmetry.posim",
  "abstract": "Routh I.Arts.419-420 \u2014 an apsidal radius divides the orbit symmetrically, and there are only TWO apsidal distances \u2014 dynamic notebook",

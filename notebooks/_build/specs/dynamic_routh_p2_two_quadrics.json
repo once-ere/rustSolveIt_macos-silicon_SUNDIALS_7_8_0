@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_two_quadrics",
  "title": "Routh II.Arts.140-142 \u2014 the two quadrics whose intersection IS the polhode",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_two_quadrics.posim",
+ "source": "dynamic_notebooks/routh_p2_two_quadrics.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_two_quadrics.posim",
  "abstract": "Routh II.Arts.140-142 \u2014 the two quadrics whose intersection IS the polhode \u2014 dynamic notebook",

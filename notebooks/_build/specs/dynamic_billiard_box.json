@@ -1,7 +1,7 @@
 {
  "key": "dynamic_billiard_box",
  "title": "An elastic ball ping-pongs between two static walls forever",
- "source": "version-7.8.0/dynamic_notebooks/billiard_box.posim",
+ "source": "dynamic_notebooks/billiard_box.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/billiard_box.posim",
  "abstract": "An elastic ball ping-pongs between two static walls forever \u2014 dynamic notebook",

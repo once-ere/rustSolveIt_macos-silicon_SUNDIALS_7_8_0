@@ -1,7 +1,7 @@
 {
  "key": "collision_09_spinning_target",
  "title": "Hitting a TUMBLING target: the cuboid spins at",
- "source": "version-7.8.0/scripts/collisions/09_spinning_target.posim",
+ "source": "scripts/collisions/09_spinning_target.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/09_spinning_target.posim",
  "abstract": "Example 9 \u2014 hitting a TUMBLING target: the cuboid spins at omega_z = 2, so the surface point the sphere meets is itself moving (contact-point velocity includes omega x r). The K-matrix's angular terms handle it: the impulse depends on where and how fast the surface is moving, not just on the body's center velocity.",

@@ -1,7 +1,7 @@
 {
  "key": "dynamic_three_bodies",
  "title": "Three gravitating bodies with zero total momentum",
- "source": "version-7.8.0/dynamic_notebooks/three_bodies.posim",
+ "source": "dynamic_notebooks/three_bodies.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/three_bodies.posim",
  "abstract": "Three gravitating bodies with zero total momentum \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "solveit_10_no_tunnelling",
  "title": "A bullet at 100 m/s meets a 5 mm plate. In one output interval of",
- "source": "version-7.8.0/scripts/solveit/10_no_tunnelling.posim",
+ "source": "scripts/solveit/10_no_tunnelling.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/10_no_tunnelling.posim",
  "abstract": "10. A bullet at 100 m/s meets a 5 mm plate. In one output interval of 0.01 s it travels 1 m -- two hundred times the plate's thickness. A frame-sampled collision test would miss it completely. Rootfinding does not: the solver caps its own step so the gap function cannot skip a sign change, and catches the crossing.",

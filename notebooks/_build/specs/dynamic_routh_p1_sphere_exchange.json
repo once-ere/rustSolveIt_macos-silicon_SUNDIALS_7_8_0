@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_sphere_exchange",
  "title": "Routh I.Art.85 + 87 \u2014 equal elastic spheres EXCHANGE velocities, and a",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_sphere_exchange.posim",
+ "source": "dynamic_notebooks/routh_p1_sphere_exchange.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_sphere_exchange.posim",
  "abstract": "Routh I.Art.85 + 87 \u2014 equal elastic spheres EXCHANGE velocities, and a sphere with m = e*m' is reduced to REST \u2014 dynamic notebook",

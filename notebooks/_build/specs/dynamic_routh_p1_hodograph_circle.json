@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_hodograph_circle",
  "title": "Routh I.Art.394-398 \u2014 the hodograph of a Kepler orbit is a CIRCLE",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_hodograph_circle.posim",
+ "source": "dynamic_notebooks/routh_p1_hodograph_circle.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_hodograph_circle.posim",
  "abstract": "Routh I.Art.394-398 \u2014 the hodograph of a Kepler orbit is a CIRCLE \u2014 dynamic notebook",

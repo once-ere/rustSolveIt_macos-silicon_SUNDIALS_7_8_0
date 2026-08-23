@@ -1,7 +1,7 @@
 {
  "key": "video_cardan_compass",
  "title": "A compass in a Cardan suspension, rocking back towards level",
- "source": "version-7.8.0/videos/scenes/cardan_compass.posim",
+ "source": "videos/scenes/cardan_compass.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/cardan_compass.posim",
  "abstract": "A compass in a Cardan suspension, rocking back towards level.",

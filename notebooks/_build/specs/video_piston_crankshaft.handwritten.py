@@ -2,7 +2,7 @@ import json
 spec = {
 "key": "video_piston_crankshaft",
 "title": "A piston driven by a crankshaft (the slider-crank)",
-"source": "version-7.8.0/videos/scenes/piston_crankshaft.posim",
+"source": "videos/scenes/piston_crankshaft.posim",
 "category": "video",
 "howtorun": "cargo run --release -p posim -- --script videos/scenes/piston_crankshaft.posim",
 "abstract": """A slider-crank is the mechanism at the heart of every piston engine: a

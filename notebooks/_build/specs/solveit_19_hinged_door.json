@@ -1,7 +1,7 @@
 {
  "key": "solveit_19_hinged_door",
  "title": "A door on a hinge: an ORIENTATION constraint",
- "source": "version-7.8.0/scripts/solveit/19_hinged_door.posim",
+ "source": "scripts/solveit/19_hinged_door.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/19_hinged_door.posim",
  "abstract": "19. A door on a hinge: an ORIENTATION constraint. A rod fixes a distance. A hinge fixes a point AND an axis, leaving exactly one freedom \u2014 the swing. That needs orientation in the DAE state, which is why METHOD IDA carries the full 13-per-object packing.",

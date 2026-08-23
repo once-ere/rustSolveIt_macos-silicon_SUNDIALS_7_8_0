@@ -1,7 +1,7 @@
 {
  "key": "dynamic_charged_in_e_field",
  "title": "A charge in a uniform electric field: x(t) = (qE/2m) t^2, exact",
- "source": "version-7.8.0/dynamic_notebooks/charged_in_e_field.posim",
+ "source": "dynamic_notebooks/charged_in_e_field.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/charged_in_e_field.posim",
  "abstract": "A charge in a uniform electric field: x(t) = (qE/2m) t^2, exact \u2014 dynamic notebook",

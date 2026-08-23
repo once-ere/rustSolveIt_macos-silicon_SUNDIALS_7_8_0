@@ -1,7 +1,7 @@
 {
  "key": "video_box_of_shapes",
  "title": "The mixed-shape box rattle, exactly as the regression test",
- "source": "version-7.8.0/videos/scenes/box_of_shapes.posim",
+ "source": "videos/scenes/box_of_shapes.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/box_of_shapes.posim",
  "abstract": "The mixed-shape box rattle, exactly as the regression test `mixed_shapes_rattle_in_the_box_conserving_energy` (physical_object/tests/collision.rs) sets it up: a rigid BOX 4 whose six wall slabs have inverse_mass = 0, no gravity, three bodies of different shape thrown across it with no initial spin. Every bounce is a real CVODE rootfinding event; the test asserts |dE|/E < 1e-6. G = 0 -- pure free flight plus collisions, so every outcome is exact (the test's `free_system` does the same; posim's default G is 1, and mutual gravity between bodies that nearly touch is what would pump the energy).",

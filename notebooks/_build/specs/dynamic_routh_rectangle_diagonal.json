@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_rectangle_diagonal",
  "title": "Routh II.Art.150b Ex.1 \u2014 a rectangle spun about one diagonal ends up spinning",
- "source": "version-7.8.0/dynamic_notebooks/routh_rectangle_diagonal.posim",
+ "source": "dynamic_notebooks/routh_rectangle_diagonal.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_rectangle_diagonal.posim",
  "abstract": "Routh II.Art.150b Ex.1 \u2014 a rectangle spun about one diagonal ends up spinning about the OTHER diagonal \u2014 dynamic notebook",

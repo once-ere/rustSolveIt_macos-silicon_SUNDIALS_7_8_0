@@ -1,7 +1,7 @@
 {
  "key": "solveit_09_newtons_cradle",
  "title": "Newton's cradle. One sphere hits four touching ones. The impulse",
- "source": "version-7.8.0/scripts/solveit/09_newtons_cradle.posim",
+ "source": "scripts/solveit/09_newtons_cradle.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/09_newtons_cradle.posim",
  "abstract": "9. Newton's cradle. One sphere hits four touching ones. The impulse runs down the chain and ONLY the far ball leaves; momentum and energy are both conserved because every ball has restitution 1.",

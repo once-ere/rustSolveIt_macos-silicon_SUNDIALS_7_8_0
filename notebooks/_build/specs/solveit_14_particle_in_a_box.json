@@ -1,7 +1,7 @@
 {
  "key": "solveit_14_particle_in_a_box",
  "title": "The infinite square well, solved inside the language",
- "source": "version-7.8.0/scripts/solveit/14_particle_in_a_box.posim",
+ "source": "scripts/solveit/14_particle_in_a_box.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/14_particle_in_a_box.posim",
  "abstract": "14. The infinite square well, solved inside the language. QM GRID pins psi to zero just outside the domain -- that IS an infinite square well of width L. With hbar = m = 1 the exact levels are E_n = n^2 pi^2 / (2 L^2). On [0, 1] that is 4.9348022005446793, 19.739208802178716, 44.413219804902106, 78.95683520871486.",

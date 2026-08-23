@@ -1,7 +1,7 @@
 {
  "key": "video_universal_joint",
  "title": "A universal (Cardan) joint transmitting rotation between two shafts",
- "source": "version-7.8.0/videos/scenes/universal_joint.posim",
+ "source": "videos/scenes/universal_joint.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/universal_joint.posim",
  "abstract": "A universal (Cardan) joint transmitting rotation between two shafts.",

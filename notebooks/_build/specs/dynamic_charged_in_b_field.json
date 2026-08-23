@@ -1,7 +1,7 @@
 {
  "key": "dynamic_charged_in_b_field",
  "title": "Cyclotron motion: a charge circling in a uniform magnetic field",
- "source": "version-7.8.0/dynamic_notebooks/charged_in_b_field.posim",
+ "source": "dynamic_notebooks/charged_in_b_field.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/charged_in_b_field.posim",
  "abstract": "Cyclotron motion: a charge circling in a uniform magnetic field \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "dynamic_bouncing_ball_restitution",
  "title": "A bouncing ball with e = 0.8: apex = e^2 h",
- "source": "version-7.8.0/dynamic_notebooks/bouncing_ball_restitution.posim",
+ "source": "dynamic_notebooks/bouncing_ball_restitution.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/bouncing_ball_restitution.posim",
  "abstract": "A bouncing ball with e = 0.8: apex = e^2 h \u2014 dynamic notebook",

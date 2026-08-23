@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_thin_rod",
  "title": "Routh II.Art.144 \u2014 a thin rod, whose momental ellipsoid is a circular",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_thin_rod.posim",
+ "source": "dynamic_notebooks/routh_p2_thin_rod.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_thin_rod.posim",
  "abstract": "Routh II.Art.144 \u2014 a thin rod, whose momental ellipsoid is a circular cylinder \u2014 dynamic notebook",

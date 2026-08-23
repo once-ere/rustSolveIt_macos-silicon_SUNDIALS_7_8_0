@@ -1,7 +1,7 @@
 {
  "key": "collision_01_head_on_exchange",
  "title": "Equal masses, head on, perfectly elastic (e = 1)",
- "source": "version-7.8.0/scripts/collisions/01_head_on_exchange.posim",
+ "source": "scripts/collisions/01_head_on_exchange.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/01_head_on_exchange.posim",
  "abstract": "Example 1 \u2014 equal masses, head on, perfectly elastic (e = 1): the canonical action-reaction demonstration. Two identical spheres approach at \u00b11; at the analytic time of impact t = 1.5 the SUNDIALS root finder lands on the touch, the impulse acts along the contact normal, and the velocities EXCHANGE exactly. Momentum stays 0 and energy is conserved to machine precision.",

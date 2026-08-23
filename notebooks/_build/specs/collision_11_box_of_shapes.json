@@ -1,7 +1,7 @@
 {
  "key": "collision_11_box_of_shapes",
  "title": "The box of shapes: every body type inside a rigid,",
- "source": "version-7.8.0/scripts/collisions/11_box_of_shapes.posim",
+ "source": "scripts/collisions/11_box_of_shapes.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/11_box_of_shapes.posim",
  "abstract": "Example 11 \u2014 the box of shapes: every body type inside a rigid, INFINITELY MASSIVE 4R x 4R x 4R bounding box (R = 1, M = 1).",

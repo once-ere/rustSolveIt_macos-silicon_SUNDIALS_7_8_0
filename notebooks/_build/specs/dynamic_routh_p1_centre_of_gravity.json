@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_centre_of_gravity",
  "title": "Routh I.Art.92 \u2014 impacts cannot move the centre of gravity",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_centre_of_gravity.posim",
+ "source": "dynamic_notebooks/routh_p1_centre_of_gravity.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_centre_of_gravity.posim",
  "abstract": "Routh I.Art.92 \u2014 impacts cannot move the centre of gravity \u2014 dynamic notebook",

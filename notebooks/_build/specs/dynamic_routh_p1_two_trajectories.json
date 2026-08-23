@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_two_trajectories",
  "title": "Routh I.Art.339 \u2014 TWO trajectories reach the same point at the same speed",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_two_trajectories.posim",
+ "source": "dynamic_notebooks/routh_p1_two_trajectories.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_two_trajectories.posim",
  "abstract": "Routh I.Art.339 \u2014 TWO trajectories reach the same point at the same speed \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "solveit_07_dzhanibekov",
  "title": "The intermediate-axis (tennis racket) instability, measured",
- "source": "version-7.8.0/scripts/solveit/07_dzhanibekov.posim",
+ "source": "scripts/solveit/07_dzhanibekov.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/07_dzhanibekov.posim",
  "abstract": "7. The intermediate-axis (tennis racket) instability, measured. A cuboid with three unequal moments, spun almost exactly about its MIDDLE axis. Angular momentum is conserved to the bit while the body turns over: the x component of the orientation quaternion swings from near zero to near +/-1 and back as it flips. RUN takes a DURATION: eight runs of 0.5 sample t = 0.5 .. 4.0.",

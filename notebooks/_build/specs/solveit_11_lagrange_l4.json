@@ -1,7 +1,7 @@
 {
  "key": "solveit_11_lagrange_l4",
  "title": "Lagrange's equilateral solution. Three EQUAL masses at the",
- "source": "version-7.8.0/scripts/solveit/11_lagrange_l4.posim",
+ "source": "scripts/solveit/11_lagrange_l4.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/11_lagrange_l4.posim",
  "abstract": "11. Lagrange's equilateral solution. Three EQUAL masses at the corners of an equilateral triangle, each given the circular speed for the configuration, rotate rigidly forever. With G = 1, m = 1 and side a, the angular rate is omega = sqrt(3 G m / a^3); at a = 1 that is sqrt(3) = 1.7320508075688772, so the period is 2 pi / sqrt(3) = 3.6275987284684357. After one period every body must be home. Circumradius R = a/sqrt(3) = 0.5773502691896258, speed = omega R = 1.",

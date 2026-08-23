@@ -1,7 +1,7 @@
 {
  "key": "solveit_05_cyclotron_bdf",
  "title": "A charged sphere in a uniform B field",
- "source": "version-7.8.0/scripts/solveit/05_cyclotron_bdf.posim",
+ "source": "scripts/solveit/05_cyclotron_bdf.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/05_cyclotron_bdf.posim",
  "abstract": "5. A charged sphere in a uniform B field. gyroradius r = m|v| / (|q| B) = 2*5/(3*6) = 0.5555... period     T = 2 pi m / (|q| B) = 0.6981317007977318 Half a period puts the ion diametrically opposite: |x| = 2r. Another half brings it home. RUN takes a DURATION, so both legs are T/2 = 0.3490658503988659. The Lorentz force is velocity-dependent and fast: use BDF.",

@@ -1,7 +1,7 @@
 {
  "key": "video_piston_crankshaft",
  "title": "A piston driven by a crankshaft (the slider-crank)",
- "source": "version-7.8.0/videos/scenes/piston_crankshaft.posim",
+ "source": "videos/scenes/piston_crankshaft.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/piston_crankshaft.posim",
  "abstract": "A slider-crank is the mechanism at the heart of every piston engine: a\nwheel turning in a bearing, a rod hung off a pin near the wheel's rim, and\na piston that the rod pushes up and down a straight bore. It converts\nrotation into a reciprocating slide, and back again.\n\nWhat this notebook demonstrates is that the simulator gets the *kinematics*\nexactly right without ever being told them. Nobody supplies the formula\nrelating piston position to crank angle. Four joints are declared, the\nsolver holds them, and the piston position that comes out agrees with the\nexact closed-form expression to about one part in ten million.",

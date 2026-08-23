@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_invariable_line",
  "title": "Routh II.Art.141 \u2014 the invariable line is absolutely fixed in space, and the",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_invariable_line.posim",
+ "source": "dynamic_notebooks/routh_p2_invariable_line.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_invariable_line.posim",
  "abstract": "Routh II.Art.141 \u2014 the invariable line is absolutely fixed in space, and the instantaneous axis is not \u2014 dynamic notebook",

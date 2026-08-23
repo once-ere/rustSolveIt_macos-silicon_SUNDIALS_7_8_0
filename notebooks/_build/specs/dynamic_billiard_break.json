@@ -1,7 +1,7 @@
 {
  "key": "dynamic_billiard_break",
  "title": "A tiny billiard break: cue into a three-ball rack",
- "source": "version-7.8.0/dynamic_notebooks/billiard_break.posim",
+ "source": "dynamic_notebooks/billiard_break.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/billiard_break.posim",
  "abstract": "A tiny billiard break: cue into a three-ball rack \u2014 dynamic notebook",

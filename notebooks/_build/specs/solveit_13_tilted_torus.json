@@ -1,7 +1,7 @@
 {
  "key": "solveit_13_tilted_torus",
  "title": "Geometry that only a real support function gets right. An",
- "source": "version-7.8.0/scripts/solveit/13_tilted_torus.posim",
+ "source": "scripts/solveit/13_tilted_torus.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/13_tilted_torus.posim",
  "abstract": "13. Geometry that only a real support function gets right. An axis-aligned torus of outer radius 2 exactly inscribes a BOX 4. Tilt it to the axis (1,1,1)/sqrt(3) and its per-axis extent DROPS to 1.5*sqrt(2/3) + 0.5 = 1.7247448713915889 -- it now clears every wall with room to spare. A bounding-sphere test would say the opposite.",

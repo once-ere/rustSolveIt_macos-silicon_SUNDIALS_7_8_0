@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_sylvester_time",
  "title": "Routh II.Arts.196-198 \u2014 Sylvester's and Poinsot's measures of the time",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_sylvester_time.posim",
+ "source": "dynamic_notebooks/routh_p2_sylvester_time.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_sylvester_time.posim",
  "abstract": "Routh II.Arts.196-198 \u2014 Sylvester's and Poinsot's measures of the time \u2014 dynamic notebook",

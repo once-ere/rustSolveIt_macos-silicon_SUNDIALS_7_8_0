@@ -1,7 +1,7 @@
 {
  "key": "collision_06_spin_up",
  "title": "Linear momentum becomes spin: a sphere strikes a free",
- "source": "version-7.8.0/scripts/collisions/06_spin_up.posim",
+ "source": "scripts/collisions/06_spin_up.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/06_spin_up.posim",
  "abstract": "Example 6 \u2014 linear momentum becomes spin: a sphere strikes a free cuboid ABOVE its center. The off-center impulse J n applied at the contact point r gives the box angular momentum L = r x (J n) \u2014 read the contact and check it yourself. The box was not spinning before.",

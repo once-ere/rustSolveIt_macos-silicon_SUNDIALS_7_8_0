@@ -1,7 +1,7 @@
 {
  "key": "solveit_12_dumbbell_inertia",
  "title": "A user-defined constructor, and the inertia tensor it produces",
- "source": "version-7.8.0/scripts/solveit/12_dumbbell_inertia.posim",
+ "source": "scripts/solveit/12_dumbbell_inertia.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/12_dumbbell_inertia.posim",
  "abstract": "12. A user-defined constructor, and the inertia tensor it produces. A DUMBBELL is TWO solid spheres plus a rod, treated as ONE rigid body. Its inertia about the COM is the exact composite: 2/5 m r^2 for each sphere, plus m z^2 by the parallel-axis theorem, plus the rod's own cylinder terms about the COM. Note the parameter names: m1, m2, m_rod, r1, r2, rod_radius, length.",

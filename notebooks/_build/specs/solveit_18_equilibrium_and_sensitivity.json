@@ -1,7 +1,7 @@
 {
  "key": "solveit_18_equilibrium_and_sensitivity",
  "title": "Two questions that are not \"what happens next\"",
- "source": "version-7.8.0/scripts/solveit/18_equilibrium_and_sensitivity.posim",
+ "source": "scripts/solveit/18_equilibrium_and_sensitivity.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/18_equilibrium_and_sensitivity.posim",
  "abstract": "18. Two questions that are not \"what happens next\". EQUILIBRIUM (KINSOL) asks where the system comes to REST. SENSITIVITY (CVODES/IDAS) asks how much the answer DEPENDS on an input.",

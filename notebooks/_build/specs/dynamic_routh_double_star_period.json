@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_double_star_period",
  "title": "Routh I.Art.400 \u2014 a double star's period depends only on the SUM of the masses",
- "source": "version-7.8.0/dynamic_notebooks/routh_double_star_period.posim",
+ "source": "dynamic_notebooks/routh_double_star_period.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_double_star_period.posim",
  "abstract": "Routh I.Art.400 \u2014 a double star's period depends only on the SUM of the masses \u2014 dynamic notebook",

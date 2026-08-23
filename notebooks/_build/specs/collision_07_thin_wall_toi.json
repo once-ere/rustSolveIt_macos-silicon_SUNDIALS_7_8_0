@@ -1,7 +1,7 @@
 {
  "key": "collision_07_thin_wall_toi",
  "title": "The precision differentiator: a small fast bullet",
- "source": "version-7.8.0/scripts/collisions/07_thin_wall_toi.posim",
+ "source": "scripts/collisions/07_thin_wall_toi.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/07_thin_wall_toi.posim",
  "abstract": "Example 7 \u2014 the precision differentiator: a small fast bullet (radius 0.01, speed 100) meets a THIN static plate (half-thickness 0.005) inside one big output step. A fixed-step engine would tunnel straight through; SUNDIALS event rootfinding lands on the analytic time of impact t = (2 - 0.005 - 0.01)/100 = 0.01985 to ~1e-12 and reflects the bullet exactly.",

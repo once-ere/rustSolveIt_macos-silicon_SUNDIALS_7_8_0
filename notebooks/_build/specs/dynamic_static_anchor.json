@@ -1,7 +1,7 @@
 {
  "key": "dynamic_static_anchor",
  "title": "Inverse_mass = 0: a pinned anchor ignores gravity while a test body falls",
- "source": "version-7.8.0/dynamic_notebooks/static_anchor.posim",
+ "source": "dynamic_notebooks/static_anchor.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/static_anchor.posim",
  "abstract": "inverse_mass = 0: a pinned anchor ignores gravity while a test body falls \u2014 dynamic notebook",

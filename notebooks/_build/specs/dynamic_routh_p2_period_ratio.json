@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_period_ratio",
  "title": "Routh II.Art.150b Ex.2 \u2014 the ratio of the two periods is independent of the",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_period_ratio.posim",
+ "source": "dynamic_notebooks/routh_p2_period_ratio.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_period_ratio.posim",
  "abstract": "Routh II.Art.150b Ex.2 \u2014 the ratio of the two periods is independent of the initial conditions \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "dynamic_unequal_masses",
  "title": "Unequal masses: 1-vs-3 head-on, textbook one-dimensional formulas",
- "source": "version-7.8.0/dynamic_notebooks/unequal_masses.posim",
+ "source": "dynamic_notebooks/unequal_masses.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/unequal_masses.posim",
  "abstract": "Unequal masses: 1-vs-3 head-on, textbook one-dimensional formulas \u2014 dynamic notebook",

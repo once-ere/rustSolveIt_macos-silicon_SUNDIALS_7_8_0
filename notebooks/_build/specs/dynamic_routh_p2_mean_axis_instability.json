@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_mean_axis_instability",
  "title": "Routh II.Art.155 \u2014 the three principal axes do NOT possess equal degrees of",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_mean_axis_instability.posim",
+ "source": "dynamic_notebooks/routh_p2_mean_axis_instability.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_mean_axis_instability.posim",
  "abstract": "Routh II.Art.155 \u2014 the three principal axes do NOT possess equal degrees of stability \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "video_double_pendulum_hinges",
  "title": "A double pendulum built out of two HINGES",
- "source": "version-7.8.0/videos/scenes/double_pendulum_hinges.posim",
+ "source": "videos/scenes/double_pendulum_hinges.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/double_pendulum_hinges.posim",
  "abstract": "A double pendulum built out of two HINGES.",

@@ -1,7 +1,7 @@
 {
  "key": "solveit_01_elastic_head_on",
  "title": "Unequal masses in a head-on elastic collision",
- "source": "version-7.8.0/scripts/solveit/01_elastic_head_on.posim",
+ "source": "scripts/solveit/01_elastic_head_on.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/01_elastic_head_on.posim",
  "abstract": "1. Unequal masses in a head-on elastic collision. Analytic: v1' = ((m1-m2)v1 + 2 m2 v2)/(m1+m2), and mirror for v2'.",

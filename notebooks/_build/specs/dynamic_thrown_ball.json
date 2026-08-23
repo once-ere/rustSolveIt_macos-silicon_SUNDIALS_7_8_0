@@ -1,7 +1,7 @@
 {
  "key": "dynamic_thrown_ball",
  "title": "A thrown ball vs the textbook parabola",
- "source": "version-7.8.0/dynamic_notebooks/thrown_ball.posim",
+ "source": "dynamic_notebooks/thrown_ball.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/thrown_ball.posim",
  "abstract": "A thrown ball vs the textbook parabola \u2014 dynamic notebook",

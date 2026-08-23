@@ -1,7 +1,7 @@
 {
  "key": "collision_04_newtons_cradle",
  "title": "Newton's cradle with five spheres: four touching balls,",
- "source": "version-7.8.0/scripts/collisions/04_newtons_cradle.posim",
+ "source": "scripts/collisions/04_newtons_cradle.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/04_newtons_cradle.posim",
  "abstract": "Example 4 \u2014 Newton's cradle with five spheres: four touching balls, one incomer. At the single detected impact the impulse propagates through the chain in the solver's Gauss-Seidel passes \u2014 only the FAR ball exits, at the incomer's speed. Everything between stays put.",

@@ -1,7 +1,7 @@
 {
  "key": "video_spinning_top",
  "title": "A spinning top, held at its tip and precessing under gravity",
- "source": "version-7.8.0/videos/scenes/spinning_top.posim",
+ "source": "videos/scenes/spinning_top.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/spinning_top.posim",
  "abstract": "A spinning top, held at its tip and precessing under gravity.",

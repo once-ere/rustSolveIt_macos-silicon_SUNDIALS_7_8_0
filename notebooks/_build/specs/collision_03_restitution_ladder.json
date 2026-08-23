@@ -1,7 +1,7 @@
 {
  "key": "collision_03_restitution_ladder",
  "title": "The restitution ladder: the SAME approach (closing speed",
- "source": "version-7.8.0/scripts/collisions/03_restitution_ladder.posim",
+ "source": "scripts/collisions/03_restitution_ladder.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/03_restitution_ladder.posim",
  "abstract": "Example 3 \u2014 the restitution ladder: the SAME approach (closing speed 2), four different bouncinesses. The separation speed afterwards is exactly e x 2 (the pair uses min(e_i, e_j), so setting one side is enough). Watch the kinetic energy drop as e falls.",

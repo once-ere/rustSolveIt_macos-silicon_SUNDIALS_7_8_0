@@ -1,7 +1,7 @@
 {
  "key": "solveit_08_magnetic_torque",
  "title": "A magnetised body in a field. The torque is tau = (R M R^T) B, so",
- "source": "version-7.8.0/scripts/solveit/08_magnetic_torque.posim",
+ "source": "scripts/solveit/08_magnetic_torque.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/08_magnetic_torque.posim",
  "abstract": "8. A magnetised body in a field. The torque is tau = (R M R^T) B, so the tensor's THIRD column is what a B along z can grip. M's third column here is (0.5, 0, 0), giving an initial torque (1, 0, 0). The field is an outside agent: ENERGY grows and L is NOT conserved, and both of those are correct.",

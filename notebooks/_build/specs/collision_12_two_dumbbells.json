@@ -1,7 +1,7 @@
 {
  "key": "collision_12_two_dumbbells",
  "title": "Two colliding dumbbells built by a USER-DEFINED function",
- "source": "version-7.8.0/scripts/collisions/12_two_dumbbells.posim",
+ "source": "scripts/collisions/12_two_dumbbells.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/12_two_dumbbells.posim",
  "abstract": "Example 12 \u2014 two colliding dumbbells built by a USER-DEFINED function.",

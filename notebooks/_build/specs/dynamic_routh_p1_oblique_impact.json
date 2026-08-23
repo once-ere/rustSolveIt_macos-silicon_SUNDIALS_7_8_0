@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_oblique_impact",
  "title": "Routh I.Art.89 \u2014 oblique impact of equal smooth spheres: the velocities come",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_oblique_impact.posim",
+ "source": "dynamic_notebooks/routh_p1_oblique_impact.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_oblique_impact.posim",
  "abstract": "Routh I.Art.89 \u2014 oblique impact of equal smooth spheres: the velocities come out PERPENDICULAR \u2014 dynamic notebook",

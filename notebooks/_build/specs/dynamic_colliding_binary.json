@@ -1,7 +1,7 @@
 {
  "key": "dynamic_colliding_binary",
  "title": "Gravity + collisions: a bound binary that bounces at pericenter (e_rest = 0.6)",
- "source": "version-7.8.0/dynamic_notebooks/colliding_binary.posim",
+ "source": "dynamic_notebooks/colliding_binary.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/colliding_binary.posim",
  "abstract": "Gravity + collisions: a bound binary that bounces at pericenter (e_rest = 0.6) \u2014 dynamic notebook",

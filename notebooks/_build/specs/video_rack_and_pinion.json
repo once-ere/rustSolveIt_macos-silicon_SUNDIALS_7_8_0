@@ -1,7 +1,7 @@
 {
  "key": "video_rack_and_pinion",
  "title": "A rack and pinion drive: a falling weight turning a flywheel",
- "source": "version-7.8.0/videos/scenes/rack_and_pinion.posim",
+ "source": "videos/scenes/rack_and_pinion.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/rack_and_pinion.posim",
  "abstract": "A rack and pinion drive: a falling weight turning a flywheel.",

@@ -1,7 +1,7 @@
 {
  "key": "solveit_17_pendulum_dae",
  "title": "A pendulum as a CONSTRAINT, not a force",
- "source": "version-7.8.0/scripts/solveit/17_pendulum_dae.posim",
+ "source": "scripts/solveit/17_pendulum_dae.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/17_pendulum_dae.posim",
  "abstract": "17. A pendulum as a CONSTRAINT, not a force. A rod is a geometric fact: the bob is exactly L from the pivot, always. Writing that as a stiff spring only approximates it. Writing it as an algebraic equation turns the problem into a DAE, which is what IDA is for. The small-amplitude period is T = 2*pi*sqrt(L/g).",

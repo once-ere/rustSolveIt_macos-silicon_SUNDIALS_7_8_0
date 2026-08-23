@@ -1,7 +1,7 @@
 {
  "key": "solveit_02_keplers_third_law",
  "title": "Kepler's third law: T^2 / a^3 is one number for every orbit",
- "source": "version-7.8.0/scripts/solveit/02_keplers_third_law.posim",
+ "source": "scripts/solveit/02_keplers_third_law.posim",
  "category": "solveit",
  "howtorun": "cargo run --release -p posim -- --script scripts/solveit/02_keplers_third_law.posim",
  "abstract": "2. Kepler's third law: T^2 / a^3 is one number for every orbit. Four CIRCULAR orbits of radius a = 1, 2, 3, 4 about the same sun. For a circle v = sqrt(GM/a) and T = 2 pi a^(3/2)/sqrt(GM); with G = 1 and M = 1000 the four periods are 0.19869..., 0.56198..., 1.03235..., 1.58953... . Each planet is run for ITS OWN period and must come home to where it started.",

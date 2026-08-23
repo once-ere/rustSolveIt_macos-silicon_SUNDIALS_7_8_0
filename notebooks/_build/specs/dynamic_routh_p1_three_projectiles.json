@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_three_projectiles",
  "title": "Routh I.Art.158 Ex.1 \u2014 three projectiles stay in a plane parallel to itself",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_three_projectiles.posim",
+ "source": "dynamic_notebooks/routh_p1_three_projectiles.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_three_projectiles.posim",
  "abstract": "Routh I.Art.158 Ex.1 \u2014 three projectiles stay in a plane parallel to itself \u2014 dynamic notebook",

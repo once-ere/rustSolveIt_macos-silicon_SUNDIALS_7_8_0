@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_collinear_three_body",
  "title": "Routh I.Arts.409-412 \u2014 the collinear three-body configuration, and its",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_collinear_three_body.posim",
+ "source": "dynamic_notebooks/routh_p1_collinear_three_body.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_collinear_three_body.posim",
  "abstract": "Routh I.Arts.409-412 \u2014 the collinear three-body configuration, and its instability \u2014 dynamic notebook",

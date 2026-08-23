@@ -1,7 +1,7 @@
 {
  "key": "video_gyroscope_gimbal",
  "title": "A gyroscope slung in a two-ring gimbal",
- "source": "version-7.8.0/videos/scenes/gyroscope_gimbal.posim",
+ "source": "videos/scenes/gyroscope_gimbal.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/gyroscope_gimbal.posim",
  "abstract": "A gyroscope slung in a two-ring gimbal.",

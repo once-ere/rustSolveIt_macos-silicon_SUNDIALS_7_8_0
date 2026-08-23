@@ -1,7 +1,7 @@
 {
  "key": "dynamic_kepler_orbit",
  "title": "An eccentric Kepler orbit (e = 0.6) and the Runge-Lenz compass",
- "source": "version-7.8.0/dynamic_notebooks/kepler_orbit.posim",
+ "source": "dynamic_notebooks/kepler_orbit.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/kepler_orbit.posim",
  "abstract": "An eccentric Kepler orbit (e = 0.6) and the Runge-Lenz compass \u2014 dynamic notebook",

@@ -1,7 +1,7 @@
 {
  "key": "video_kepler_ellipse",
  "title": "A single planet on a strongly eccentric Kepler orbit (e = 0.6)",
- "source": "version-7.8.0/videos/scenes/kepler_ellipse.posim",
+ "source": "videos/scenes/kepler_ellipse.posim",
  "category": "video",
  "howtorun": "cargo run --release -p posim -- --script videos/scenes/kepler_ellipse.posim",
  "abstract": "A single planet on a strongly eccentric Kepler orbit (e = 0.6). The sun is heavy enough that the two-body problem is effectively the one-body Kepler problem, so the analytic ellipse is exact.",

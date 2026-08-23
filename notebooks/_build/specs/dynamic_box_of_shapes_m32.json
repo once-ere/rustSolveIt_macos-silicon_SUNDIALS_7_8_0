@@ -1,7 +1,7 @@
 {
  "key": "dynamic_box_of_shapes_m32",
  "title": "The box of shapes with a HEAVY point (mass 32)",
- "source": "version-7.8.0/dynamic_notebooks/box_of_shapes_m32.posim",
+ "source": "dynamic_notebooks/box_of_shapes_m32.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/box_of_shapes_m32.posim",
  "abstract": "The box of shapes with a HEAVY point (mass 32) \u2014 dynamic notebook",

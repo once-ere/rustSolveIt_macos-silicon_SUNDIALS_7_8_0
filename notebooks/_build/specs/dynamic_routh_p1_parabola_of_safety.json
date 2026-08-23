@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_parabola_of_safety",
  "title": "Routh I.Arts.159-160 \u2014 the parabola of safety, and the two ways to hit a",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_parabola_of_safety.posim",
+ "source": "dynamic_notebooks/routh_p1_parabola_of_safety.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_parabola_of_safety.posim",
  "abstract": "Routh I.Arts.159-160 \u2014 the parabola of safety, and the two ways to hit a target \u2014 dynamic notebook",

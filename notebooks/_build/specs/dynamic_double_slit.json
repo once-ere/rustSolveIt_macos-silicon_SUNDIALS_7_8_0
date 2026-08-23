@@ -1,7 +1,7 @@
 {
  "key": "dynamic_double_slit",
  "title": "---------------------------------------------------------------------",
- "source": "version-7.8.0/dynamic_notebooks/double_slit.posim",
+ "source": "dynamic_notebooks/double_slit.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/double_slit.posim",
  "abstract": "--------------------------------------------------------------------- The double slit \u2014 the canonical 2-D quantum problem.",

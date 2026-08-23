@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_lambert_theorem",
  "title": "Routh I.Arts.350-355 \u2014 Lambert's theorem: the time depends only on the chord,",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_lambert_theorem.posim",
+ "source": "dynamic_notebooks/routh_p1_lambert_theorem.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_lambert_theorem.posim",
  "abstract": "Routh I.Arts.350-355 \u2014 Lambert's theorem: the time depends only on the chord, the sum of the radii, and the axis \u2014 dynamic notebook",

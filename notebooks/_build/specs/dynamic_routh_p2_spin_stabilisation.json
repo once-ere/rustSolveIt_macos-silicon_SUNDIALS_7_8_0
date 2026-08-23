@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_spin_stabilisation",
  "title": "Routh II.Art.156 \u2014 why rapid rotation steadies a body",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_spin_stabilisation.posim",
+ "source": "dynamic_notebooks/routh_p2_spin_stabilisation.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_spin_stabilisation.posim",
  "abstract": "Routh II.Art.156 \u2014 why rapid rotation steadies a body \u2014 dynamic notebook",

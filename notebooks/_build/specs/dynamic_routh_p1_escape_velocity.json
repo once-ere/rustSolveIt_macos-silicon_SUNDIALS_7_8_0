@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_escape_velocity",
  "title": "Routh I.Art.312 + 335 \u2014 the velocity from infinity, and the three conics",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_escape_velocity.posim",
+ "source": "dynamic_notebooks/routh_p1_escape_velocity.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_escape_velocity.posim",
  "abstract": "Routh I.Art.312 + 335 \u2014 the velocity from infinity, and the three conics \u2014 dynamic notebook",

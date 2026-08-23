@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_fixed_couple",
  "title": "Routh II.Art.148 \u2014 a couple whose axis is fixed in space",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_fixed_couple.posim",
+ "source": "dynamic_notebooks/routh_p2_fixed_couple.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_fixed_couple.posim",
  "abstract": "Routh II.Art.148 \u2014 a couple whose axis is fixed in space \u2014 dynamic notebook",

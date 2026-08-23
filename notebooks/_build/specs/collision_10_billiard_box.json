@@ -1,7 +1,7 @@
 {
  "key": "collision_10_billiard_box",
  "title": "The long game: an elastic (e = 1) ball ping-pongs",
- "source": "version-7.8.0/scripts/collisions/10_billiard_box.posim",
+ "source": "scripts/collisions/10_billiard_box.posim",
  "category": "collision",
  "howtorun": "cargo run --release -p posim -- --script scripts/collisions/10_billiard_box.posim",
  "abstract": "Example 10 \u2014 the long game: an elastic (e = 1) ball ping-pongs between two static walls. Many collisions later the energy is STILL conserved \u2014 every impulse is exactly elastic and every wall is an infinite-mass momentum sink that never moves.",

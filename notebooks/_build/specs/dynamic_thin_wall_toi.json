@@ -1,7 +1,7 @@
 {
  "key": "dynamic_thin_wall_toi",
  "title": "No tunneling: a 100 m/s bullet meets a 1 cm plate at the exact TOI",
- "source": "version-7.8.0/dynamic_notebooks/thin_wall_toi.posim",
+ "source": "dynamic_notebooks/thin_wall_toi.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/thin_wall_toi.posim",
  "abstract": "No tunneling: a 100 m/s bullet meets a 1 cm plate at the exact TOI \u2014 dynamic notebook",

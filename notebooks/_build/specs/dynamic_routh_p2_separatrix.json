@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p2_separatrix",
  "title": "Routh II.Arts.184-185 \u2014 the separatrix G^2 = B*T, and which axis the polhode",
- "source": "version-7.8.0/dynamic_notebooks/routh_p2_separatrix.posim",
+ "source": "dynamic_notebooks/routh_p2_separatrix.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p2_separatrix.posim",
  "abstract": "Routh II.Arts.184-185 \u2014 the separatrix G^2 = B*T, and which axis the polhode encircles \u2014 dynamic notebook",

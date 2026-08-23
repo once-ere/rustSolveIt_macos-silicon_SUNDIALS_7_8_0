@@ -1,7 +1,7 @@
 {
  "key": "dynamic_routh_p1_geometric_progression",
  "title": "Routh I.Art.88 \u2014 masses in geometric progression give velocities in",
- "source": "version-7.8.0/dynamic_notebooks/routh_p1_geometric_progression.posim",
+ "source": "dynamic_notebooks/routh_p1_geometric_progression.posim",
  "category": "dynamic",
  "howtorun": "cargo run -p posim --release -- --notebook dynamic_notebooks/routh_p1_geometric_progression.posim",
  "abstract": "Routh I.Art.88 \u2014 masses in geometric progression give velocities in geometric progression \u2014 dynamic notebook",

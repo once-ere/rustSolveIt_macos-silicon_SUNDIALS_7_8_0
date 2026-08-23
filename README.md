@@ -1,13 +1,27 @@
-# rustSolveIt — on pure-Rust SUNDIALS 7.8.0
+# rustSolveIt — on pure-Rust SUNDIALS 7.8.0, for macOS on Apple Silicon
 
-Pure-Rust physics simulator. This repository is
+Pure-Rust physics simulator, the **macOS on Apple Silicon (arm64)**
+port of
+[`once-ere/rustSolveIt_Using_SUNDIALS_7_8_0`](https://github.com/once-ere/rustSolveIt_Using_SUNDIALS_7_8_0)
+— which is
 [`once-ere/rustSolveIt`](https://github.com/once-ere/rustSolveIt) with
 its numerical engine upgraded from a pure-Rust translation of SUNDIALS
-**7.7.0** to one of **7.8.0** — and with the evidence that the upgrade
-changed no physics: the six self-checking examples, the twelve
-collision scripts and all 59 dynamic notebooks produce **byte-identical
-output** under both engines. See
-[PORT_7.8.0_PROVENANCE.md](PORT_7.8.0_PROVENANCE.md) and
+**7.7.0** to one of **7.8.0**. The engine vendored here is
+**byte-identical** to the Linux release's engine
+(`once-ere/SUNDIALS_7_8_Rust_port_for_Linux@780b916`), whose pure-Rust
+glibc-translated math library (`sundials_libm`) is host-independent —
+which is what lets this build reproduce the Linux physics **byte for
+byte** on Apple Silicon: the six self-checking examples, the twelve
+collision scripts, twelve of the thirteen recorded videos and 57 of
+the 59 dynamic notebooks are byte-identical to the Linux evidence.
+The other two notebooks — the quantum pair — agree to the last printed
+digit, and the one re-recorded video (`rack_and_pinion`) diverges only
+in rounding noise, because those paths evaluate `sin`/`cos` through
+the host libm (Apple libm here, glibc there). See
+[PORT_MACOS_PROVENANCE.md](PORT_MACOS_PROVENANCE.md),
+[VERIFICATION_MACOS.md](VERIFICATION_MACOS.md),
+[PORT_7.8.0_PROVENANCE.md](PORT_7.8.0_PROVENANCE.md),
+[evidence/macos/](evidence/macos) and
 [evidence/port-7.8.0/](evidence/port-7.8.0).
 
 rustSolveIt itself is the refined and refactored export of
@@ -30,10 +44,15 @@ The repository is **self-contained**: an ordinary clone is all you need
 crates.io.
 
 ```bash
-git clone https://github.com/once-ere/rustSolveIt_Using_SUNDIALS_7_8_0.git
-cd rustSolveIt_Using_SUNDIALS_7_8_0/version-7.8.0
+git clone https://github.com/once-ere/rustSolveIt_macos-silicon_SUNDIALS_7_8_0.git
+cd rustSolveIt_macos-silicon_SUNDIALS_7_8_0
 cargo run                 # the notebook REPL (type HELP)
 ```
+
+You need Rust (`rustup` from <https://rustup.rs>; the default
+`aarch64-apple-darwin` toolchain) and the Xcode Command Line Tools for
+the linker (`xcode-select --install`). Apple Silicon has FMA natively,
+which the vendored engine's deterministic math library uses.
 
 This project is a standalone export of the simulator; its lineage,
 byte-identity manifest and full verification transcript are recorded in
@@ -48,9 +67,10 @@ rod as ONE rigid body, exact part-wise collisions conserving E, P and
 L through real solver events); the scene window gains a permanent
 Reset button (with `SCENE RESET` — bit-identical re-initialization,
 Start re-runs) and a live labeled conserved-quantities readout (E, P
-and L); 605 passed workspace-wide (40 physical_object lib +
-19 collision + 9 conservation + 109 posim + 92 quantum +
-233 special_functions + 11 vendored identities + 55 doctests).
+and L); **622 passed workspace-wide on macOS/Apple Silicon**
+(49 physical_object lib + 19 collision + 9 conservation +
+42 constrained/DAE + 112 posim + 92 quantum + 233 special_functions +
+11 vendored identities + 55 doctests).
 
 - `physical_object/` — library: `pub struct physical_object`, the
   unique union of the legacy `PointParticle`, `RigidBody` and

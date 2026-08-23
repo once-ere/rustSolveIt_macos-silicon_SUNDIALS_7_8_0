@@ -1,6 +1,9 @@
-# CLAUDE.md — rustSolveIt on pure-Rust SUNDIALS 7.8.0
+# CLAUDE.md — rustSolveIt on pure-Rust SUNDIALS 7.8.0 (macOS / Apple Silicon)
 
-Pure-Rust physics simulator. The **only** numerical-integration backend
+Pure-Rust physics simulator, the **macOS on Apple Silicon (arm64)**
+port of `once-ere/rustSolveIt_Using_SUNDIALS_7_8_0` (Linux). Platform
+port provenance: `PORT_MACOS_PROVENANCE.md`; per-suite verification:
+`VERIFICATION_MACOS.md`. The **only** numerical-integration backend
 is the vendored `sundials_rs/` workspace (pure-Rust **SUNDIALS 7.8.0**)
 — no exceptions. Treat `sundials_rs/` as a **read-only vendored
 library**: it is byte-identical to
@@ -24,14 +27,16 @@ including which donor sources were deliberately not carried over — is in
 ## Commands
 
 - Build: `cargo build --workspace --all-targets 2>&1 | tee /tmp/build.log`
-- Tests: `cargo test --workspace 2>&1 | tee /tmp/test.log` (605 expected)
+- Tests: `cargo test --workspace 2>&1 | tee /tmp/test.log` (622 expected)
 - Notebook: `cargo run` (type `HELP`); batch: `cargo run -p posim -- --script <f>`
 - Dynamic notebook (loads a file, opens its scene window, stays
   interactive): `cargo run -p posim --release -- --notebook
   dynamic_notebooks/<name>.posim` — see `dynamic_notebooks/README.md`
 - Scene window: type `SCENE CREATE` in the notebook (opens a browser
   page; `SCENE START/PAUSE/REVERSE/RESET`, arrows/drag/wheel in the
-  window). Headless runs: `POSIM_NO_BROWSER=1` suppresses `xdg-open`.
+  window). Headless runs: `POSIM_NO_BROWSER=1` suppresses the browser
+  opener (`open` on macOS; `cmd /C start` on Windows; `xdg-open`
+  elsewhere).
 - Self-checking physics examples:
   `cargo run -p physical_object --release --example
   {kepler_orbit|outer_solar_system|tumbling_body|charged_in_b_field|newtons_cradle|bouncing_ball_restitution}`
@@ -140,7 +145,7 @@ including which donor sources were deliberately not carried over — is in
    you need is absent from `sundials_rs/`, stop and say exactly which
    symbol is missing, naming the C original's file (`src/` or
    `include/` of the upstream **SUNDIALS 7.8.0** release, at
-   `/home/nsh/Developer/sundials-7.8.0/` — that reference tree is not
+   `/Users/nsh/Developer/sundials-7.8.0/` — that reference tree is not
    vendored here). Do not reimplement solver numerics locally. The same
    applies to a `None` from a 7.8.0 constructor or from
    `N_VGetArrayPointer`: turn it into a named `Err`, never an `unwrap`.
@@ -182,6 +187,24 @@ that will bite you:
   its exponent form differs from C's and breaks byte-identity with the
   reference outputs.
 
+## macOS platform notes
+
+- **The physics is byte-identical to the Linux evidence** because the
+  vendored engine's `sundials_libm` is host-independent. Two documented
+  exceptions pass through the **host libm** (Apple libm here, glibc on
+  Linux) and may differ in the last digit: the quantum crate
+  (`double_slit`/`tunneling` notebooks, pinned in
+  `evidence/macos/accepted-divergences-dynamic.diff`) and the GEAR/RACK
+  joint residual `g = sin(qθᵢ + pθⱼ)` in
+  `physical_object/src/constrain.rs` (which is why
+  `videos/rack_and_pinion.html` is a macOS recording; SHAs of both
+  recordings are pinned in `evidence/macos/`).
+- The macOS byte-identity gate is `bash tools/macos_verify_physics.sh`;
+  the GUI smoke test is `python3 tools/gui_smoke.py`. Divergences
+  beyond the pinned diffs fail the gate.
+- The upstream C reference tree lives at
+  `/Users/nsh/Developer/sundials-7.8.0/` on this machine.
+
 ## Workflow
 
 - **Make backups before modifying files** (copy into
@@ -191,9 +214,9 @@ that will bite you:
   output. ≤2 attempts per failing command, then switch strategy.
 - Commit after every coherent file group; keep
   `cargo build --workspace --all-targets` warning-free and
-  `cargo test --workspace` green at every commit (**605 tests**:
-  46 physical_object lib + 19 collision + 9 conservation +
-  16 constrained/DAE + 111 posim + 92 quantum + 233 special_functions +
+  `cargo test --workspace` green at every commit (**622 tests**:
+  49 physical_object lib + 19 collision + 9 conservation +
+  42 constrained/DAE + 112 posim + 92 quantum + 233 special_functions +
   11 vendored identities + 55 doctests).
 - New solver features need: a unit or conservation test with an
   **analytic** expectation (not a golden-output snapshot), a grammar

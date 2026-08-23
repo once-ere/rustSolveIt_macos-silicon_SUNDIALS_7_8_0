@@ -116,8 +116,9 @@ literals, the JSON protocol, the scene frame messages, the docs).
 
 The vendored engine is the pure-Rust translation of **SUNDIALS 7.8.0**
 (`once-ere/SUNDIALS_7_8_Rust_port_for_Linux@780b916`, byte-identical,
-2,929 files). Its API models C's opaque pointers directly, which fixes
-the shape of everything in `integrate.rs`.
+2,929 files; verified on macOS/Apple Silicon in this repository — see
+`VERIFICATION_MACOS.md`). Its API models C's opaque pointers directly,
+which fixes the shape of everything in `integrate.rs`.
 
 **Handle model.**
 
@@ -385,8 +386,10 @@ crate root (module/type namespace collision) — do not try.
   handle (SCENE CLOSE, quit) sets `shutdown`, clears outboxes, and all
   threads exit on their next poll tick (reader timeout 500 ms, accept
   poll 50 ms). `RESET` keeps the window open and re-syncs it.
-- **Browser opening** is best-effort `xdg-open`, suppressed by
-  `$POSIM_NO_BROWSER` (set in every headless test).
+- **Browser opening** is best-effort and platform-dispatched:
+  `open` on macOS (this port's platform), `cmd /C start` on Windows,
+  `xdg-open` elsewhere — suppressed by `$POSIM_NO_BROWSER` (set in
+  every headless test).
 
 ### 3.8 Collision subsystem (physical_object/src/collide.rs ↔ integrate.rs ↔ vm ↔ scene)
 

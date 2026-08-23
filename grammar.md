@@ -3507,6 +3507,9 @@ crates.io dependency. It is vendored byte-for-byte from
 `once-ere/SUNDIALS_7_8_Rust_port_for_Linux@780b916`; the upgrade from
 the 7.7.0 engine the predecessor repository used is recorded, with its
 evidence, in [`PORT_7.8.0_PROVENANCE.md`](PORT_7.8.0_PROVENANCE.md).
+This repository is the macOS / Apple Silicon port; the evidence that
+the same engine reproduces the Linux physics byte for byte on this
+platform is in [`VERIFICATION_MACOS.md`](VERIFICATION_MACOS.md).
 
 ### 11.1 Which solver runs which command
 

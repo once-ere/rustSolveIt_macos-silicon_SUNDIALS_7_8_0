@@ -98,8 +98,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 Then:
 
 ```bash
-git clone https://github.com/once-ere/rustSolveIt_Using_SUNDIALS_7_8_0.git
-cd rustSolveIt_Using_SUNDIALS_7_8_0/version-7.8.0
+git clone https://github.com/once-ere/rustSolveIt_macos-silicon_SUNDIALS_7_8_0.git
+cd rustSolveIt_macos-silicon_SUNDIALS_7_8_0
 cargo run
 ```
 

@@ -10,7 +10,7 @@ import subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
-ROOT = HERE.parents[1]          # version-7.8.0/
+ROOT = HERE.parents[1]          # the repository root
 
 def sh(*args):
     r = subprocess.run([sys.executable, *map(str, args)], cwd=ROOT)
@@ -24,8 +24,12 @@ for d, cat in SETS:
     for f in sorted((ROOT / d).glob("*.posim")):
         key = f"{cat}_{f.stem}"
         if key in HAND: continue
-        sh(HERE / "nbgen.py", f.relative_to(ROOT), key, cat,
-           f"version-7.8.0/{f.relative_to(ROOT)}", HERE / "specs" / f"{key}.json")
+        # Repo-root-relative POSIX path: this repository IS the workspace
+        # (no version-7.8.0/ nesting), so the pairs_with metadata carries
+        # the path exactly as a reader sees it after cloning.
+        rel = f.relative_to(ROOT).as_posix()
+        sh(HERE / "nbgen.py", rel, key, cat, rel,
+           HERE / "specs" / f"{key}.json")
 
 for spec in sorted((HERE / "specs").glob("*.json")):
     sh(HERE / "nbbuild.py", spec, ROOT / "notebooks")

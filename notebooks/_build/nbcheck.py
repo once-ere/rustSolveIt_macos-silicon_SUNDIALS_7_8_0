@@ -13,7 +13,8 @@
 import json, re, sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]   # the repository root
+ROOT = Path(__file__).resolve().parents[2]   # the repository root
+                                             # (…/notebooks/_build/nbcheck.py)
 
 # Phrases that would send a reader somewhere else. R2.
 CROSSREF = re.compile(

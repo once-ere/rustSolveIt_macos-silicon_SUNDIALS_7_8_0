@@ -38,8 +38,8 @@ Open a terminal and run these four commands. `$` is the shell prompt —
 do not type it.
 
 ```bash
-$ git clone https://github.com/once-ere/rustSolveIt_Using_SUNDIALS_7_8_0.git
-$ cd rustSolveIt_Using_SUNDIALS_7_8_0/version-7.8.0
+$ git clone https://github.com/once-ere/rustSolveIt_macos-silicon_SUNDIALS_7_8_0.git
+$ cd rustSolveIt_macos-silicon_SUNDIALS_7_8_0
 $ cargo build --release -p posim
 $ ls -l target/release/posim
 ```
@@ -71,7 +71,7 @@ To make that permanent, append that same `export` line to `~/.bashrc`
 
 ### 1.4 Start Jupyter and open a NEW notebook
 
-From the `version-7.8.0` directory:
+From the repository root:
 
 ```bash
 $ jupyter lab
@@ -330,7 +330,7 @@ def _find_posim():
                 return str(cand)
     raise SystemExit(
         "Could not find the posim binary.\n"
-        "Build it first, from the version-7.8.0 directory:\n"
+        "Build it first, from the repository root:\n"
         "    cargo build --release -p posim\n"
         "or set the POSIM_BIN environment variable to its full path."
     )

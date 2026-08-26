@@ -145,7 +145,7 @@ including which donor sources were deliberately not carried over — is in
    you need is absent from `sundials_rs/`, stop and say exactly which
    symbol is missing, naming the C original's file (`src/` or
    `include/` of the upstream **SUNDIALS 7.8.0** release, at
-   `/Users/nsh/Developer/sundials-7.8.0/` — that reference tree is not
+   `/Users/youruser/Developer/sundials-7.8.0/` — that reference tree is not
    vendored here). Do not reimplement solver numerics locally. The same
    applies to a `None` from a 7.8.0 constructor or from
    `N_VGetArrayPointer`: turn it into a named `Err`, never an `unwrap`.
@@ -203,7 +203,7 @@ that will bite you:
   the GUI smoke test is `python3 tools/gui_smoke.py`. Divergences
   beyond the pinned diffs fail the gate.
 - The upstream C reference tree lives at
-  `/Users/nsh/Developer/sundials-7.8.0/` on this machine.
+  `/Users/youruser/Developer/sundials-7.8.0/` on this machine.
 
 ## Workflow
 

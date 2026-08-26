@@ -70,6 +70,13 @@ Acceptance is byte-identical printed output against the upstream C examples,
   * **vs the upstream C rebuilt on the same machine:** 175 of 190 comparable
     identical; the 15 that differ decompose exactly into 8 libm + 7 sparse LU
     with **0 unaccounted for**.
+* Related: alongside the platform siblings
+  ([macOS](https://github.com/once-ere/SUNDIALS_7_8_Rust_port_for_AppleSilicon_macos),
+  [Windows 11](https://github.com/once-ere/SUNDIALS_7_8_Rust_port_for_Windows11)),
+  the same porting discipline and bit-identity methodology produced
+  [`rebound_rust`](https://github.com/once-ere/rebound_rust) — a pure-Rust
+  translation of the [REBOUND](https://github.com/hannorein/rebound) 5.1.1
+  N-body code, verified bit-for-bit against its MSVC-compiled C reference.
 
 ## Quick start
 

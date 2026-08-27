@@ -20,7 +20,7 @@
 //! ======================= ===============================================
 //!
 //! Adds Lense-Thirring effect due to rotating central body in the simulation.
-//! Assumes the source body is `particles[0]`
+//! Assumes the source body is particles[0]
 //!
 //! **Effect Parameters**
 //!

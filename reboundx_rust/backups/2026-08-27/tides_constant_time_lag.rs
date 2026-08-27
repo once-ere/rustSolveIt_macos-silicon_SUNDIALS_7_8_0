@@ -38,7 +38,7 @@
 //! ============================ =========== ==================================================================
 //! Field (C type)               Required    Description
 //! ============================ =========== ==================================================================
-//! `particles[i].r` (float)       Yes         Physical radius (required for contribution from tides raised on the body).
+//! particles[i].r (float)       Yes         Physical radius (required for contribution from tides raised on the body).
 //! tctl_k2 (float)              Yes         Potential Love number of degree 2.
 //! tctl_tau (float)             No          Constant time lag. If not set will default to 0 and give conservative tidal potential.
 //! OmegaMag (float)             No          Angular rotation frequency. If not set will default to 0.

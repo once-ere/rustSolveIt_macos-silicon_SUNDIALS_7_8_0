@@ -8,7 +8,7 @@
 //! serializers, in the same field order as the C descriptor tables.
 //!
 //! File format (identical to the C):
-//! - 64-byte header ("REBOUND Binary File. Version: <v>\0<githash>...").
+//! - 64-byte header ("REBOUND Binary File. Version: `<v>\0<githash>`...").
 //! - Sequence of fields: 16-byte `reb_binarydata_field` (two u64 LE:
 //!   size of name incl. NUL, size of data), the name bytes, the data.
 //! - `struct reb_particle` payloads use the 112-byte x86-64 memory
@@ -243,7 +243,7 @@ fn particles_to_raw(ps: &[reb_particle]) -> Vec<u8> {
 
 /// Emit the integrator state fields (C: the per-integrator
 /// `field_descriptor_list`s), with names prefixed
-/// "integrator.<name>.".
+/// `integrator.<name>.`.
 fn output_integrator_fields(buf: &mut Vec<u8>, r: &reb_simulation) {
     let p = format!("integrator.{}", r.integrator.name());
     let n = |field: &str| format!("{}.{}", p, field);
@@ -563,7 +563,7 @@ fn read_field_header<R: Read>(inf: &mut R) -> Option<reb_binarydata_field> {
     })
 }
 
-/// Apply one "integrator.<int>.<field>" data blob to the current
+/// Apply one `integrator.<int>.<field>` data blob to the current
 /// integrator state. Returns false if the field is unknown.
 fn input_integrator_field(r: &mut reb_simulation, field: &str, d: &[u8]) -> bool {
     let mut state = std::mem::replace(&mut r.integrator, reb_integrator_state::none);

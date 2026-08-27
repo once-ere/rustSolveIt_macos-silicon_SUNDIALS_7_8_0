@@ -47,7 +47,7 @@
 //! ============================ =========== ==================================================================
 //! Field (C type)               Required    Description
 //! ============================ =========== ==================================================================
-//! `particles[i].r` (float)       Yes         Physical radius (required for contribution from tides raised on the body).
+//! particles[i].r (float)       Yes         Physical radius (required for contribution from tides raised on the body).
 //! k2 (float)                   Yes         Potential Love number of degree 2.
 //! Omega (reb_vec3d)            Yes         Angular rotation frequency (Omega_x, Omega_y, Omega_z)
 //! I (float)                    No          Moment of inertia (for test particles, assumed to be the specific MoI I/m)

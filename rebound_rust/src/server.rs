@@ -95,7 +95,7 @@ pub struct reb_server_shared {
     /// Set by the server thread when a fresh snapshot is wanted
     /// (C: `data->need_copy`).
     pub need_copy: bool,
-    /// Keys received via /keyboard/<n>, applied by the sim thread.
+    /// Keys received via `/keyboard/<n>`, applied by the sim thread.
     pub key_queue: Vec<i32>,
     /// Base64-decoded screenshot received via POST /screenshot.
     pub screenshot: Vec<u8>,

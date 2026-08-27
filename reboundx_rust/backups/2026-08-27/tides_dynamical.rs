@@ -24,7 +24,7 @@
 //! period to `td_E_resid`.
 //! To isolate the effects of chaotic model evolution, one can set `dP_hat_crit` to disable
 //! dynamical tides whenever chaos is unlikely (see Vick et al. (2019)).
-//! Implementation is only applied to `particles[1]` in the simulation.
+//! Implementation is only applied to particles[1] in the simulation.
 //!
 //! **Effect Parameters**
 //!
@@ -39,8 +39,8 @@
 //! ============================ =========== ==================================================================
 //! Field (C type)               Required    Description
 //! ============================ =========== ==================================================================
-//! `particles[1].m` (float)       Yes         Mass
-//! `particles[1].r` (float)       Yes         Physical radius
+//! particles[1].m (float)       Yes         Mass
+//! particles[1].r (float)       Yes         Physical radius
 //! td_E_max (float)             No          Threshold mode energy for non-linear dissipation (default: 0.1 * E_bind)
 //! td_E_resid (float)           No          Residual mode energy after non-linear dissipation (default: 0.001 * E_bind)
 //! td_c_real (float)            No          Real component of mode (default: 0)

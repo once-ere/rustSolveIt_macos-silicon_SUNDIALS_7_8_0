@@ -47,7 +47,7 @@
 //! ============================ =========== ==================================================================
 //! Field (C type)               Required    Description
 //! ============================ =========== ==================================================================
-//! `particles[i].r` (float)       Yes         Physical radius of a body (Required for both versions).
+//! particles[i].r (float)       Yes         Physical radius of a body (Required for both versions).
 //! ye_flag (int)                Yes         0 sets full version of effect. 1 uses simple version with outward migration. -1 uses the simple version with inward migration (see examples and paper).
 //! ye_body_density (float)      Yes         Density of an object (Required for both versions)
 //! ye_rotation_period (float)   No          Rotation period of a spinning object (Required for full version)

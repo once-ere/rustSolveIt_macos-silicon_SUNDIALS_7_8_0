@@ -1,0 +1,301 @@
+   Compiling rebound_rs v5.1.1 (C:\work\rebound_rust)
+    Finished `release` profile [optimized] target(s) in 1.90s
+     Running unittests src\lib.rs (target\release\deps\rebound_rs-d482b65e144ef63c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\core_io.rs (target\release\deps\core_io-5481881c64d6d4a0.exe)
+
+running 67 tests
+test archive_header_reports_the_major_rebound_version ... ignored, suspected library defect: reb_version_major is parsed with a digit-prefix atoi that stops on the space after 'Version:', where C's atoi skips leading whitespace and returns 5
+test binary_diff_single_scalar_has_exact_stream_bytes ... ok
+test binary_process_warnings_reports_fatal_codes ... ok
+test binary_diff_ignores_walltime_for_the_return_value ... ok
+test binary_diff_detects_particle_changes ... ok
+test binary_field_header_sizes_are_exact ... ok
+test binary_diff_of_identical_buffers_is_empty ... ok
+test binary_header_layout ... ok
+test binary_field_order_matches_c_descriptor_list ... ok
+test binary_input_flags_unknown_field ... ok
+test archive_missing_file_returns_none ... ok
+test binary_particles_payload_layout ... ok
+test binary_roundtrip_preserves_integrator_state ... ok
+test binary_roundtrip_preserves_particle_names ... ok
+test binary_input_flags_version_mismatch ... ok
+test binary_trailer_is_end_field_plus_zero_blob ... ok
+test binary_roundtrip_is_bit_exact ... ok
+test exit_max_distance_reports_escape ... ok
+test exit_min_distance_reports_encounter ... ok
+test fmt_e_matches_c_printf ... ok
+test fmt_fixed_width_matches_c_printf ... ok
+test freq_analysis_argument_errors ... ok
+test heartbeat_stop_ends_the_integration_with_user_status ... ok
+test integrate_backwards_flips_the_timestep_sign ... ok
+test integrate_with_exact_finish_time_lands_on_tmax_and_restores_dt ... ok
+test integrate_without_exact_finish_time_overshoots_by_less_than_one_step ... ok
+test integrate_without_particles_exits_immediately ... ok
+test freq_analysis_is_bitwise_deterministic ... ok
+test mft_recovers_negative_frequency ... ok
+test fmft_is_more_accurate_than_mft_on_two_tones ... ok
+test mft_frequency_invariant_under_exact_amplitude_doubling ... ok
+test mft_single_tone_reconstruction_roundtrip ... ok
+test mft_recovers_single_tone ... ok
+test fmft2_recovers_two_tones ... ok
+test mft_phase_is_normalized_into_zero_two_pi ... ok
+test output_check_phase_known_values ... ok
+test particle_arithmetic_helpers_are_exact ... ok
+test particle_add_appends_and_flags_modification ... ok
+test particle_add_outside_the_box_is_refused ... ok
+test mft_two_tones_sorted_by_decreasing_amplitude ... ok
+test particle_cmp_detects_every_compared_member ... ok
+test particle_names_are_interned_and_looked_up ... ok
+test particle_remove_all_resets_the_counters ... ok
+test particle_remove_by_name ... ok
+test particle_remove_is_blocked_by_variational_particles ... ok
+test particle_remove_last_particle_empties_the_simulation ... ok
+test particle_remove_out_of_range_is_refused ... ok
+test particle_remove_shifts_the_tail_bit_exactly ... ok
+test particle_remove_updates_N_active ... ok
+test pre_and_post_timestep_modifications_run_once_per_step ... ok
+test rootbox_index_for_particle ... ok
+test step_clears_the_did_modify_particles_flag ... ok
+test set_integrator_dispatches_every_name ... ok
+test step_with_integrator_none_advances_time_exactly ... ok
+test steps_runs_the_heartbeat_once_per_step_plus_once ... ok
+test two_largest_particles_by_radius ... ok
+test update_acceleration_honours_the_gravity_selection ... ok
+test repeated_runs_are_bit_identical ... ok
+test archive_first_save_writes_a_full_binary ... ok
+test archive_blob_chain_offsets_are_consistent ... ok
+test archive_index_records_snapshot_times ... ok
+test archive_auto_step_snapshots_at_expected_steps ... ok
+test archive_from_buffer_matches_archive_from_file ... ok
+test whfast_conserves_energy_and_angular_momentum ... ok
+test archive_rejects_out_of_range_snapshots ... ok
+test archive_snapshots_reload_bit_exactly ... ok
+test archive_auto_interval_snapshots_at_expected_times ... ok
+
+test result: ok. 66 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\gravity_tree_collision.rs (target\release\deps\gravity_tree_collision-6586ee841f4c6fd9.exe)
+
+running 32 tests
+test hardsphere_minimum_collision_velocity_separates_resting_overlaps ... ok
+test collision_search_edge_cases_leave_the_rng_and_status_untouched ... ok
+test direct_collision_search_order_and_shuffle_are_exact ... ok
+test hardsphere_coefficient_of_restitution_scales_the_rebound ... ok
+test shear_ghostbox_offset_is_the_drift_modulo_the_box ... ok
+test default_resolver_halts_without_touching_the_particles ... ok
+test hardsphere_oblique_bounce_conserves_momentum_and_energy ... ok
+test line_search_counts_pairs_once_and_ignores_the_approach_test ... ok
+test merge_conserves_mass_momentum_and_volume_exactly ... ok
+test opening_angle_criterion_selects_the_tree_level ... ok
+test merge_renumbers_pending_collisions_after_each_removal ... ok
+test merge_energy_offset_preserves_the_total_energy_of_an_isolated_pair ... ok
+test opening_angle_error_grows_with_the_angle ... ok
+test shear_ghost_boxes_enable_collisions_across_the_radial_boundary ... ok
+test shear_ghostbox_at_t_zero_has_no_shift_but_full_shear_velocity ... ok
+test shear_ghostbox_offset_at_quarter_time_is_exact ... ok
+test hardsphere_head_on_equal_masses_exchanges_velocities_exactly ... ok
+test tree_and_direct_collision_searches_find_the_same_pairs ... ok
+test tree_collision_search_follows_the_octree_walk_order ... ok
+test tree_deep_recursion_arena_layout_is_exact ... ok
+test tree_gravity_data_center_of_mass_is_exact_for_unit_masses ... ok
+test tree_gravity_is_bit_reproducible ... ok
+test tree_gravity_over_shear_ghost_boxes_matches_direct_sum ... ok
+test periodic_ghostbox_is_an_integer_translation ... ok
+test tree_gravity_with_softening_matches_direct_sum ... ok
+test tree_is_deleted_after_a_gravity_evaluation ... ok
+test tree_multiple_root_boxes_index_and_centre_mapping ... ok
+test tree_root_monopole_matches_brute_force_center_of_mass ... ok
+test tree_single_particle_root_cell_is_the_root_box ... ok
+test tree_structural_invariants_hold_for_a_random_cloud ... ok
+test tree_two_particles_split_root_in_resident_first_order ... ok
+test tree_walk_visits_daughters_in_octant_order ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\integrators_adaptive.rs (target\release\deps\integrators_adaptive-62f6c36618b16c2a.exe)
+
+running 39 tests
+test bs_integrates_exponential_decay ... ok
+test bs_modified_midpoint_is_exact_for_a_constant_derivative ... ok
+test bs_harmonic_oscillator_accuracy_follows_the_tolerance ... ok
+test bs_rejects_an_oversized_step_and_reduces_dt ... ok
+test bs_min_dt_and_max_dt_clamp_the_proposed_step ... ok
+test bs_modified_midpoint_matches_the_hand_computed_two_substep_rule ... ok
+test bs_order_control_raises_the_order_as_the_tolerance_tightens ... ok
+test bs_integrates_a_time_dependent_right_hand_side ... ok
+test bs_is_bit_deterministic ... ok
+test bs_richardson_extrapolation_combines_the_two_lowest_substeps ... ok
+test bs_sequence_and_cost_tables_are_as_documented ... ok
+test bs_handles_a_high_eccentricity_orbit ... ok
+test bs_order_control_bookkeeping_is_consistent ... ok
+test bs_update_particles_round_trips_the_state_vector ... ok
+test bs_energy_drift_shrinks_with_tolerance ... ok
+test bs_agrees_with_ias15_on_a_two_body_problem ... ok
+test ias15_integrates_degree7_polynomial_acceleration_exactly ... ok
+test ias15_conserves_the_orbital_elements_of_a_hyperbolic_flyby ... ok
+test ias15_epsilon_zero_gives_a_fixed_timestep ... ok
+test ias15_min_dt_clamps_the_timestep ... ok
+test ias15_timescale_prs23_is_exact_for_circular_orbits ... ok
+test ias15_timescale_is_infinite_without_interactions ... ok
+test bs_conserves_energy_on_a_two_body_problem ... ok
+test ias15_integrates_backwards_in_time ... ok
+test ias15_radau_quadrature_is_exact_to_degree_13 ... ok
+test ias15_radau_quadrature_saturates_above_degree_14 ... ok
+test ias15_zero_and_one_particle_edge_cases ... ok
+test ias15_recovers_from_an_absurdly_large_initial_timestep ... ok
+test ias15_fixed_step_is_nearly_time_reversible ... ok
+test ias15_timestep_shrinks_towards_pericentre ... ok
+test ias15_agrees_with_whfast_on_a_two_body_problem ... ok
+test ias15_equilibrium_timestep_matches_prs23_formula ... ok
+test ias15_is_bit_deterministic ... ok
+test ias15_preserves_a_retrograde_inclination ... ok
+test ias15_predictor_corrector_converges_on_a_smooth_orbit ... ok
+test ias15_conserves_energy_and_angular_momentum ... ok
+test ias15_conserves_energy_at_high_eccentricity ... ok
+test ias15_all_adaptive_modes_conserve_energy ... ok
+test ias15_compensated_summation_beats_naive_accumulation ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests\integrators_hybrid.rs (target\release\deps\integrators_hybrid-79c359be514ed40c.exe)
+
+running 72 tests
+test test_mercurius_L_midpoint_is_exactly_one_half ... ok
+test test_janus_is_deterministic ... ok
+test test_eos_unsafe_mode_stays_within_the_schemes_own_truncation_error ... ok
+test test_eos_lf_converges_at_second_order ... ok
+test test_janus_recalculate_flag_resets_the_grid_from_the_floats ... ok
+test test_janus_to_int_of_to_double_loses_at_most_a_few_grid_units ... ok
+test test_janus_particles_live_exactly_on_the_integer_grid ... ok
+test test_mercurius_L_C4_C5_switch_on_later_than_mercury ... ok
+test test_mercurius_L_are_symmetric_and_monotone ... ok
+test test_eos_more_inner_substeps_improve_accuracy ... ok
+test test_mercurius_L_endpoints_are_exactly_zero_and_one ... ok
+test test_mercurius_L_infinity_matches_closed_form ... ok
+test test_eos_safe_mode_one_leaves_the_simulation_synchronized ... ok
+test test_janus_is_bitwise_time_reversible ... ok
+test test_eos_synchronize_is_idempotent ... ok
+test test_mercurius_dcrit_criterion1_average_velocity ... ok
+test test_mercurius_dcrit_criterion2_current_velocity ... ok
+test test_janus_higher_order_is_more_accurate ... ok
+test test_mercurius_dcrit_criterion3_hill_radius ... ok
+test test_mercurius_dcrit_criterion4_physical_radius ... ok
+test test_mercurius_dcrit_is_the_max_of_all_four_criteria ... ok
+test test_mercurius_dh_com_matches_simulation_com ... ok
+test test_mercurius_encounter_acceleration_full_pair_force_when_L_is_zero ... ok
+test test_mercurius_agrees_with_ias15_on_a_two_body_problem ... ok
+test test_mercurius_inertial_to_dh_and_back_roundtrip ... ok
+test test_mercurius_interaction_step_exact_value ... ok
+test test_mercurius_jump_step_exact_value ... ok
+test test_mercurius_encounter_acceleration_drops_pair_force_when_L_is_one ... ok
+test test_mercurius_single_particle_drifts_at_constant_velocity ... ok
+test test_janus_conserves_energy ... ok
+test test_mercurius_is_deterministic ... ok
+test test_mercurius_conserves_energy_for_two_planets ... ok
+test test_mercurius_handles_retrograde_orbit ... ok
+test test_trace_com_step_exact_value ... ok
+test test_eos_higher_order_schemes_are_more_accurate ... ok
+test test_mercurius_conserves_angular_momentum_for_two_planets ... ok
+test test_trace_inertial_to_dh_and_back_roundtrip ... ok
+test test_trace_interaction_step_skips_the_central_body_and_flagged_pairs ... ok
+test test_trace_jump_step_exact_value_and_pericentre_suppression ... ok
+test test_trace_kepler_acceleration_uses_only_flagged_pairs ... ok
+test test_trace_post_ts_check_detects_a_newly_close_pair ... ok
+test test_trace_full_ias15_peri_mode_matches_full_bs_peri_mode ... ok
+test test_trace_peri_switch_threshold_is_the_inverse_mean_motion ... ok
+test test_trace_post_ts_check_reports_no_new_encounter_when_state_is_unchanged ... ok
+test test_trace_pre_ts_check_finds_nothing_when_well_separated ... ok
+test test_trace_post_ts_check_restores_the_map_from_the_pre_check_backup ... ok
+test test_trace_is_deterministic ... ok
+test test_trace_peri_switch_none_never_fires ... ok
+test test_trace_pre_ts_check_honours_a_custom_switching_function ... ok
+test test_trace_pre_ts_check_pericentre_partial_bs_flags_everything ... ok
+test test_trace_pre_ts_check_pericentre_full_bs_returns_immediately ... ok
+test test_trace_pre_ts_check_flags_a_close_pair ... ok
+test test_trace_single_particle_drifts_at_constant_velocity ... ok
+test test_trace_pre_ts_check_with_peri_none_never_flags_a_pericentre ... ok
+test test_trace_switch_default_is_invariant_under_velocity_reversal ... ok
+test test_trace_conserves_angular_momentum_for_two_planets ... ok
+test test_trace_switch_default_is_symmetric_in_its_two_bodies ... ok
+test test_trace_switch_default_lookahead_over_half_a_timestep ... ok
+test test_trace_switch_default_scales_with_r_crit_hill ... ok
+test test_trace_switch_default_triggers_inside_the_hill_sphere ... ok
+test test_trace_switch_default_uses_only_the_physical_radius_for_the_star ... ok
+test test_trace_whfast_step_advances_a_circular_orbit_by_one_period ... ok
+test test_trace_whfast_step_is_reversible ... ok
+test test_trace_forced_encounter_branch_conserves_energy ... ok
+test test_trace_agrees_with_ias15_on_a_two_body_problem ... ok
+test test_trace_conserves_energy_for_two_planets ... ok
+test test_mercurius_handles_high_eccentricity_orbit ... ok
+test test_eos_is_deterministic ... ok
+test test_all_hybrid_integrators_agree_on_the_same_kepler_orbit ... ok
+test test_eos_conserves_angular_momentum ... ok
+test test_mercurius_forced_encounter_branch_still_conserves_energy ... ok
+test test_eos_every_splitting_scheme_conserves_energy ... ok
+
+test result: ok. 72 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\integrators_symplectic.rs (target\release\deps\integrators_symplectic-53171f18735fa44f.exe)
+
+running 51 tests
+test democraticheliocentric_positions_are_exactly_heliocentric ... ok
+test E_to_f_matches_the_conic_relation ... ok
+test barycentric_transform_round_trips ... ok
+test jacobi_transform_round_trips_with_test_particles ... ok
+test M_to_E_solves_keplers_equation ... ok
+test kepler_solver_handles_retrograde_orbits ... ok
+test jacobi_transform_round_trips_to_the_original_state ... ok
+test democraticheliocentric_transform_round_trips ... ok
+test jacobi_zeroth_coordinate_is_the_center_of_mass ... ok
+test jacobi_acceleration_transform_matches_the_position_transform ... FAILED
+test kepler_solver_flow_obeys_the_group_property ... ok
+test kepler_solver_full_period_returns_to_start ... ok
+test kepler_solver_conserves_energy_and_angular_momentum ... ok
+test kepler_solver_is_time_reversible ... ok
+test kepler_solver_matches_element_propagation_elliptic ... ok
+test jacobi_coordinates_are_offsets_from_the_inner_center_of_mass ... ok
+test kepler_solver_warns_once_about_oversized_timestep ... ok
+test mod2pi_maps_into_the_canonical_interval ... ok
+test stumpff_series_makes_circular_kepler_step_a_rotation ... FAILED
+test kepler_solver_matches_element_propagation_hyperbolic ... ok
+test saba_rejects_an_invalid_type ... ok
+test kepler_solver_zero_timestep_is_bitwise_identity ... ok
+test leapfrog_conserves_energy_and_momentum ... ok
+test whds_transform_round_trips ... ok
+test saba_high_order_beats_low_order ... ok
+test saba_two_body_reproduces_the_analytic_orbit ... ok
+test whfast_rejects_unsupported_configurations ... ok
+test whfast_all_coordinate_systems_conserve_energy ... FAILED
+test whfast_all_corrector_orders_conserve_energy ... FAILED
+test whfast_is_time_reversible ... FAILED
+test saba_is_bitwise_deterministic ... ok
+test whfast_single_particle_drifts_linearly ... FAILED
+test whfast_whds_two_body_reproduces_the_analytic_orbit ... ok
+test whfast_with_no_particles_exits_cleanly ... ok
+test whfast_keep_unsynchronized_continues_identically ... ok
+test eos_is_bitwise_deterministic ... ok
+test whfast_jacobi_two_body_reproduces_the_analytic_orbit ... ok
+test whfast_safe_mode_zero_agrees_with_safe_mode_one ... ok
+test whfast_conserves_energy_on_a_three_body_system ... FAILED
+test whfast_all_kernels_conserve_energy ... ok
+test whfast_conserves_energy_for_an_eccentric_two_body_orbit ... FAILED
+test whfast_coordinate_systems_agree_with_ias15 ... ok
+test whfast_and_ias15_agree_on_a_two_body_problem ... ok
+test whfast_and_saba_agree_with_ias15_on_a_three_body_problem ... ok
+test eos_inner_splittings_conserve_energy ... ok
+test whfast_correctors_change_the_trajectory_without_changing_the_orbit ... ok
+test whfast_second_corrector_conserves_energy ... ok
+test eos_all_outer_splittings_conserve_energy ... ok
+test whfast_is_bitwise_deterministic ... ok
+test saba_all_types_conserve_energy ... ok
+test kepler_solver_handles_rectilinear_hyperbolic_motion has been running for over 60 seconds
+error: test failed, to rerun pass `--test integrators_symplectic`
+
+Caused by:
+  process didn't exit successfully: `C:\work\rebound_rust\target\release\deps\integrators_symplectic-53171f18735fa44f.exe` (exit code: 0xffffffff)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.

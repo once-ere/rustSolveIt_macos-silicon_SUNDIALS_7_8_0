@@ -1,0 +1,18 @@
+# Standalone workspace: stops cargo's upward workspace discovery (a
+# stray Cargo.toml higher up the directory tree is not this project's).
+[workspace]
+
+[package]
+name = "rebound_rs"
+version = "5.1.1"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Pure-Rust translation of REBOUND 5.1.1 (hannorein/rebound @ dad5f978): an open-source multi-purpose N-body code. Zero unsafe, zero external dependencies."
+
+# No dependencies. The translation is std-only by design, mirroring the
+# rustSolveIt/sundials_rs porting rules: zero unsafe, zero crates.io
+# dependencies, zero warnings.
+[dependencies]
+
+[profile.release]
+opt-level = 3

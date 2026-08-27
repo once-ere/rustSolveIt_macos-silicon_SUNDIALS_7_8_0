@@ -1,0 +1,11 @@
+   Compiling rebound_rs v5.1.1 (C:\work\rebound_rust)
+warning: variable `G` should have a snake case name
+  --> examples\derivatives_test.rs:81:9
+   |
+81 |     let G = 1.0;
+   |         ^ help: convert the identifier to snake case: `g`
+   |
+   = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `rebound_rs` (example "derivatives_test") generated 1 warning
+    Finished `release` profile [optimized] target(s) in 0.23s

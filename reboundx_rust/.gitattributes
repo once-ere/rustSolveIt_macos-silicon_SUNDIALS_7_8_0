@@ -1,0 +1,6 @@
+# Byte-exactness is a verified property of this port: the reference
+# dumps in porttest/ are compared byte-for-byte against the output of
+# the MSVC-compiled C REBOUNDx. Git end-of-line conversion silently
+# breaks that, so it is off for everything. Same policy as the sibling
+# rustSolveIt repository, for the same reason.
+* -text

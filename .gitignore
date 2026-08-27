@@ -78,3 +78,13 @@ sundials_rs/target/
 
 # JupyterLab per-session checkpoints (notebooks/ is served live)
 .ipynb_checkpoints/
+
+# Upstream C reference trees for the rebound_rust / reboundx_rust
+# bit-identity verification (REBOUND 5.1.1 and REBOUNDx 5.1.0, GPL).
+# Reference-only, never committed — the same rule as the SUNDIALS C tree.
+# Recreate with:
+#   git clone https://github.com/hannorein/rebound.git rebound/rebound
+#   (cd rebound/rebound && git checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb)
+#   git clone https://github.com/dtamayo/reboundx.git reboundx
+/rebound/
+/reboundx/

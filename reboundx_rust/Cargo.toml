@@ -1,0 +1,19 @@
+# Standalone workspace: stops cargo's upward workspace discovery (a
+# stray Cargo.toml higher up the directory tree is not this project's).
+[workspace]
+
+[package]
+name = "reboundx_rs"
+version = "5.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Pure-Rust translation of REBOUNDx 5.1.0 (dtamayo/reboundx): a library for adding additional forces to the REBOUND N-body integration package. Zero unsafe, zero external dependencies."
+
+# The only dependency is the sibling pure-Rust REBOUND translation,
+# exactly as the C libreboundx links against librebound. Nothing from
+# crates.io: the translation is std-only by design.
+[dependencies]
+rebound_rs = { path = "../rebound_rust" }
+
+[profile.release]
+opt-level = 3

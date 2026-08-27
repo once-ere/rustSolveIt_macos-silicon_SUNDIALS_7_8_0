@@ -1,0 +1,467 @@
+    Checking rebound_rs v5.1.1 (C:\work\rebound_rust)
+src\tools.rs:105:11: error: manual `!Range::contains` implementation: help: use: `!(1.0e-12..1.).contains(&rsq)`
+src\tools.rs:128:14: error: the loop variable `i` is only used to index `particles`
+src\tools.rs:134:18: error: the loop variable `j` is only used to index `particles`
+src\tools.rs:421:1: error: this function has too many arguments (10/7)
+src\tools.rs:460:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\tools.rs:491:1: error: this function has too many arguments (9/7)
+src\tools.rs:508:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\tools.rs:731:1: error: this function has too many arguments (9/7)
+src\tools.rs:772:1: error: this function has too many arguments (9/7)
+src\tools.rs:784:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\tools.rs:1168:13: error: float has excessive precision
+src\tools.rs:1169:13: error: float has excessive precision
+src\tools.rs:1181:51: error: float has excessive precision
+src\tools.rs:1181:78: error: float has excessive precision
+src\tools.rs:1181:163: error: float has excessive precision
+src\tools.rs:1182:51: error: float has excessive precision
+src\tools.rs:1182:79: error: float has excessive precision
+src\tools.rs:1182:107: error: float has excessive precision
+src\tools.rs:1182:135: error: float has excessive precision
+src\tools.rs:1182:164: error: float has excessive precision
+src\tools.rs:1182:193: error: float has excessive precision
+src\tools.rs:1183:50: error: float has excessive precision
+src\tools.rs:1183:77: error: float has excessive precision
+src\tools.rs:1183:105: error: float has excessive precision
+src\tools.rs:1183:134: error: float has excessive precision
+src\tools.rs:1183:162: error: float has excessive precision
+src\tools.rs:1183:190: error: float has excessive precision
+src\tools.rs:1184:50: error: float has excessive precision
+src\tools.rs:1184:78: error: float has excessive precision
+src\tools.rs:1184:133: error: float has excessive precision
+src\tools.rs:1184:161: error: float has excessive precision
+src\tools.rs:1185:50: error: float has excessive precision
+src\tools.rs:1185:78: error: float has excessive precision
+src\tools.rs:1185:106: error: float has excessive precision
+src\tools.rs:1185:134: error: float has excessive precision
+src\tools.rs:1185:162: error: float has excessive precision
+src\tools.rs:1185:190: error: float has excessive precision
+src\tools.rs:1186:23: error: float has excessive precision
+src\tools.rs:1186:50: error: float has excessive precision
+src\tools.rs:1186:78: error: float has excessive precision
+src\tools.rs:1186:106: error: float has excessive precision
+src\tools.rs:1186:134: error: float has excessive precision
+src\tools.rs:1186:162: error: float has excessive precision
+src\tools.rs:1186:191: error: float has excessive precision
+src\tools.rs:1187:23: error: float has excessive precision
+src\tools.rs:1187:50: error: float has excessive precision
+src\tools.rs:1187:78: error: float has excessive precision
+src\tools.rs:1187:106: error: float has excessive precision
+src\tools.rs:1187:134: error: float has excessive precision
+src\tools.rs:1187:162: error: float has excessive precision
+src\tools.rs:1187:191: error: float has excessive precision
+src\tools.rs:1188:23: error: float has excessive precision
+src\tools.rs:1188:50: error: float has excessive precision
+src\tools.rs:1188:78: error: float has excessive precision
+src\tools.rs:1188:107: error: float has excessive precision
+src\tools.rs:1188:136: error: float has excessive precision
+src\tools.rs:1188:164: error: float has excessive precision
+src\tools.rs:1188:192: error: float has excessive precision
+src\tools.rs:1189:50: error: float has excessive precision
+src\tools.rs:1189:79: error: float has excessive precision
+src\tools.rs:1189:107: error: float has excessive precision
+src\tools.rs:1189:135: error: float has excessive precision
+src\tools.rs:1189:163: error: float has excessive precision
+src\tools.rs:1189:192: error: float has excessive precision
+src\tools.rs:1402:9: error: field assignment outside of initializer for an instance created with Default::default()
+src\tools.rs:1511:18: error: the loop variable `i` is only used to index `reb_particle_solarsystem`
+src\tools.rs:1520:18: error: the loop variable `i` is only used to index `reb_particle_solarsystem`
+src\boundary.rs:140:13: error: field assignment outside of initializer for an instance created with Default::default()
+src\tree.rs:83:44: error: manual implementation of `.is_multiple_of()`: help: replace with: `(o >> 0).is_multiple_of(2)`
+src\tree.rs:83:44: error: this operation has no effect: help: consider reducing it to: `o`
+src\tree.rs:84:44: error: manual implementation of `.is_multiple_of()`: help: replace with: `(o >> 1).is_multiple_of(2)`
+src\tree.rs:85:44: error: manual implementation of `.is_multiple_of()`: help: replace with: `(o >> 2).is_multiple_of(2)`
+src\collision.rs:289:9: error: this looks like you are swapping elements of `r.collisions` manually: help: try: `r.collisions.swap(i, new);`
+src\collision.rs:356:1: error: this function has too many arguments (8/7)
+src\collision.rs:426:1: error: this function has too many arguments (9/7)
+src\collision.rs:515:5: error: unneeded late initialization
+src\output.rs:178:9: error: manual implementation of an assign operation: help: replace it with: `Q.x += (p.vx - Aim1.x) * (p.vx - A.x)`
+src\output.rs:180:13: error: manual implementation of an assign operation: help: replace it with: `Q.y += (p.vy + 1.5 * r.OMEGA * p.x - Aim1.y) * (p.vy + 1.5 * r.OMEGA * p.x - A.y)`
+src\output.rs:183:13: error: manual implementation of an assign operation: help: replace it with: `Q.y += (p.vy - Aim1.y) * (p.vy - A.y)`
+src\output.rs:185:9: error: manual implementation of an assign operation: help: replace it with: `Q.z += (p.vz - Aim1.z) * (p.vz - A.z)`
+src\transformations.rs:337:14: error: the loop variable `i` is only used to index `particles`
+src\transformations.rs:437:14: error: the loop variable `i` is only used to index `particles`
+src\rotations.rs:294:14: error: this operation has no effect: help: consider reducing it to: `(j * 4)`
+src\rotations.rs:320:32: error: this operation has no effect: help: consider reducing it to: `(4 * 0)`
+src\rotations.rs:320:36: error: this operation will always return zero. This is likely not the intended outcome
+src\rotations.rs:320:53: error: this operation has no effect: help: consider reducing it to: `1`
+src\rotations.rs:320:57: error: this operation will always return zero. This is likely not the intended outcome
+src\rotations.rs:320:74: error: this operation has no effect: help: consider reducing it to: `2`
+src\rotations.rs:320:78: error: this operation will always return zero. This is likely not the intended outcome
+src\rotations.rs:320:10: error: this operation has no effect: help: consider reducing it to: `3`
+src\rotations.rs:320:14: error: this operation will always return zero. This is likely not the intended outcome
+src\rotations.rs:321:32: error: this operation has no effect: help: consider reducing it to: `(4 * 1)`
+src\rotations.rs:321:36: error: this operation has no effect: help: consider reducing it to: `4`
+src\rotations.rs:321:57: error: this operation has no effect: help: consider reducing it to: `4`
+src\rotations.rs:321:78: error: this operation has no effect: help: consider reducing it to: `4`
+src\rotations.rs:321:14: error: this operation has no effect: help: consider reducing it to: `4`
+src\rotations.rs:322:32: error: this operation has no effect: help: consider reducing it to: `(4 * 2)`
+src\integrator_leapfrog.rs:40:5: error: float has excessive precision
+src\integrator_leapfrog.rs:43:6: error: float has excessive precision
+src\integrator_ias15.rs:78:5: error: float has excessive precision
+src\integrator_ias15.rs:79:5: error: float has excessive precision
+src\integrator_ias15.rs:80:5: error: float has excessive precision
+src\integrator_ias15.rs:81:5: error: float has excessive precision
+src\integrator_ias15.rs:82:5: error: float has excessive precision
+src\integrator_ias15.rs:83:5: error: float has excessive precision
+src\integrator_ias15.rs:84:5: error: float has excessive precision
+src\integrator_ias15.rs:87:5: error: float has excessive precision
+src\integrator_ias15.rs:88:5: error: float has excessive precision
+src\integrator_ias15.rs:89:5: error: float has excessive precision
+src\integrator_ias15.rs:90:5: error: float has excessive precision
+src\integrator_ias15.rs:91:5: error: float has excessive precision
+src\integrator_ias15.rs:92:5: error: float has excessive precision
+src\integrator_ias15.rs:93:5: error: float has excessive precision
+src\integrator_ias15.rs:94:5: error: float has excessive precision
+src\integrator_ias15.rs:95:5: error: float has excessive precision
+src\integrator_ias15.rs:96:5: error: float has excessive precision
+src\integrator_ias15.rs:97:5: error: float has excessive precision
+src\integrator_ias15.rs:98:5: error: float has excessive precision
+src\integrator_ias15.rs:99:5: error: float has excessive precision
+src\integrator_ias15.rs:100:5: error: float has excessive precision
+src\integrator_ias15.rs:101:5: error: float has excessive precision
+src\integrator_ias15.rs:102:5: error: float has excessive precision
+src\integrator_ias15.rs:103:5: error: float has excessive precision
+src\integrator_ias15.rs:104:5: error: float has excessive precision
+src\integrator_ias15.rs:105:5: error: float has excessive precision
+src\integrator_ias15.rs:106:5: error: float has excessive precision
+src\integrator_ias15.rs:107:5: error: float has excessive precision
+src\integrator_ias15.rs:108:5: error: float has excessive precision
+src\integrator_ias15.rs:109:5: error: float has excessive precision
+src\integrator_ias15.rs:110:5: error: float has excessive precision
+src\integrator_ias15.rs:111:5: error: float has excessive precision
+src\integrator_ias15.rs:112:5: error: float has excessive precision
+src\integrator_ias15.rs:113:5: error: float has excessive precision
+src\integrator_ias15.rs:114:5: error: float has excessive precision
+src\integrator_ias15.rs:117:6: error: float has excessive precision
+src\integrator_ias15.rs:118:5: error: float has excessive precision
+src\integrator_ias15.rs:119:6: error: float has excessive precision
+src\integrator_ias15.rs:120:6: error: float has excessive precision
+src\integrator_ias15.rs:121:5: error: float has excessive precision
+src\integrator_ias15.rs:122:6: error: float has excessive precision
+src\integrator_ias15.rs:123:5: error: float has excessive precision
+src\integrator_ias15.rs:124:6: error: float has excessive precision
+src\integrator_ias15.rs:125:5: error: float has excessive precision
+src\integrator_ias15.rs:126:6: error: float has excessive precision
+src\integrator_ias15.rs:127:6: error: float has excessive precision
+src\integrator_ias15.rs:128:5: error: float has excessive precision
+src\integrator_ias15.rs:129:6: error: float has excessive precision
+src\integrator_ias15.rs:130:5: error: float has excessive precision
+src\integrator_ias15.rs:131:6: error: float has excessive precision
+src\integrator_ias15.rs:132:5: error: float has excessive precision
+src\integrator_ias15.rs:133:6: error: float has excessive precision
+src\integrator_ias15.rs:134:5: error: float has excessive precision
+src\integrator_ias15.rs:135:6: error: float has excessive precision
+src\integrator_ias15.rs:136:5: error: float has excessive precision
+src\integrator_ias15.rs:137:6: error: float has excessive precision
+src\integrator_ias15.rs:140:5: error: float has excessive precision
+src\integrator_ias15.rs:141:5: error: float has excessive precision
+src\integrator_ias15.rs:142:5: error: float has excessive precision
+src\integrator_ias15.rs:143:5: error: float has excessive precision
+src\integrator_ias15.rs:144:5: error: float has excessive precision
+src\integrator_ias15.rs:145:5: error: float has excessive precision
+src\integrator_ias15.rs:146:5: error: float has excessive precision
+src\integrator_ias15.rs:147:5: error: float has excessive precision
+src\integrator_ias15.rs:148:5: error: float has excessive precision
+src\integrator_ias15.rs:149:5: error: float has excessive precision
+src\integrator_ias15.rs:150:5: error: float has excessive precision
+src\integrator_ias15.rs:151:5: error: float has excessive precision
+src\integrator_ias15.rs:152:5: error: float has excessive precision
+src\integrator_ias15.rs:153:5: error: float has excessive precision
+src\integrator_ias15.rs:154:5: error: float has excessive precision
+src\integrator_ias15.rs:155:5: error: float has excessive precision
+src\integrator_ias15.rs:156:5: error: float has excessive precision
+src\integrator_ias15.rs:157:5: error: float has excessive precision
+src\integrator_ias15.rs:158:5: error: float has excessive precision
+src\integrator_ias15.rs:159:5: error: float has excessive precision
+src\integrator_ias15.rs:160:5: error: float has excessive precision
+src\integrator_ias15.rs:166:5: error: float has excessive precision
+src\integrator_ias15.rs:167:5: error: float has excessive precision
+src\integrator_ias15.rs:168:5: error: float has excessive precision
+src\integrator_ias15.rs:169:5: error: float has excessive precision
+src\integrator_ias15.rs:170:5: error: float has excessive precision
+src\integrator_ias15.rs:171:5: error: float has excessive precision
+src\integrator_ias15.rs:172:5: error: float has excessive precision
+src\integrator_ias15.rs:284:26: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:285:26: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:291:32: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:292:32: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:299:15: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:300:15: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:307:31: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:307:15: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:308:31: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:308:15: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:340:25: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:341:25: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:347:31: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:348:31: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:355:15: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:356:15: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:363:31: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:363:15: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:364:31: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:364:15: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:451:148: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:451:171: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:451:15: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:452:148: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:452:15: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:509:29: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:510:29: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:518:29: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:519:29: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:527:29: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:528:29: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:557:33: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:558:33: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:565:33: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:566:33: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:573:33: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:574:33: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:611:43: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:616:33: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:617:45: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:619:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:619:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:624:47: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:629:69: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:629:33: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:630:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:632:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:632:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:633:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:633:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:644:52: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:644:83: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:647:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:647:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:648:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:648:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:659:71: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:660:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:664:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:664:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:665:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:665:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:677:73: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:678:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:683:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:683:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:684:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:684:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:697:74: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:698:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:704:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:704:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:705:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:705:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:721:75: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:722:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:729:39: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:729:61: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:730:39: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:730:61: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:832:29: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:832:45: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:835:29: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:835:50: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:839:34: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:928:55: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:929:55: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_ias15.rs:937:55: error: this operation has no effect: help: consider reducing it to: `N3`
+src\integrator_ias15.rs:938:55: error: this operation will always return zero. This is likely not the intended outcome
+src\integrator_whfast.rs:78:41: error: float has excessive precision
+src\integrator_whfast.rs:79:41: error: float has excessive precision
+src\integrator_whfast.rs:82:41: error: float has excessive precision
+src\integrator_whfast.rs:85:42: error: float has excessive precision
+src\integrator_whfast.rs:87:42: error: float has excessive precision
+src\integrator_whfast.rs:90:42: error: float has excessive precision
+src\integrator_whfast.rs:92:42: error: float has excessive precision
+src\integrator_whfast.rs:94:42: error: float has excessive precision
+src\integrator_whfast.rs:96:42: error: float has excessive precision
+src\integrator_whfast.rs:151:9: error: manual implementation of an assign operation: help: replace it with: `z /= 4.`
+src\integrator_whfast.rs:169:9: error: manual implementation of an assign operation: help: replace it with: `z *= 4.`
+src\integrator_whfast.rs:184:9: error: manual implementation of an assign operation: help: replace it with: `z /= 4.`
+src\integrator_whfast.rs:203:9: error: manual implementation of an assign operation: help: replace it with: `cs[1] *= cs[0]`
+src\integrator_whfast.rs:321:22: error: the loop variable `i` is only used to index `prevX`
+src\integrator_whfast.rs:443:18: error: this multiplication by -1 can be written more succinctly: help: consider using: `-ri`
+src\integrator_whfast.rs:534:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:541:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:547:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:585:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:591:22: error: the loop variable `i` is only used to index `p_jh`
+src\integrator_whfast.rs:601:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:607:22: error: the loop variable `i` is used to index `p_jh`
+src\integrator_whfast.rs:614:22: error: the loop variable `i` is only used to index `p_jh`
+src\integrator_saba.rs:77:6: error: float has excessive precision
+src\integrator_saba.rs:77:50: error: float has excessive precision
+src\integrator_saba.rs:78:6: error: float has excessive precision
+src\integrator_saba.rs:78:50: error: float has excessive precision
+src\integrator_saba.rs:79:6: error: float has excessive precision
+src\integrator_saba.rs:79:51: error: float has excessive precision
+src\integrator_saba.rs:80:9: error: float has excessive precision
+src\integrator_saba.rs:81:6: error: float has excessive precision
+src\integrator_saba.rs:81:51: error: float has excessive precision
+src\integrator_saba.rs:82:9: error: float has excessive precision
+src\integrator_saba.rs:82:54: error: float has excessive precision
+src\integrator_saba.rs:83:6: error: float has excessive precision
+src\integrator_saba.rs:83:50: error: float has excessive precision
+src\integrator_saba.rs:84:9: error: float has excessive precision
+src\integrator_saba.rs:84:53: error: float has excessive precision
+src\integrator_saba.rs:85:6: error: float has excessive precision
+src\integrator_saba.rs:85:51: error: float has excessive precision
+src\integrator_saba.rs:86:9: error: float has excessive precision
+src\integrator_saba.rs:86:53: error: float has excessive precision
+src\integrator_saba.rs:87:10: error: float has excessive precision
+src\integrator_saba.rs:88:6: error: float has excessive precision
+src\integrator_saba.rs:88:51: error: float has excessive precision
+src\integrator_saba.rs:89:10: error: float has excessive precision
+src\integrator_saba.rs:89:54: error: float has excessive precision
+src\integrator_saba.rs:90:6: error: float has excessive precision
+src\integrator_saba.rs:90:51: error: float has excessive precision
+src\integrator_saba.rs:91:10: error: float has excessive precision
+src\integrator_saba.rs:91:56: error: float has excessive precision
+src\integrator_saba.rs:92:9: error: float has excessive precision
+src\integrator_saba.rs:93:6: error: float has excessive precision
+src\integrator_saba.rs:93:51: error: float has excessive precision
+src\integrator_saba.rs:94:10: error: float has excessive precision
+src\integrator_saba.rs:94:57: error: float has excessive precision
+src\integrator_saba.rs:95:9: error: float has excessive precision
+src\integrator_saba.rs:100:6: error: float has excessive precision
+src\integrator_saba.rs:100:50: error: float has excessive precision
+src\integrator_saba.rs:101:6: error: float has excessive precision
+src\integrator_saba.rs:101:50: error: float has excessive precision
+src\integrator_saba.rs:102:6: error: float has excessive precision
+src\integrator_saba.rs:102:50: error: float has excessive precision
+src\integrator_saba.rs:103:10: error: float has excessive precision
+src\integrator_saba.rs:103:54: error: float has excessive precision
+src\integrator_saba.rs:104:6: error: float has excessive precision
+src\integrator_saba.rs:104:49: error: float has excessive precision
+src\integrator_saba.rs:105:10: error: float has excessive precision
+src\integrator_saba.rs:105:54: error: float has excessive precision
+src\integrator_saba.rs:106:6: error: float has excessive precision
+src\integrator_saba.rs:106:51: error: float has excessive precision
+src\integrator_saba.rs:107:9: error: float has excessive precision
+src\integrator_saba.rs:107:54: error: float has excessive precision
+src\integrator_saba.rs:108:6: error: float has excessive precision
+src\integrator_saba.rs:108:51: error: float has excessive precision
+src\integrator_saba.rs:109:9: error: float has excessive precision
+src\integrator_saba.rs:110:6: error: float has excessive precision
+src\integrator_saba.rs:110:50: error: float has excessive precision
+src\integrator_saba.rs:111:10: error: float has excessive precision
+src\integrator_saba.rs:111:54: error: float has excessive precision
+src\integrator_saba.rs:112:6: error: float has excessive precision
+src\integrator_saba.rs:112:50: error: float has excessive precision
+src\integrator_saba.rs:113:10: error: float has excessive precision
+src\integrator_saba.rs:113:54: error: float has excessive precision
+src\integrator_saba.rs:114:9: error: float has excessive precision
+src\integrator_saba.rs:117:5: error: float has excessive precision
+src\integrator_saba.rs:118:5: error: float has excessive precision
+src\integrator_saba.rs:119:5: error: float has excessive precision
+src\integrator_saba.rs:120:5: error: float has excessive precision
+src\integrator_janus.rs:67:9: error: float has excessive precision
+src\integrator_janus.rs:68:9: error: float has excessive precision
+src\integrator_janus.rs:69:10: error: float has excessive precision
+src\integrator_janus.rs:77:9: error: float has excessive precision
+src\integrator_janus.rs:78:9: error: float has excessive precision
+src\integrator_janus.rs:79:10: error: float has excessive precision
+src\integrator_janus.rs:80:9: error: float has excessive precision
+src\integrator_janus.rs:81:9: error: float has excessive precision
+src\integrator_janus.rs:89:9: error: float has excessive precision
+src\integrator_janus.rs:90:10: error: float has excessive precision
+src\integrator_janus.rs:91:9: error: float has excessive precision
+src\integrator_janus.rs:92:10: error: float has excessive precision
+src\integrator_janus.rs:93:9: error: float has excessive precision
+src\integrator_janus.rs:94:9: error: float has excessive precision
+src\integrator_janus.rs:95:9: error: float has excessive precision
+src\integrator_janus.rs:96:10: error: float has excessive precision
+src\integrator_janus.rs:104:9: error: float has excessive precision
+src\integrator_janus.rs:105:9: error: float has excessive precision
+src\integrator_janus.rs:106:9: error: float has excessive precision
+src\integrator_janus.rs:107:10: error: float has excessive precision
+src\integrator_janus.rs:108:10: error: float has excessive precision
+src\integrator_janus.rs:109:9: error: float has excessive precision
+src\integrator_janus.rs:110:10: error: float has excessive precision
+src\integrator_janus.rs:111:9: error: float has excessive precision
+src\integrator_janus.rs:112:9: error: float has excessive precision
+src\integrator_janus.rs:113:9: error: float has excessive precision
+src\integrator_janus.rs:114:10: error: float has excessive precision
+src\integrator_janus.rs:115:9: error: float has excessive precision
+src\integrator_janus.rs:116:9: error: float has excessive precision
+src\integrator_janus.rs:117:10: error: float has excessive precision
+src\integrator_janus.rs:118:9: error: float has excessive precision
+src\integrator_janus.rs:119:10: error: float has excessive precision
+src\integrator_janus.rs:120:9: error: float has excessive precision
+src\integrator_janus.rs:126:16: error: manually reimplementing `div_ceil`: help: consider using `.div_ceil()`: `s.stages.div_ceil(2)`
+src\integrator_eos.rs:59:5: error: float has excessive precision
+src\integrator_eos.rs:60:5: error: float has excessive precision
+src\integrator_eos.rs:61:5: error: float has excessive precision
+src\integrator_eos.rs:62:6: error: float has excessive precision
+src\integrator_eos.rs:65:5: error: float has excessive precision
+src\integrator_eos.rs:66:5: error: float has excessive precision
+src\integrator_eos.rs:67:6: error: float has excessive precision
+src\integrator_eos.rs:68:5: error: float has excessive precision
+src\integrator_eos.rs:71:49: error: float has excessive precision
+src\integrator_eos.rs:72:48: error: float has excessive precision
+src\integrator_eos.rs:75:5: error: float has excessive precision
+src\integrator_eos.rs:80:5: error: float has excessive precision
+src\integrator_eos.rs:85:6: error: float has excessive precision
+src\integrator_eos.rs:86:6: error: float has excessive precision
+src\integrator_eos.rs:87:5: error: float has excessive precision
+src\integrator_eos.rs:88:6: error: float has excessive precision
+src\integrator_eos.rs:91:6: error: float has excessive precision
+src\integrator_eos.rs:94:5: error: float has excessive precision
+src\integrator_eos.rs:102:52: error: float has excessive precision
+src\integrator_eos.rs:103:52: error: float has excessive precision
+src\integrator_eos.rs:105:6: error: float has excessive precision
+src\integrator_eos.rs:106:5: error: float has excessive precision
+src\integrator_eos.rs:107:6: error: float has excessive precision
+src\integrator_eos.rs:109:6: error: float has excessive precision
+src\integrator_eos.rs:113:6: error: float has excessive precision
+src\integrator_mercurius.rs:190:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_mercurius.rs:208:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_mercurius.rs:233:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_mercurius.rs:339:13: error: variable appears on both sides of an assignment operation
+src\integrator_mercurius.rs:364:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_mercurius.rs:388:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_bs.rs:224:1: error: this function has too many arguments (9/7)
+src\integrator_bs.rs:242:14: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:263:14: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:274:18: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:299:22: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:316:14: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:415:11: error: writing `&mut Vec` instead of `&mut [_]` involves a new object where a slice will do: help: change this to: `&mut [reb_ode]`
+src\integrator_bs.rs:444:14: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:455:14: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:505:22: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:519:26: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:536:26: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:658:18: error: the loop variable `s` is only used to index `odes`
+src\integrator_bs.rs:710:20: error: this `else { if .. }` block can be collapsed
+src\integrator_trace.rs:200:5: error: unneeded late initialization
+src\integrator_trace.rs:309:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_trace.rs:327:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_trace.rs:353:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_trace.rs:608:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_trace.rs:645:14: error: the loop variable `i` is only used to index `particles`
+src\integrator_trace.rs:971:9: error: call to `std::mem::drop` with a value that does not implement `Drop`. Dropping such a type only extends its contained lifetimes
+src\integrator_trace.rs:1282:17: error: call to `std::mem::drop` with a value that does not implement `Drop`. Dropping such a type only extends its contained lifetimes
+src\derivatives.rs:1217:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\frequency_analysis.rs:266:22: error: the loop variable `j` is only used to index `B`
+src\frequency_analysis.rs:277:17: error: manual implementation of an assign operation: help: replace it with: `alpha[m * nfreq + k] *= alpha[m * nfreq + m]`
+src\frequency_analysis.rs:448:13: error: manual implementation of an assign operation: help: replace it with: `wr += wtemp * wpr - wi * wpi`
+src\frequency_analysis.rs:499:18: error: float has excessive precision
+src\frequency_analysis.rs:574:5: error: it looks like you're manually copying between slices
+src\binarydata.rs:194:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\binarydata.rs:297:45: error: casting to the same type is unnecessary (`i32` -> `i32`): help: try: `s.type_`
+src\binarydata.rs:1159:25: error: using `SeekFrom::Current` to start from current position: help: replace with: `inf.stream_position()`
+src\binarydata.rs:1343:5: error: this loop could be written as a `while let` loop
+src\binarydata.rs:1439:5: error: this loop could be written as a `while let` loop
+src\simulationarchive.rs:155:22: error: the loop variable `c` is used to index `readbuf`
+src\simulationarchive.rs:268:20: error: using `SeekFrom::Current` to start from current position: help: replace with: `inf.stream_position()`
+src\simulationarchive.rs:327:24: error: using `SeekFrom::Current` to start from current position: help: replace with: `inf.stream_position()`
+src\simulationarchive.rs:397:5: error: field assignment outside of initializer for an instance created with Default::default()
+src\simulationarchive.rs:516:9: error: this `if` statement can be collapsed
+src\simulationarchive.rs:523:9: error: this `if` statement can be collapsed
+error: could not compile `rebound_rs` (lib) due to 465 previous errors

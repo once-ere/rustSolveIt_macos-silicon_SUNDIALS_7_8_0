@@ -56,3 +56,10 @@ porttest/*.lib
 # captured a fragment of the build machine's PATH environment. The Rust
 # port zero-initialises and does not do this.
 porttest/*.bin
+
+# Notebook execution environment (macOS; created by `uv venv .venv` in
+# notebooks/ — see rebound_rust.md). Never committed.
+notebooks/.venv/
+
+# macOS shim object (rebuilt by one clang command; the .c IS tracked)
+porttest/macos_shim/*.o

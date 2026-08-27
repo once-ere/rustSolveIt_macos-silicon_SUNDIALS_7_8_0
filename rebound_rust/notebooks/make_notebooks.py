@@ -278,7 +278,7 @@ if os.path.exists(c):
     print("C    SHA-256:", sha(c))
     compare(c, rs)
 else:
-    print("(C reference dump not present; run porttest\\\\rebound_test.exe 400 to compare)")
+    print("(C reference dump not present; run the C harness: porttest/problem_test 400 (Windows: rebound_test.exe) to compare)")
 ''',
     "libm": '''c  = os.path.join(WORK, "libm_c.txt")
 rs = os.path.join(WORK, "libm_rust.txt")
@@ -342,7 +342,7 @@ if os.path.exists(c):
 }
 
 SERVER_RUN = '''import subprocess, time, urllib.request
-exe = os.path.join(CRATE, "target", "release", "examples", "server_test.exe")
+exe = os.path.join(CRATE, "target", "release", "examples", "server_test" + EXE)
 proc = subprocess.Popen([exe], cwd=WORK, stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT, text=True)
 time.sleep(2.0)
@@ -380,7 +380,8 @@ def build(name, spec):
     # notebook's own name for the one case where the example named in the
     # title never terminates on its own (shearing_sheet).
     runs = spec.get("runs") or name
-    exe_rel = os.path.join("..", "target", "release", "examples", runs + ".exe")
+    exe_rel = os.path.join("..", "target", "release", "examples",
+                           runs + (".exe" if os.name == "nt" else ""))
     cmdline = exe_rel + "".join(" " + a for a in spec["args"])
     cells = [
         md(f"# {spec['title']}\n\n{spec['desc']}\n\n"
@@ -401,6 +402,7 @@ def build(name, spec):
            f"```"),
         code(
             f'import os, subprocess\n'
+            f'EXE = ".exe" if os.name == "nt" else ""   # platform executable suffix\n'
             # Derived at run time from the notebook's own location so the
             # notebook works in any checkout, and carries no absolute path.
             f'NB_DIR  = os.getcwd()                       # <crate>/notebooks\n'
@@ -433,7 +435,7 @@ def build(name, spec):
     else:
         arglist = "".join(f', "{a}"' for a in spec["args"])
         cells.append(code(
-            f'exe = os.path.join(CRATE, "target", "release", "examples", EXAMPLE + ".exe")\n'
+            f'exe = os.path.join(CRATE, "target", "release", "examples", EXAMPLE + EXE)\n'
             f'res = subprocess.run([exe{arglist}], cwd=WORK, capture_output=True, text=True)\n'
             f'print(res.stdout)\n'
             f'if res.returncode != 0:\n'

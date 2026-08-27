@@ -12,6 +12,15 @@ you need is printed in full, so you never have to open another document.
 from the C language into the Rust language, and proved the rewrite produces
 *exactly* the same numbers — every bit of every number — as the originals.
 
+**Which edition this is.** This is the **macOS on Apple Silicon** edition of
+the document: every command is for the macOS Terminal, and every measured
+result in Part III was produced on the Apple-Silicon machine described in
+section 9, against the original C compiled with Apple's clang on that same
+machine. The port was first made and verified on Windows 11; where the
+Windows experience taught something worth keeping — a compiler quirk, a
+detective story — it is retold here and clearly labelled as the Windows
+story.
+
 ---
 
 ## Table of contents
@@ -36,7 +45,7 @@ from the C language into the Rust language, and proved the rewrite produces
 13. [File-by-file accounting: REBOUNDx](#13-file-by-file-accounting-reboundx)
 14. [Deviations from the C, and why each is safe](#14-deviations-from-the-c-and-why-each-is-safe)
 15. [The complete verification record](#15-the-complete-verification-record)
-16. [The one known difference: `pow`](#16-the-one-known-difference-pow)
+16. [The `pow` story: a Windows difference this platform does not have](#16-the-pow-story-a-windows-difference-this-platform-does-not-have)
 17. [Lint policy: why we waive some compiler suggestions](#17-lint-policy-why-we-waive-some-compiler-suggestions)
 18. [Known limitations](#18-known-limitations)
 19. [How to reproduce every result yourself](#19-how-to-reproduce-every-result-yourself)
@@ -145,68 +154,82 @@ then compare the files character by character.
 
 ## 4. What you need installed
 
-You need a Windows PC (64-bit Intel or AMD) and two free downloads.
+You need a Mac with an Apple Silicon processor (any M-series chip) and two
+free installs.
 
 > ### One thing to know before you read any command in this document
 >
-> Every command below says **`C:\work`**. That is a stand-in for *whatever
+> Every command below says **`~/work`**. That is a stand-in for *whatever
 > folder you put this project in* — it is not a real folder on your machine
-> and not one you have to create with that exact name.
+> and not one you have to create with that exact name. (`~` is the
+> terminal's shorthand for your home folder, such as `/Users/sam`.)
 >
-> So if you cloned everything into `C:\Users\Sam\Documents\astronomy`, then
-> wherever this document says
+> So if you cloned everything into `~/Documents/astronomy`, then wherever
+> this document says
 >
 > ```
-> cd C:\work\rebound_rust
+> cd ~/work/rebound_rust
 > ```
 >
 > you type
 >
 > ```
-> cd C:\Users\Sam\Documents\astronomy\rebound_rust
+> cd ~/Documents/astronomy/rebound_rust
 > ```
 >
-> Only the front part changes. Everything after `C:\work\` — the folder
-> names `rebound_rust`, `reboundx_rust`, `rebound\rebound\src`, `porttest`
+> Only the front part changes. Everything after `~/work/` — the folder
+> names `rebound_rust`, `reboundx_rust`, `rebound/rebound/src`, `porttest`
 > and so on — is real and must match exactly, because that is the layout
 > the code expects.
 >
+> In this repository, `~/work` is simply the repository root: cloning
+> `rustSolveIt_macos-silicon_SUNDIALS_7_8_0` gives you `rebound_rust/` and
+> `reboundx_rust/` side by side already, which is exactly the arrangement
+> every command below assumes.
+>
 > If you would rather not retype it every time, tell the terminal once:
 >
-> ```powershell
-> $work = "C:\Users\Sam\Documents\astronomy"
-> cd "$work\rebound_rust"
+> ```bash
+> work=~/Documents/astronomy
+> cd "$work/rebound_rust"
 > ```
 
-### 4a. Rust
+### 4a. The Xcode Command Line Tools
 
-Go to <https://rustup.rs> and download `rustup-init.exe`. Run it and accept the
-defaults (this installs the MSVC toolchain, which is what we want).
+These are Apple's free developer basics: the `clang` C compiler (needed only
+if you want to rebuild the C originals for Part III) and the linker that
+Rust uses on macOS. Open the Terminal app and type:
 
-Check it worked — open a terminal and type:
+```bash
+xcode-select --install
+```
+
+A dialog appears; click Install. If it says the tools are already installed,
+you are done. Check with:
+
+```bash
+clang --version
+```
+
+You should see something like `Apple clang version 21.0.0`.
+
+### 4b. Rust
+
+Go to <https://rustup.rs> and run the one-line installer it shows you
+(it begins `curl --proto '=https' ...`). Accept the defaults — on an
+Apple-Silicon Mac that installs the `aarch64-apple-darwin` toolchain, which
+is what we want.
+
+Check it worked — open a **new** terminal window and type:
 
 ```bash
 rustc --version
 ```
 
-You should see something like `rustc 1.91.1`.
+You should see something like `rustc 1.94.0`.
 
-### 4b. Microsoft Visual Studio Build Tools
-
-Needed because Rust uses Microsoft's linker on Windows.
-
-Go to <https://visualstudio.microsoft.com/downloads/>, scroll to "Tools for
-Visual Studio", download **Build Tools for Visual Studio**, run it, and tick
-**"Desktop development with C++"**.
-
-### 4c. (Only if you want to rebuild the C originals) GnuWin32 Make
-
-```bash
-winget install GnuWin32.Make
-```
-
-You do **not** need this just to use the Rust code. It is only for reproducing
-the verification in Part III.
+That is everything. There is no third install: macOS already ships `make`,
+`curl`, `shasum` and everything else Part III uses.
 
 ## 5. Five-minute quick start
 
@@ -215,7 +238,7 @@ Let us simulate a star with one planet.
 **Step 1 — make a new project.**
 
 ```bash
-cd C:\Users\youruser\Desktop
+cd ~/Desktop
 cargo new my_first_simulation
 cd my_first_simulation
 ```
@@ -234,10 +257,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rebound_rs = { path = "C:/work/rebound_rust" }
+rebound_rs = { path = "/Users/youruser/work/rebound_rust" }
 ```
 
-(Use forward slashes `/` even on Windows — that is what this file expects.)
+(Write the full path to wherever *your* `rebound_rust` folder is — `~` does
+not expand inside this file, so spell out `/Users/...`.)
 
 **Step 3 — write the simulation.**
 
@@ -564,13 +588,13 @@ Each effect's required parameters are documented as Rust doc comments at the
 top of its module, carried over from the C source. To read them:
 
 ```bash
-cd C:\work\reboundx_rust
+cd ~/work/reboundx_rust
 cargo doc --open
 ```
 
 ## 8. Every build command, in one place
 
-From `C:\work\rebound_rust`:
+From `~/work/rebound_rust`:
 
 ```bash
 cargo build --release
@@ -590,7 +614,7 @@ cargo build --release --example server_test
 cargo build --release --example addfmt_test
 ```
 
-From `C:\work\reboundx_rust`:
+From `~/work/reboundx_rust`:
 
 ```bash
 cargo build --release
@@ -619,35 +643,34 @@ both crates are `std`-only, so they build with no network connection.
 
 ## 9. The machine and the tools
 
-Everything below was done on one computer, with no Linux, no WSL2, no GCC and
-no Clang involved at any point.
+Everything below was done on one computer, with no Linux, no virtual
+machine, no GCC and no Microsoft compiler involved at any point.
 
 | Component | Value |
 |---|---|
-| Operating system | Windows 11 Pro for Workstations 10.0.26200, x86-64 |
-| C compiler | MSVC `cl` 19.51.36256 for x64 (Visual Studio 2026 Build Tools) |
-| Compiler environment script | `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat` |
-| make | GnuWin32 Make 3.81 |
-| vcpkg | `C:\Users\youruser\vcpkg\vcpkg.exe` |
-| Rust | `rustc 1.91.1 (ed61e7d7e 2025-11-07)`, `cargo 1.91.1`, target `x86_64-pc-windows-msvc` |
+| Machine | Apple **M5 Max**, 128 GB RAM, Apple Silicon (arm64) |
+| Operating system | macOS Tahoe 26 (26.6.1, build 25G76) |
+| C compiler | Apple clang 21.0.0 (clang-2100.1.1.101), from the Xcode Command Line Tools |
+| Archiver / linker | Apple `ar` and `ld`, from the same tools |
+| Rust | `rustc 1.94.0`, `cargo 1.94.0`, target `aarch64-apple-darwin` |
 | REBOUND source | github.com/hannorein/rebound, **5.1.1**, commit `dad5f97806ecbb408dcaff728851c64e67f9f6eb` |
 | REBOUNDx source | github.com/dtamayo/reboundx, **5.1.0** |
 
-### GLFW (for completeness)
+The port itself was first produced and verified on a Windows 11 machine
+(MSVC `cl` 19.51, rustc 1.91.1, `x86_64-pc-windows-msvc`); this edition's
+results supersede nothing from that record — they are the *same experiments
+re-run on this Mac*, against a C reference built with clang on this Mac.
 
-REBOUND's native 3-D viewer uses a library called GLFW on Linux and macOS. It
-was installed for future use:
+### The 3-D viewer (for completeness)
 
-```bash
-C:\Users\youruser\vcpkg\vcpkg.exe install glfw3:x64-windows
-```
-
-This gave glfw3 **3.5.1** (`C:\Users\youruser\vcpkg\installed\x64-windows\lib\glfw3dll.lib`).
-However, **REBOUND's own build system forces OpenGL off on Windows**
-(`src/Makefile.defs` line 21 prints "OpenGL not supported on Windows. Setting
-OPENGL=0"), so the C reference does not link GLFW, and visualisation is done
-through the built-in web server instead — which *is* ported. The vcpkg install
-is staged for any future work on the OpenGL path.
+REBOUND has a native OpenGL 3-D viewer (built on a library called GLFW),
+and unlike on Windows, REBOUND's build system does support it on macOS.
+The C **reference builds used for verification here exclude it anyway**
+(they are compiled without the OpenGL flag), for the same reason the
+Windows reference did: the viewer draws pictures and computes nothing, the
+port's browser-based web server is the visualisation path that *is*
+translated, and keeping the two reference builds identical in what they
+contain keeps the comparison honest.
 
 ## 10. Building the C originals (the reference)
 
@@ -657,87 +680,100 @@ compare against.
 ### 10a. REBOUND
 
 ```bash
-cd C:\work
-git clone https://github.com/hannorein/rebound.git rebound\rebound
-
-cd C:\work\rebound\rebound\examples\shearing_sheet
-cmd /c 'set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH% && "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && make'
+cd ~/work
+git clone https://github.com/hannorein/rebound.git rebound/rebound
+cd rebound/rebound
+git checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb
 ```
 
-> **Two Windows traps.**
-> 1. GnuWin32 must be added to `PATH` **before** `vcvars64.bat` runs, exactly
->    as written. Windows expands `%PATH%` when it *reads* the line, so doing it
->    the other way round silently erases what `vcvars64.bat` just set up, and
->    you get "cl is not recognized".
-> 2. Compile C **only** from PowerShell via `cmd /c '...'`. Git-Bash's
->    `cmd //c` can fail *silently*, leaving a stale `.exe` behind — so you
->    unknowingly test an old build. This cost us real debugging time.
-
-Each file compiles as:
+Compile all 31 C files and collect them into a static library (a `.a` file —
+a bundle of compiled code that other programs can link against):
 
 ```bash
-cl -c /DBUILDINGLIBREBOUND /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /Ox /fp:precise -DSERVER -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb /Fo:rebound.obj rebound.c
+cd ~/work/rebound/rebound/src
+clang -c -DBUILDINGLIBREBOUND -D_GNU_SOURCE -DSERVER \
+      -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb \
+      -O2 -ffp-contract=off *.c
+ar rcs librebound_static.a *.o
 ```
 
-`/Ox` optimises for speed; `/fp:precise` forbids the compiler from rearranging
-floating-point arithmetic, which is essential for a bit-exact comparison.
+Two of those flags decide whether a bit-exact comparison is even possible,
+so they are worth understanding:
 
-For linking test harnesses we also need a *static* library containing the
-internal (non-exported) functions:
-
-```bash
-cd C:\work\rebound\rebound\src
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && lib /nologo /OUT:librebound_static.lib *.obj'
-```
-
-One detail worth recording: on Windows, REBOUND vendors glibc's `rand_r`
-random-number generator directly in `rebound.c` (three rounds of
-`seed = seed*1103515245 + 12345`, `REB_RAND_MAX = 2147483647`). That is why
-random initial conditions are identical across platforms — and why our Rust
-reproduces them exactly.
+- `-O2` optimises for speed, in the same family as the `/Ox` the Windows
+  reference used.
+- `-ffp-contract=off` forbids the compiler from **fusing** a multiply and an
+  add (`a*b + c`) into one combined machine instruction. The fused form
+  rounds once instead of twice, so it produces a *slightly different* —
+  equally valid — answer. Apple-Silicon processors love this fusion and
+  clang applies it by default, but the Rust compiler never does it behind
+  your back, so the C must be told not to either. It is the clang
+  equivalent of the `/fp:precise` the Windows reference used.
 
 ### 10b. REBOUNDx
 
 ```bash
-cd C:\work\reboundx\src
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /c /I"..\..\rebound\rebound\src" /I"." /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DLIBREBOUNDX /Ox /fp:precise *.c'
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && lib /nologo /OUT:libreboundx.lib *.obj'
+cd ~/work
+git clone https://github.com/dtamayo/reboundx.git reboundx
+
+cd ~/work/reboundx/src
+clang -c -I../../rebound/rebound/src -I. -D_GNU_SOURCE -DLIBREBOUNDX \
+      -O2 -ffp-contract=off *.c
+ar rcs libreboundx.a *.o
 ```
 
-**Two files do not compile under MSVC**, and this is worth explaining because
-it is the only genuine portability problem we hit in either project.
+All 33 files compile, unmodified. That sentence is shorter than its Windows
+counterpart for a reason worth recording: two REBOUNDx files (`gr_full.c`
+and `interpolation.c`) use **C99 variable-length arrays** — arrays whose
+size is decided while the program runs — which Microsoft's C compiler has
+never supported, so the Windows reference build needed patched copies (kept
+in `reboundx_rust/porttest/msvc_shim/`, changing only where the memory
+comes from, never any arithmetic). Apple's clang supports variable-length
+arrays natively, so on macOS **no shim is needed and the upstream source
+compiles as-is**. The Rust port never had the problem on any platform:
+Rust's `Vec` is a growable array.
 
-`gr_full.c` and `interpolation.c` use **C99 variable-length arrays** — arrays
-whose size is decided while the program runs:
+### 10c. The macOS `rand_r` shim — the one thing this platform *does* need
 
-```c
-double a_const[N][3];      /* gr_full.c   */
-double u[n];               /* interpolation.c */
-```
+The Windows edition of this document recorded, almost in passing, that
+REBOUND vendors glibc's `rand_r` random-number generator directly in
+`rebound.c` — "that is why random initial conditions are identical across
+platforms". On macOS that sentence turns out to have a catch, and it cost
+us a morning, so here is the full story.
 
-Microsoft's C compiler has never supported these. GCC and Clang do.
+`rand_r` is the C library's simple repeatable random-number generator: give
+it the same starting **seed** and it hands back the same sequence of
+numbers forever. REBOUND uses it for random initial conditions (for
+example, scattering 1,482 ring particles in the shearing sheet from seed
+42). But "the C library" is a different program on every operating system.
+GNU/Linux's (called **glibc**) mixes three multiply-add rounds per number;
+Apple's mixes differently. Same seed, different stream.
 
-Our fix changes **only where the memory comes from** (the heap instead of the
-stack), never any arithmetic:
+REBOUND's authors knew this, which is exactly why `rebound.c` carries its
+own copy of the glibc algorithm — but that copy is guarded by
+`#ifdef _WIN32`: it is compiled **only on Windows**, because Windows has no
+`rand_r` at all. On macOS the guard is false, the C reference quietly calls
+Apple's `rand_r`, and the very first random number differs from the one
+every recorded reference run used. Our first shearing-sheet comparison
+placed **1,441** particles instead of 1,482 and disagreed from particle 1 —
+not because any physics differed, but because the random scattering did.
 
-```c
-double (*a_const)[3] = malloc((size_t)N*sizeof(*a_const));
-double* u = malloc((size_t)n*sizeof(double));
-```
-
-with matching `free()` calls so the lifetime matches the original. Same
-element type, same indices, same values, same order — the numbers are
-untouched. The patched copies live in
-`reboundx_rust/porttest/msvc_shim/` so that **the upstream source is never
-modified**, and their object files are then included in the library:
+The fix follows the same never-touch-upstream rule as the Windows VLA shim.
+`rebound_rust/porttest/macos_shim/rand_r_glibc.c` contains the identical
+glibc algorithm (byte for byte the same arithmetic as the `#ifdef _WIN32`
+block in `rebound.c`), compiled as its own object file:
 
 ```bash
-cd C:\work\reboundx_rust\porttest\msvc_shim
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /c /I"..\..\..\rebound\rebound\src" /I"..\..\..\reboundx\src" /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DLIBREBOUNDX /Ox /fp:precise gr_full.c interpolation.c'
+cd ~/work/rebound_rust/porttest
+clang -c -O2 -ffp-contract=off macos_shim/rand_r_glibc.c -o macos_shim/rand_r_glibc.o
 ```
 
-Note this affects the **C reference build only**. The Rust port has no such
-problem: Rust's `Vec` is a growable array and needs no shim.
+Linking that object into a harness makes the linker resolve REBOUND's
+`rand_r` calls there instead of in Apple's C library, so the C reference
+produces the same random stream as glibc-Linux and Windows — the stream the
+Rust port implements on every platform (which is why the Rust side needs no
+shim anywhere). With the shim linked, the shearing sheet places its 1,482
+particles and, as section 15.2 records, matches the Rust byte for byte.
 
 ## 11. How the translation was done
 
@@ -801,19 +837,23 @@ All 31 C translation units, and what happened to each. **29 Rust modules,
 | `integrator_mercurius.c` | `integrator_mercurius.rs` | Ported + verified (IAS15 encounter machinery, hooks) |
 | `integrator_bs.c` | `integrator_bs.rs` | Ported + verified (full `reb_ode` framework) |
 | `integrator_trace.c` | `integrator_trace.rs` | Ported + verified (reversible checks, BS/IAS15 encounter and pericentre paths) |
-| `integrator_whfast512.c` | `integrator_whfast512.rs` | **Windows-stub parity** — see below |
+| `integrator_whfast512.c` | `integrator_whfast512.rs` | **Stub parity on Windows and on Apple Silicon** — see below |
 | `binarydata.c` | `binarydata.rs` | Ported + verified (same byte format) |
 | `simulationarchive.c` | `simulationarchive.rs` | Ported + verified |
 | `server.c` | `server.rs` | Ported + verified (HTTP endpoints, base64, threading adapted) |
 | `fmemopen.c` | — | Not applicable: replaced by `std::io::Cursor` |
-| `display.c`, `glad.c` | — | Excluded: OpenGL (the Windows C build excludes it too) |
-| `communication_mpi.c` | — | Excluded: MPI (not in the Windows C build) |
+| `display.c`, `glad.c` | — | Excluded: OpenGL (both reference C builds exclude it; section 9) |
+| `communication_mpi.c` | — | Excluded: MPI (in neither reference C build) |
 
-**About WHFast512.** Its fast core is hand-written AVX-512 assembly compiled
-only by GCC/Clang. Under MSVC the C compiles the `#else // Not 64 bit,
-Windows + cl` branch, which contains only stubs that report "AVX512 is not
-supported on your platform." Our Rust reproduces exactly that reference
-behaviour — so on Windows, both integrate nothing, identically.
+**About WHFast512.** Its fast core is hand-written AVX-512 assembly —
+machine instructions that exist only on certain Intel/AMD (x86) processors.
+The C guards it with an architecture check, so the full path compiles only
+on 64-bit x86 with GCC or Clang. Under MSVC on Windows *and* under clang on
+Apple Silicon (which is arm64, not x86), the C compiles the same
+`#else // Not 64 bit, Windows + cl` branch, which contains only stubs that
+report "AVX512 is not supported on your platform." Our Rust reproduces
+exactly that reference behaviour — so on both platforms, C and Rust
+integrate nothing, identically.
 
 ## 13. File-by-file accounting: REBOUNDx
 
@@ -941,68 +981,79 @@ none changes a computed number.
     reference build used here. The Rust crate is built by `cargo` and has no
     such compile-time git step, so it writes 26 zero bytes. This is the
     **only** difference between a C-written and a Rust-written binary file
-    (26 bytes out of 6,392 in the round-trip test), it contains no simulation
-    data, and neither library reads it back for any purpose. Both libraries
-    read each other's files correctly regardless (verified, §15.9).
+    (26 bytes out of the 10,784 measured in the round-trip test on this
+    machine), it contains no simulation data, and neither library reads it
+    back for any purpose. Both libraries read each other's files correctly
+    regardless (verified, §15.9).
 
 ## 15. The complete verification record
 
-The method throughout: run the identical experiment in the MSVC-compiled C and
-in Rust, dump every value as raw IEEE-754 bits, and compare byte for byte. A
-run passes only if **every bit of every value** matches.
+The method throughout: run the identical experiment in the clang-compiled C
+and in Rust, dump every value as raw IEEE-754 bits, and compare byte for
+byte. A run passes only if **every bit of every value** matches. Every
+result in this section was measured on the Apple-Silicon machine of
+section 9, on 2026-08-27.
 
 ### The record at a glance
 
 | What was checked | Scale | Result |
 |---|---|---|
-| Maths library agreement (§15.0) | 200,000 samples × 21 functions | 20 of 21 exact; `pow` differs, §16 |
+| Maths library agreement (§15.0) | 200,000 samples × 21 functions | **21 of 21 exact — `pow` included** (§16) |
 | Integrator matrix (§15.1) | 63 configurations × 500 steps | **63/63 bit-identical** |
-| Shearing sheet (§15.2) | 1,482 particles, 400 steps, 102,533 collisions | **byte-identical, SHA-256 `75bdaab7…`** |
+| Shearing sheet (§15.2) | 1,482 particles, 400 steps | **byte-identical, SHA-256 `418c864d…`** |
 | Orbital derivatives (§15.3) | 65 functions | **130/130 outputs bit-identical** |
 | Frequency analysis (§15.4) | MFT, FMFT, FMFT2 | **bit-identical** |
-| Simulationarchive (§15.5) | C→Rust and Rust→C continuations | **bit-identical both ways** |
+| Simulationarchive (§15.5) | C→Rust and Rust→C continuations | **bit-identical, all six directions** |
 | Web server (§15.6) | blob served by Rust, read by C | **bit-identical state** |
 | `add_fmt` and datasets (§15.7) | all format tokens | **bit-identical** |
 | REBOUNDx `tides_spin` (§15.8) | 3 examples × short and long runs | **6/6 bit-identical** |
-| REBOUNDx binary files (§15.9) | round trip, both directions | **6,366 of 6,392 bytes identical; only the git-hash stamp differs** |
+| REBOUNDx binary files (§15.9) | round trip, both directions | **10,758 of 10,784 bytes identical; only the git-hash stamp differs** |
 | Automated test suite — REBOUND | 394 tests | **394 pass, 0 fail** |
 | Automated test suite — REBOUNDx | 137 tests | **137 pass, 0 fail** |
 | Compiler and clippy warnings (§17) | both crates, all targets | **zero** |
 
-The test suites found three genuine translation defects, which are written up
-honestly in §15.10 rather than quietly fixed.
+The test suites found three genuine translation defects during the original
+Windows port, which are written up honestly in §15.10 rather than quietly
+fixed.
 
 To run both suites yourself:
 
 ```bash
-cd C:\work\rebound_rust
+cd ~/work/rebound_rust
 cargo test --release
 ```
 
 ```bash
-cd C:\work\reboundx_rust
+cd ~/work/reboundx_rust
 cargo test --release
 ```
 
 ### 15.0 The foundation: which maths functions agree?
 
-Before anything else we established what the two languages' maths libraries do,
-using a differential harness of 200,000 samples per function:
+Before anything else we established what the two languages' maths libraries
+do, using a differential harness of 200,000 samples per function:
 
 ```bash
-cd C:\work\rebound_rust
+cd ~/work/rebound_rust
 cargo build --release --example libm_diff
 cd porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /Ox /fp:precise libm_diff.c /Fe:libm_diff.exe'
-.\libm_diff.exe
-..\target\release\examples\libm_diff.exe
+clang -O2 -ffp-contract=off libm_diff.c -lm -o libm_diff
+./libm_diff
+../target/release/examples/libm_diff
+cmp libm_c.txt libm_rust.txt && echo "bit-identical"
 ```
 
-**Result:** on `x86_64-pc-windows-msvc`, Rust and Microsoft's C library are
-**bit-identical** for `sin`, `cos`, `tan`, `atan2`, `sqrt`, `fmod`, `exp`,
-`log` and `cbrt`. **`pow` is the single divergent function** — see section 16.
+**Result:** on macOS/Apple Silicon, the C and the Rust are **bit-identical
+for every function tested — `pow` included**: `sin`, `cos`, `tan`, `atan2`,
+`sqrt`, `fmod`, `exp`, `log`, `cbrt` and `pow`, over all 200,000 samples
+each. The reason is simple: on macOS, both clang-compiled C *and* Rust
+resolve every one of these calls to Apple's system maths library, so there
+are not two implementations to disagree. (On Windows, where Rust ships its
+own `pow`, that one function differed from Microsoft's — the story section
+16 preserves.)
 
-This is what makes true bit-identity testing possible at all.
+This is what makes true bit-identity testing possible at all — and on this
+platform it holds with no exceptions.
 
 ### 15.1 The integrator matrix — 63 configurations
 
@@ -1010,34 +1061,38 @@ A fixed three-body problem (star of mass 1; planet of mass 10^-3 at x = 1.6
 with vy = 0.5; moon of mass 10^-7 at x = 1.7, vy = 0.6, z = 0.01, vz = 0.001),
 G = 1, dt = 0.01, 500 steps, final state dumped as raw bits.
 
-Build the C harness once:
+Build the C harness once (the shim object comes from section 10c):
 
 ```bash
-cd C:\work\rebound_rust\porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /I"..\..\rebound\rebound\src" /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /Ox /fp:precise integrators_test.c librebound.lib /Fe:integrators_test.exe'
+cd ~/work/rebound_rust/porttest
+clang -I../../rebound/rebound/src -D_GNU_SOURCE -O2 -ffp-contract=off \
+      integrators_test.c macos_shim/rand_r_glibc.o \
+      ../../rebound/rebound/src/librebound_static.a -lm -o integrators_test
 ```
 
 To check a single configuration, give the harness a configuration name, a
 leapfrog order (ignored by the others) and a step count, then compare:
 
-```powershell
-cd C:\work\rebound_rust\porttest
-.\integrators_test.exe whfast 2 500
-..\target\release\examples\integrators_test.exe whfast 2 500
-Compare-Object (Get-Content state_c_final.txt) (Get-Content state_rust_final.txt)
+```bash
+cd ~/work/rebound_rust/porttest
+./integrators_test whfast 2 500
+../target/release/examples/integrators_test whfast 2 500
+cmp state_c_final.txt state_rust_final.txt && echo identical
 ```
 
-`Compare-Object` printing nothing means that configuration matched.
+`cmp` staying silent (and `identical` printing) means that configuration
+matched.
 
-To check **all 63 in one go**, run the sweep script that ships in `porttest\`.
-It knows every configuration name, runs each one in both languages, compares
-the dumps and prints a tally:
+To check **all 63 in one go**, run the sweep script that ships in
+`porttest/`. It knows every configuration name, runs each one in both
+languages, compares the dumps and prints a tally:
 
-```powershell
-cd C:\work\rebound_rust\porttest
-powershell -ExecutionPolicy Bypass -File .\run_integrator_matrix.ps1 500
+```bash
+cd ~/work/rebound_rust/porttest
+bash run_integrator_matrix.sh 500
 ```
 
+(`run_integrator_matrix.ps1`, beside it, is the same sweep for Windows.)
 It takes a few minutes and ends with:
 
 ```
@@ -1045,9 +1100,13 @@ It takes a few minutes and ends with:
 ALL CONFIGURATIONS BIT-IDENTICAL
 ```
 
-**Result: 63 of 63 configurations bit-identical.**
+**Result: 63 of 63 configurations bit-identical** — and the sweep was run
+twice, before and after the `rand_r` shim of section 10c was introduced,
+with the same verdict both times (the matrix uses fixed starting
+conditions, so it never touches the random generator; that is exactly why
+the shim could not affect it).
 
-One thing to know before you run it: **every harness in `porttest\` writes
+One thing to know before you run it: **every harness in `porttest/` writes
 its results to the same two filenames**, `state_c_final.txt` and
 `state_rust_final.txt`. That is deliberate — it keeps the comparison
 command identical for every test — but it means each run overwrites the
@@ -1055,14 +1114,15 @@ last one's dumps, and the sweep script above consumes them. If you run the
 sweep and then try to check the shearing sheet, you will find the shearing
 sheet's files gone. Just re-run that pair to recreate them:
 
-```powershell
-cd C:\work\rebound_rust\porttest
-.\rebound_test.exe 400
-..\target\release\examples\shearing_sheet_test.exe 400
+```bash
+cd ~/work/rebound_rust/porttest
+./problem_test 400
+../target/release/examples/shearing_sheet_test 400
 ```
 
-(`rebound_test.exe` is the compiled `problem_test.c`, the C side of the
-shearing-sheet test.)
+(`problem_test` is the compiled `problem_test.c`, the C side of the
+shearing-sheet test; the Windows edition named the same binary
+`rebound_test.exe`.)
 
 | Integrator | Configurations tested (all identical) |
 |---|---|
@@ -1085,48 +1145,59 @@ adding the `extras` field needed by REBOUNDx. It has always been 63/63.
 The stock Saturn's-rings example: SEI integrator, octree gravity, tree
 collision search, shear-periodic boundary, hard-sphere collisions with the
 Bridges bounce law, and `rand_r` initial conditions. Seed 42, **1,482
-particles**, 400 steps, **102,533 collisions**.
+particles**, 400 steps, **102,478 collisions** as measured here (the
+Windows run counted 102,533 — same setup, that platform's maths library,
+hence that platform's equally valid trajectory).
 
 ```bash
-cd C:\work\rebound_rust\porttest
-.\rebound_test.exe 400
-..\target\release\examples\shearing_sheet_test.exe 400
-```
-
-```powershell
-Get-FileHash state_c_final.txt    -Algorithm SHA256
-Get-FileHash state_rust_final.txt -Algorithm SHA256
+cd ~/work/rebound_rust/porttest
+./problem_test 400
+../target/release/examples/shearing_sheet_test 400
+shasum -a 256 state_c_final.txt state_rust_final.txt
 ```
 
 **Result: byte-identical, matching SHA-256**
 
 ```
-75BDAAB7109F125192F56AEB0CCDCAC554AF88A165FE11075EC5A871178521F0
+418c864dd1a610cbe8ea6d81ecafa1e4ce6d36837494177d9875ee820ef0766f
 ```
 
-Timing on this machine: C 2.2 s, Rust 1.7 s.
+(The Windows edition's matching pair hashed to `75bdaab7…` — a *different*
+number than this one, and that is expected: `exp` and `log` inside the
+bounce law come from each platform's own maths library, so the two
+platforms' trajectories differ from each other while C and Rust agree
+exactly *within* each platform. The pass condition is, and always was, the
+C-vs-Rust match on the same machine.)
 
-This test did not pass on the first attempt. 330 particles had drifted, and the
-cause turned out to be `pow` — the one library function where Rust and
-Microsoft's C disagree. The investigation is worth summarising, because it is
-the clearest illustration of how a 1-ULP difference becomes a visible one.
+This test earned its keep on both platforms, by failing in an instructive
+way on each — two different detective stories with the same moral, that one
+different bit is enough to fork a chaotic run.
 
-The two runs stayed identical for 77 steps and separated at step 78, in the
-collision between particles 390 and 1,456. The Bridges coefficient-of-restitution
-law computes `0.32 * pow(v, -0.234)`. At that one impact speed Rust's `pow` and
-Microsoft's differed in the last bit — about one part in 10^16. That changed the
-bounce by one bit, which changed where both particles were on the next step,
-which changed which tree cells they landed in, which changed the *set* of
-collisions found, and from there the two runs diverged completely.
+**The Windows story: `pow`.** On the original Windows port, the first
+attempt drifted in 330 particles. The runs stayed identical for 77 steps
+and separated at step 78, in one collision: the Bridges
+coefficient-of-restitution law computes `0.32 * pow(v, -0.234)`, and at
+that one impact speed Rust's own `pow` and Microsoft's differed in the last
+bit — one part in 10^16. That changed the bounce by one bit, which changed
+which tree cells the particles landed in, which changed the *set* of
+collisions found, and the runs diverged completely. The fix changed no
+physics: rewriting the identical formula as `exp(-0.234 * log(v))` on
+**both** sides removed the one divergent function, and the whole run became
+bit-identical. Section 16 tells that story in full.
 
-The fix was not to change any physics. Rewriting the identical formula as
-`exp(-0.234 * log(v))` on **both** sides — C and Rust — removes the only
-divergent function from the calculation, and the entire run becomes bit-identical.
-`exp` and `log` agree exactly on this platform; only `pow` does not. This is
-covered in full in section 16.
+**The macOS story: `rand_r`.** On this machine the first attempt failed
+*before the physics even started*: the C placed **1,441** particles where
+every recorded run places 1,482, because the C reference was silently using
+Apple's `rand_r` instead of the glibc algorithm REBOUND vendors on Windows
+(the `#ifdef _WIN32` guard — section 10c has the whole story). Linking the
+one-file `rand_r` shim restored the reference stream, and the 400-step run
+matched byte for byte on the first try after it. Note what did *not* need
+touching on macOS: the `exp/log` form of the bounce law kept working
+unchanged, because on this platform every maths function — `pow`
+included — is bit-identical between C and Rust (§15.0).
 
-Two Windows-specific traps also cost time here and are worth knowing: the C
-example seeds its generator from the clock and process id (pinned to seed 42 for
+Two traps from the Windows record still worth knowing: the stock C example
+seeds its generator from the clock and process id (pinned to seed 42 for
 the comparison), and the stock example never terminates, which is why the
 comparison uses the `_test` variants on both sides.
 
@@ -1150,12 +1221,17 @@ saving a snapshot after each 100. The *other* implementation loads snapshot 1
 writer's 300-step state **bit-exactly**.
 
 ```bash
-cd C:\work\rebound_rust\porttest
-.\archive_test.exe whfast-usafe write
-..\target\release\examples\archive_test.exe whfast-usafe continue
-..\target\release\examples\archive_test.exe whfast-usafe write
-.\archive_test.exe whfast-usafe continue
+cd ~/work/rebound_rust/porttest
+./archive_test whfast-usafe write
+../target/release/examples/archive_test whfast-usafe continue
+../target/release/examples/archive_test whfast-usafe write
+./archive_test whfast-usafe continue
 ```
+
+After each `continue`, compare the continuer's dump against the writer's:
+`cmp archive_state_c.txt archive_state_rust.txt` staying silent is the
+pass. (The writer-state dumps of the two languages also match each other —
+that is the sixth direction in the tally.)
 
 **Result: identical in all four directions**, for `whfast-usafe` (which
 round-trips unsynchronised Jacobi coordinates) and `ias15` (which round-trips
@@ -1165,7 +1241,7 @@ builds.
 
 #### Why the `.bin` files are not committed
 
-Run the commands above and `porttest\` fills with `archive_c_*.bin` and
+Run the commands above and `porttest/` fills with `archive_c_*.bin` and
 `archive_rust_*.bin`. Those files are **not** kept in this repository, and the
 reason is worth knowing, because it is a real difference between the two
 languages that the rest of this document does not otherwise show.
@@ -1204,13 +1280,14 @@ The Rust example pauses a 100-step simulation and serves it over HTTP; the
 blob is then loaded by the C build.
 
 ```bash
-cd C:\work\rebound_rust\porttest
+cd ~/work/rebound_rust/porttest
 # in one terminal:
-..\target\release\examples\server_test.exe
+../target/release/examples/server_test
 # in another:
-curl.exe -s http://localhost:12873/simulation --output served.bin
-curl.exe -s http://localhost:12873/keyboard/81
-.\archive_test.exe whfast load served.bin
+curl -s http://localhost:12873/simulation --output served.bin
+curl -s http://localhost:12873/keyboard/81
+./archive_test whfast load served.bin
+cmp archive_state_c.txt server_state_rust.txt && echo identical
 ```
 
 **Result: the C build loads the Rust-served blob to the bit-identical state**
@@ -1231,16 +1308,15 @@ forces, both a fixed-step and an **adaptive** integrator, the rotation into the
 invariable plane, and changing a parameter mid-run.
 
 ```bash
-cd C:\work\reboundx_rust\porttest
-.\tides_spin_pseudo_c.exe 62.83185307179586     2>$null
-..\target\release\examples\tides_spin_pseudo.exe 62.83185307179586
+cd ~/work/reboundx_rust/porttest
+./tides_spin_pseudo_c 62.83185307179586 2>/dev/null
+../target/release/examples/tides_spin_pseudo 62.83185307179586
+cmp state_pseudo_c.txt state_pseudo_rust.txt && echo identical
 ```
 
-then in PowerShell:
-
-```powershell
-Compare-Object (Get-Content state_pseudo_c.txt) (Get-Content state_pseudo_rust.txt)
-```
+(The `2>/dev/null` matters: REBOUNDx prints a velocity-dependent-force
+warning on *every* timestep, and the long runs would otherwise write
+hundreds of megabytes of repeated warning text.)
 
 **Result: bit-identical in all six runs.**
 
@@ -1260,11 +1336,11 @@ step size, and those choices depend on the REBOUNDx forces, matching bit for bit
 at t = 100,000 means both programs took **the identical sequence of thousands of
 adaptive steps** — not merely that they arrived at the same place.
 
-Every command needed to build the C reference — including the MSVC portability
-shim — is given in full in section 10 and section 19 of this document. (The same
-three tests are also written up on their own, with a longer narrative, in
-`reboundx_port_test.md`; you do not need that file, because everything required
-to reproduce the result is here.)
+Every command needed to build the C reference — including the macOS
+`rand_r` shim — is given in full in section 10 and section 19 of this
+document. (The same three tests are also written up on their own, with a
+longer narrative, in `reboundx_port_test.md`; you do not need that file,
+because everything required to reproduce the result is here.)
 
 ### 15.9 REBOUNDx binary files: C writes, Rust reads, and the reverse
 
@@ -1280,23 +1356,24 @@ two forces (`gr_potential`, `central_force`), two operators (`modify_mass`,
 parameters of every supported type — `double`, `int` (including a negative one),
 `uint32`, `vec3d`, `string`, and a pointer to a force.
 
-```powershell
-cd C:\work\reboundx_rust\porttest
-..\target\release\examples\rebx_binary_roundtrip.exe          # Rust writes rebx_binary_roundtrip.bin
-.\rebx_binary_roundtrip_c.exe rebx_c_reference.bin            # C writes rebx_c_reference.bin
+```bash
+cd ~/work/reboundx_rust/porttest
+../target/release/examples/rebx_binary_roundtrip     # Rust writes rebx_binary_roundtrip.bin
+./rebx_binary_roundtrip_c rebx_c_reference.bin       # C writes rebx_c_reference.bin
 ```
 
-Compare the two files byte by byte:
+Compare the two files byte by byte (`cmp -l` lists every differing byte,
+one per line, so counting its lines counts the differences):
 
-```powershell
-$a=[IO.File]::ReadAllBytes("rebx_binary_roundtrip.bin")
-$b=[IO.File]::ReadAllBytes("rebx_c_reference.bin")
-"rust=$($a.Length)  c=$($b.Length)"
-$d=0; for($i=0;$i -lt $a.Length;$i++){ if($a[$i] -ne $b[$i]){ $d++ } }
-"differing bytes: $d"
+```bash
+ls -l rebx_binary_roundtrip.bin rebx_c_reference.bin
+cmp -l rebx_binary_roundtrip.bin rebx_c_reference.bin | wc -l
 ```
 
-**Result: both files are 6,392 bytes, and 6,366 of those bytes are identical.**
+**Result: both files are 10,784 bytes, and 10,758 of those bytes are
+identical — 26 differ.** (The Windows edition measured 6,392-byte files
+from an earlier revision of the harness configuration; the 26-byte
+difference, and its cause, were exactly the same there.)
 
 The 26 bytes that differ are offsets 37–62 — a single field in the file header,
 and it contains no simulation data at all. It is the *git hash*: a stamp
@@ -1310,17 +1387,17 @@ positions, velocities, parameters, names, types and orderings — matches.**
 Identical bytes are the strong result, but the practical question is whether each
 library can *read* what the other wrote. Both directions were tested:
 
-```powershell
+```bash
 # Rust reads the file the C wrote, then re-serializes it
-..\target\release\examples\rebx_binary_roundtrip.exe rebx_c_reference.bin
+../target/release/examples/rebx_binary_roundtrip rebx_c_reference.bin
 
 # C reads the file Rust wrote, and prints everything it recovered
-.\rebx_binary_read_c.exe rebx_binary_roundtrip.bin
+./rebx_binary_read_c rebx_binary_roundtrip.bin
 ```
 
 | Direction | Result |
 |---|---|
-| Rust reads the C's file | **25 / 25 checks passed**, and re-serializing reproduces all 6,392 bytes |
+| Rust reads the C's file | **25 / 25 checks passed**, and re-serializing reproduces all 10,784 bytes |
 | C reads the Rust's file | all 28 lines of recovered state **identical** to the C reading its own file |
 
 That last row is worth stating plainly: the C library was asked to read the
@@ -1332,13 +1409,13 @@ its own file. The two dumps are identical line for line — including raw
 
 To reproduce that comparison:
 
-```powershell
-.\rebx_binary_read_c.exe rebx_binary_roundtrip.bin 2>$null | Out-File -Encoding ascii readback_from_rust.txt
-.\rebx_binary_read_c.exe rebx_c_reference.bin      2>$null | Out-File -Encoding ascii readback_from_c.txt
-Compare-Object (Get-Content readback_from_rust.txt) (Get-Content readback_from_c.txt)
+```bash
+./rebx_binary_read_c rebx_binary_roundtrip.bin 2>/dev/null > readback_from_rust.txt
+./rebx_binary_read_c rebx_c_reference.bin      2>/dev/null > readback_from_c.txt
+cmp readback_from_rust.txt readback_from_c.txt && echo identical
 ```
 
-`Compare-Object` printing nothing means the files agree.
+`cmp` staying silent (and `identical` printing) means the files agree.
 
 ### 15.10 Three real defects the new test suite found
 
@@ -1437,65 +1514,69 @@ bit-identical output in both languages.
 
 All three fixes touch code on the bit-identity paths, so the entire verification
 suite was re-run from scratch afterwards: **63/63 integrator configurations
-identical, the shearing sheet identical (same SHA-256), all three REBOUNDx
+identical, the shearing sheet identical (same SHA-256 as before the fixes),
+all three REBOUNDx
 acceptance tests identical, and 394 REBOUND tests passing with none ignored.**
 
-## 16. The one known difference: `pow`
+## 16. The `pow` story: a Windows difference this platform does not have
 
-`pow(a, b)` — "a raised to the power b" — is the only maths function where Rust
-and Microsoft's C library disagree. Rust ships its own implementation rather
-than calling the system one.
+`pow(a, b)` — "a raised to the power b" — deserves its own section, because
+on Windows it was the single maths function where the two languages
+disagreed, and on macOS it is not.
 
-**How often, and by how much?** Two independent measurements:
-
-| Measurement | Samples | Disagreements | Size |
-|---|---|---|---|
-| General sweep (`libm_diff`) | 200,000 | 60 (0.030%) | ≤ 2 ULP |
-| BS-controller shapes (`bs_pow_diff`) | 200,000 | 56 (0.0280%) | **all exactly 1 ULP** |
-
-Both implementations are correct to within what the C standard requires. They
-simply round a handful of cases differently.
-
-**Where it shows up in practice.** We caught it twice, in completely different
-places, and both times the diagnosis was conclusive:
-
-1. **The shearing sheet.** The Bridges bounce law calls `pow`. One collision in
-   step 78 came out 1 ULP different, and from there the trajectories diverged.
-   Rewriting the identical formula as `exp(-0.234*log(x))` on *both* sides —
-   using functions we had proven bit-identical — made the whole 400-step run
-   match exactly. That control experiment isolates `pow` as the sole cause.
-
-2. **The BS integrator.** BS chooses its own step size using `pow`. Running the
-   three-body test:
-
-   - steps 1 - 2,559: **everything bit-identical**;
-   - step 2,560: **all particle positions and velocities still bit-identical**,
-     but the *proposed next step size* differed by exactly 1 ULP
-     (`3fce7444d03af04e` vs `3fce7444d03af04d`).
-
-   We then evaluated `pow` with exactly the argument shapes that step-size
-   chooser uses — `pow(error/0.65, 1/(2k+1))` for k = 1..8 — over 200,000
-   samples: **56 disagreements, every one exactly 1 ULP.** Same function, same
-   rate, same magnitude. The physics code is identical; only the platform
-   `pow` differs.
+**The macOS measurement first.** On this machine, `pow` is bit-identical
+between the clang-built C and Rust over 200,000 general samples
+(`libm_diff`, §15.0) *and* over 200,000 samples shaped exactly like the BS
+integrator's step-size chooser (`bs_pow_diff`, below). The reason: on macOS
+both languages call Apple's system `pow`. There is one implementation, so
+there is nothing to disagree.
 
 Reproduce that second measurement with:
 
 ```bash
-cd C:\work\rebound_rust
+cd ~/work/rebound_rust
 cargo build --release --example bs_pow_diff
 cd porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /Ox /fp:precise bs_pow_diff.c /Fe:bs_pow_diff.exe'
-.\bs_pow_diff.exe
-..\target\release\examples\bs_pow_diff.exe
+clang -O2 -ffp-contract=off bs_pow_diff.c -lm -o bs_pow_diff
+./bs_pow_diff
+../target/release/examples/bs_pow_diff
+cmp bs_pow_c.txt bs_pow_rust.txt && echo "bit-identical"
 ```
 
-**What this means for you.** Everything REBOUND computes per timestep is
-bit-exact. If your simulation calls `pow` at run time — in your own force
-function, in `reb_random_powerlaw`, or through BS's step-size chooser — then on
-roughly 0.03% of calls the last bit may differ from the C build, and in a
-chaotic system the two runs will eventually decorrelate. Both remain equally
-valid; neither is "wrong".
+**The Windows story, kept because it teaches.** On Windows, Rust ships its
+own `pow` implementation rather than calling Microsoft's, and the two
+disagreed on about **0.03% of inputs, by at most 2 ULP** (general sweep:
+60 of 200,000 samples; BS-controller shapes: 56 of 200,000, every one
+exactly 1 ULP). Both implementations are correct to within what the C
+standard requires — they simply round a handful of cases differently. The
+Windows port caught this twice, in completely different places, and both
+times the diagnosis was conclusive:
+
+1. **The shearing sheet.** The Bridges bounce law calls `pow`. One
+   collision in step 78 came out 1 ULP different, and from there the
+   trajectories diverged. Rewriting the identical formula as
+   `exp(-0.234*log(x))` on *both* sides — using functions proven
+   bit-identical there — made the whole 400-step run match exactly. That
+   control experiment isolated `pow` as the sole cause. (The rewrite ships
+   in both the C harness and the Rust example, which is why the macOS run
+   in §15.2 never had to think about it.)
+
+2. **The BS integrator.** BS chooses its own step size using `pow`.
+   Running the three-body test on Windows: steps 1 – 2,559 everything
+   bit-identical; step 2,560 all particle positions and velocities still
+   bit-identical, but the *proposed next step size* differed by exactly
+   1 ULP (`3fce7444d03af04e` vs `3fce7444d03af04d`). Evaluating `pow` with
+   exactly the argument shapes that chooser uses — `pow(error/0.65,
+   1/(2k+1))` for k = 1..8 — reproduced the same rate and magnitude: same
+   function, same 1-ULP disagreements. The physics code was identical;
+   only the platform `pow` differed.
+
+**What this means for you, on this Mac.** Nothing needs avoiding: every
+maths function REBOUND calls, `pow` included, is bit-identical between the
+C reference and this port. If you move your simulation to a *different*
+platform — Windows, or a glibc-Linux machine — expect the usual chaotic-
+system caveat: a last-bit difference in any library function will
+eventually decorrelate two runs, and both remain equally valid.
 
 ## 17. Lint policy: why we waive some compiler suggestions
 
@@ -1548,13 +1629,13 @@ section 15.10, and the comment in `lib.rs` says so at the point of the waiver.
 The practical consequence of doing it this way:
 
 ```bash
-cd C:\work\rebound_rust
+cd ~/work/rebound_rust
 cargo build --release          # zero warnings
 cargo clippy --release --all-targets   # zero warnings
 ```
 
 ```bash
-cd C:\work\reboundx_rust
+cd ~/work/reboundx_rust
 cargo build --release          # zero warnings
 cargo clippy --release --all-targets   # zero warnings
 ```
@@ -1566,14 +1647,18 @@ block from `src/lib.rs` and re-run clippy.
 
 ## 18. Known limitations
 
-1. **`pow`** — the one maths difference, fully characterised in section 16.
-2. **WHFast512 does not integrate on Windows** — in C *or* Rust. Both produce
-   the identical "AVX512 is not supported on your platform." error, because
-   the fast core is GCC/Clang-only assembly that the MSVC build does not
-   compile either.
-3. **Excluded subsystems**: the OpenGL 3-D display (`display.c`, `glad.c`) and
-   MPI (`communication_mpi.c`). Neither is part of the Windows C build. The
-   browser-based viewer, which *is* the Windows visualisation path, is ported.
+1. **`pow` differs from the C on Windows only** — fully characterised in
+   section 16. On macOS every maths function, `pow` included, is
+   bit-identical between the C reference and this port.
+2. **WHFast512 does not integrate on Windows or on Apple Silicon** — in C
+   *or* Rust. All four produce the identical "AVX512 is not supported on
+   your platform." error, because the fast core is x86-only AVX-512
+   assembly: MSVC does not compile it, and an arm64 processor cannot run
+   it.
+3. **Excluded subsystems**: the OpenGL 3-D display (`display.c`, `glad.c`)
+   and MPI (`communication_mpi.c`). Neither is part of either reference C
+   build (section 9). The browser-based viewer, which *is* the ported
+   visualisation path, works the same on both platforms.
 4. **Not carried, and why**:
    - `reb_simulation_output_screenshot` — needs the browser display round-trip;
    - `reb_integrator_register` (registering your own integrator at run time) —
@@ -1586,130 +1671,162 @@ block from `src/lib.rs` and re-run clippy.
 
 ## 19. How to reproduce every result yourself
 
-In order, from a fresh machine:
+In order, from a fresh Mac (with the two installs from section 4). If you
+cloned the `rustSolveIt_macos-silicon_SUNDIALS_7_8_0` repository, its root
+is your `~/work` and steps 1's first line is already done for the Rust
+crates — you only add the two C reference trees beside them.
 
 ```bash
 # 1. Get the source
-cd C:\work
-git clone https://github.com/hannorein/rebound.git rebound\rebound
+cd ~/work
+git clone https://github.com/hannorein/rebound.git rebound/rebound
+(cd rebound/rebound && git checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb)
 git clone https://github.com/dtamayo/reboundx.git reboundx
 
-# 2. Build the C REBOUND reference
-cd rebound\rebound\examples\shearing_sheet
-cmd /c 'set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH% && "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && make'
-cd ..\..\src
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && lib /nologo /OUT:librebound_static.lib *.obj'
+# 2. Build the C REBOUND reference (section 10a explains the flags)
+cd ~/work/rebound/rebound/src
+clang -c -DBUILDINGLIBREBOUND -D_GNU_SOURCE -DSERVER \
+      -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb \
+      -O2 -ffp-contract=off *.c
+ar rcs librebound_static.a *.o
 
-# 3. Build the C REBOUNDx reference (see section 10b for the VLA shims)
-cd ..\..\..\reboundx\src
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /c /I"..\..\rebound\rebound\src" /I"." /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /DLIBREBOUNDX /Ox /fp:precise *.c'
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && lib /nologo /OUT:libreboundx.lib *.obj'
+# 3. Build the C REBOUNDx reference (no shim needed under clang — §10b)
+cd ~/work/reboundx/src
+clang -c -I../../rebound/rebound/src -I. -D_GNU_SOURCE -DLIBREBOUNDX \
+      -O2 -ffp-contract=off *.c
+ar rcs libreboundx.a *.o
 
-# 4. Build the Rust crates and all examples (section 8)
-cd ..\..\rebound_rust
+# 4. Build the Rust crates and run their test suites (394 + 137 tests)
+cd ~/work/rebound_rust
 cargo build --release
 cargo test --release
-cd ..\reboundx_rust
+cd ~/work/reboundx_rust
 cargo build --release
 cargo test --release
-
 ```
 
 ### Step 5 — build the C comparison harnesses
 
-A "harness" is a small C program that builds one specific experiment and prints
-every resulting number as raw bits, so it can be compared with the Rust twin of
-the same name. There are eleven for REBOUND and five for REBOUNDx.
+A "harness" is a small C program that builds one specific experiment and
+prints every resulting number as raw bits, so it can be compared with the
+Rust twin of the same name. There are eleven for REBOUND and five for
+REBOUNDx.
 
-First open a Visual Studio command prompt, so that `cl` and `lib` are on the
-path (do this once per terminal window):
-
-```bash
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat"'
-```
-
-Build the eleven REBOUND harnesses. They link against `librebound.lib`, which is
-the small "import library" that goes with `librebound.dll`; copy both of those
-from `rebound\rebound\src\` into `porttest\` first, because the DLL must sit
-beside the finished `.exe` files for them to start:
+First compile the macOS `rand_r` shim once (section 10c explains why):
 
 ```bash
-cd C:\work\rebound_rust\porttest
-copy ..\..\rebound\rebound\src\librebound.lib .
-copy ..\..\rebound\rebound\src\librebound.dll .
-for %f in (addfmt_test archive_test bs_pow_diff derivatives_test frequency_test integrators_test kepler_rectilinear_c libm_diff movetocom_var_c movetocom_var_test problem_test) do cl /nologo /Ox /fp:precise /I..\..\rebound\rebound\src %f.c librebound.lib /Fe:%f.exe
+cd ~/work/rebound_rust/porttest
+clang -c -O2 -ffp-contract=off macos_shim/rand_r_glibc.c -o macos_shim/rand_r_glibc.o
 ```
 
-That prints a page of compiler chatter and produces eleven `.exe` files. If you
-instead see `unresolved external symbol __imp_reb_...`, you linked against
-`librebound_static.lib`: REBOUND's public functions are declared for DLL import,
-so the import library is the one to use here.
-
-The REBOUNDx harnesses need two extra object files. REBOUNDx's `gr_full.c` and
-`interpolation.c` use a C99 feature called a "variable-length array" that
-Microsoft's compiler does not support, so `porttest\msvc_shim\` holds copies
-that allocate the same arrays on the heap instead. The arithmetic is unchanged —
-only where the memory comes from. Build the shims, then the harnesses:
+Build the eleven REBOUND harnesses, each linked with the shim and the
+static library:
 
 ```bash
-cd C:\work\reboundx_rust\porttest\msvc_shim
-cl /nologo /c /Ox /fp:precise /I..\..\..\rebound\rebound\src /I..\..\..\reboundx\src /D_CRT_SECURE_NO_WARNINGS /DLIBREBOUNDX gr_full.c interpolation.c
+cd ~/work/rebound_rust/porttest
+for f in addfmt_test archive_test bs_pow_diff derivatives_test \
+         frequency_test integrators_test kepler_rectilinear_c libm_diff \
+         movetocom_var_c movetocom_var_test problem_test; do
+  clang -I../../rebound/rebound/src -D_GNU_SOURCE -O2 -ffp-contract=off \
+        "$f.c" macos_shim/rand_r_glibc.o \
+        ../../rebound/rebound/src/librebound_static.a -lm -o "$f"
+done
 ```
+
+(`libm_diff` and `bs_pow_diff` never call REBOUND, so for those two the
+shim and library are simply unused; linking them anyway keeps the loop
+uniform. Two harnesses print a benign compiler warning each — a `%zu`
+format nit and a pointer-cast nit, both in the *harness* code, not the
+libraries.)
+
+Build the five REBOUNDx harnesses (note the link order — the REBOUNDx
+library first, then REBOUND's):
 
 ```bash
-cd C:\work\reboundx_rust\porttest
-for %f in (tides_spin_pseudo_c tides_spin_kozai_c tides_spin_migration_c rebx_binary_roundtrip_c rebx_binary_read_c) do cl /nologo /Ox /fp:precise /I..\..\rebound\rebound\src /I..\..\reboundx\src %f.c librebound_static.lib libreboundx.lib msvc_shim\gr_full.obj msvc_shim\interpolation.obj /Fe:%f.exe
+cd ~/work/reboundx_rust/porttest
+for f in tides_spin_pseudo_c tides_spin_kozai_c tides_spin_migration_c \
+         rebx_binary_roundtrip_c rebx_binary_read_c; do
+  clang -I../../rebound/rebound/src -I../../reboundx/src -D_GNU_SOURCE \
+        -O2 -ffp-contract=off "$f.c" \
+        ../../rebound_rust/porttest/macos_shim/rand_r_glibc.o \
+        ../../reboundx/src/libreboundx.a \
+        ../../rebound/rebound/src/librebound_static.a -lm -o "$f"
+done
 ```
-
-The linker prints `LNK4217` and `LNK4286` warnings about symbols being both
-imported and statically defined. They are expected and harmless: the REBOUNDx
-library was compiled expecting REBOUND in a DLL, and here it is being given the
-static library instead. The resulting programs are correct.
 
 ### Step 6 — run each matched pair and compare
 
-Each harness has a Rust twin with the same name under `examples\`. Run both, then
-compare. The comparison always works the same way: `Compare-Object` printing
-nothing means the files are identical.
+Each harness has a Rust twin with the same name under `examples/`. Run
+both, then compare. The comparison always works the same way: `cmp`
+staying silent means the files are identical.
 
-```powershell
-cd C:\work\rebound_rust\porttest
-.\integrators_test.exe
-..\target\release\examples\integrators_test.exe
-Compare-Object (Get-Content ref_c_ias15.txt) (Get-Content ref_rust_ias15.txt)
+The integrator matrix, all 63 configurations in one command:
+
+```bash
+cd ~/work/rebound_rust/porttest
+bash run_integrator_matrix.sh 500
 ```
 
-The shearing sheet is the largest single check. Note that the Rust example to
-run is `shearing_sheet_test`, not `shearing_sheet`: the stock REBOUND example
-integrates forever by design, so the `_test` variant is the same simulation with
-a stopping time added.
+It must end `ALL CONFIGURATIONS BIT-IDENTICAL`.
 
-```powershell
-cd C:\work\rebound_rust\porttest
-..\target\release\examples\shearing_sheet_test.exe
-Get-FileHash state_c_final.txt, state_rust_final.txt -Algorithm SHA256 | Format-List Path, Hash
+The shearing sheet is the largest single check. Note that the Rust example
+to run is `shearing_sheet_test`, not `shearing_sheet`: the stock REBOUND
+example integrates forever by design, so the `_test` variant is the same
+simulation with a stopping time added.
+
+```bash
+cd ~/work/rebound_rust/porttest
+./problem_test 400
+../target/release/examples/shearing_sheet_test 400
+shasum -a 256 state_c_final.txt state_rust_final.txt
 ```
 
 Both hashes must read
-`75BDAAB7109F125192F56AEB0CCDCAC554AF88A165FE11075EC5A871178521F0`.
+`418c864dd1a610cbe8ea6d81ecafa1e4ce6d36837494177d9875ee820ef0766f`.
 
-The three REBOUNDx tidal-spin tests take a stopping time as their argument. Send
-the C program's error stream to `$null`, because REBOUNDx prints a warning on
-*every* timestep and that alone produces over a gigabyte of text:
+The remaining REBOUND pairs follow the same pattern; each writes its own
+pair of dump files, named in section 15:
 
-```powershell
-cd C:\work\reboundx_rust\porttest
-foreach ($t in @(@('pseudo','62.83185307179586'),@('kozai','1000.0'),@('migration','62.83185307179586'))) {
-    $n = $t[0]
-    & ".\tides_spin_${n}_c.exe" $t[1] 2>$null | Out-Null
-    & "..\target\release\examples\tides_spin_$n.exe" $t[1] 2>$null | Out-Null
-    $d = Compare-Object (Get-Content "state_${n}_c.txt") (Get-Content "state_${n}_rust.txt")
-    "$n : $(if ($d) { 'MISMATCH' } else { 'BIT-IDENTICAL' })"
-}
+```bash
+cd ~/work/rebound_rust/porttest
+./libm_diff            && ../target/release/examples/libm_diff
+cmp libm_c.txt libm_rust.txt && echo "libm identical"
+./bs_pow_diff          && ../target/release/examples/bs_pow_diff
+cmp bs_pow_c.txt bs_pow_rust.txt && echo "bs_pow identical"
+./derivatives_test     && ../target/release/examples/derivatives_test
+cmp derivatives_c.txt derivatives_rust.txt && echo "derivatives identical"
+./frequency_test       && ../target/release/examples/frequency_test
+cmp frequency_c.txt frequency_rust.txt && echo "frequency identical"
+./addfmt_test          && ../target/release/examples/addfmt_test
+cmp addfmt_c.txt addfmt_rust.txt && echo "addfmt identical"
+./movetocom_var_c      && ../target/release/examples/movetocom_var
+cmp movetocom_var_c.txt movetocom_var_rust.txt && echo "movetocom identical"
 ```
 
-That must print `BIT-IDENTICAL` three times. The binary-file checks of §15.9 are
-run with the commands given in that section.
+The Simulationarchive round trips and the web server test are run with the
+commands printed in sections 15.5 and 15.6.
+
+The three REBOUNDx tidal-spin tests take a stopping time as their argument.
+Send the C program's error stream to `/dev/null`, because REBOUNDx prints a
+warning on *every* timestep and the long runs would otherwise produce
+hundreds of megabytes of text:
+
+```bash
+cd ~/work/reboundx_rust/porttest
+for pair in "pseudo 62.83185307179586" "kozai 1000" "migration 62.83185307179586"; do
+  n="${pair% *}"; t="${pair#* }"
+  ./tides_spin_${n}_c "$t" >/dev/null 2>&1
+  ../target/release/examples/tides_spin_$n "$t" >/dev/null 2>&1
+  cmp -s state_${n}_c.txt state_${n}_rust.txt \
+    && echo "$n : BIT-IDENTICAL" || echo "$n : MISMATCH"
+done
+```
+
+That must print `BIT-IDENTICAL` three times. Run the same loop again with
+`628.3185307179586` for pseudo and migration and with no argument for
+kozai (its full default, t = 100,000) to reproduce the three long runs.
+The binary-file checks of §15.9 are run with the commands given in that
+section.
 
 Every command in this document was actually run on the machine described in
 section 9, and the outputs quoted are the outputs it produced.

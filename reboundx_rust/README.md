@@ -16,18 +16,28 @@ translation of REBOUND itself, and it depends on it exactly as the C
 - C function and struct names preserved (`rebx_attach`, `rebx_add_force`,
   `rebx_set_param_double`, `rebx_tides_spin`, …), so the upstream REBOUNDx
   documentation still tells you what everything does.
-- Verified against the Microsoft-C-compiled REBOUNDx on the same machine:
-  every tested result matches **bit for bit** — every single bit of every
-  number, not "agrees to ten decimal places".
+- Verified against the C REBOUNDx compiled with `clang` — Apple's C
+  compiler — on the same Apple-Silicon Mac: every tested result matches
+  **bit for bit** — every single bit of every number, not "agrees to ten
+  decimal places". (The same comparison was first done on Windows 11
+  against Microsoft's compiler; the verification section below tells both
+  stories.)
 
 **All of the science, and all of the credit, belongs to the original
 authors.** This is a translation, not new research.
 
 ---
 
-## Before you start: this needs TWO repositories
+## Before you start: this needs TWO folders
 
-**`cargo build` will fail if you clone only this repository.** That is not a
+**If you cloned the `rustSolveIt_macos-silicon_SUNDIALS_7_8_0` repository,
+you already have the right arrangement.** `rebound_rust/` and
+`reboundx_rust/` are both top-level folders of that repository, sitting side
+by side, and `cargo build` inside `reboundx_rust` works immediately. The
+rest of this section is for anyone who copies `reboundx_rust` out on its
+own, or clones the two crates from their stand-alone repositories.
+
+**`cargo build` will fail if you take only this folder.** That is not a
 bug — it is the same arrangement the original C library uses, and it is worth
 one minute of your time to understand.
 
@@ -52,14 +62,14 @@ parent folder, like this:
 ```
 some-folder/
 ├── rebound_rust/     <- github.com/once-ere/rebound_rust
-└── reboundx_rust/    <- this repository
+└── reboundx_rust/    <- this crate
 ```
 
 ### Do this, and it will work
 
 ```bash
-mkdir rebound-rust-ports
-cd rebound-rust-ports
+mkdir -p ~/work/rebound-rust-ports
+cd ~/work/rebound-rust-ports
 git clone https://github.com/once-ere/rebound_rust.git
 git clone https://github.com/once-ere/reboundx_rust.git
 cd reboundx_rust
@@ -73,13 +83,13 @@ that does not exist:
 error: failed to load manifest for dependency `rebound_rs`
 
 Caused by:
-  failed to read `C:\...\rebound_rust\Cargo.toml`
+  failed to read `/Users/you/work/rebound-rust-ports/rebound_rust/Cargo.toml`
 
 Caused by:
-  The system cannot find the path specified. (os error 3)
+  No such file or directory (os error 2)
 ```
 
-The fix is always the same: clone `rebound_rust` next to `reboundx_rust`.
+The fix is always the same: put `rebound_rust` next to `reboundx_rust`.
 
 ---
 
@@ -87,12 +97,14 @@ The fix is always the same: clone `rebound_rust` next to `reboundx_rust`.
 
 | You need | Why | Get it |
 |---|---|---|
-| **Rust** (1.91 or newer) | compiles the code | <https://rustup.rs> — the installer does everything |
-| **Git** | downloads the two repositories | <https://git-scm.com> |
+| **Rust** (1.91 or newer; this port was built and verified with 1.94.0) | compiles the code | <https://rustup.rs> — the installer does everything |
+| **Git** | downloads the repositories | comes with Apple's Xcode Command Line Tools: run `xcode-select --install` in Terminal |
 
 Nothing else. No C compiler, no Python, no libraries to hunt down — this crate
 depends on nothing outside Rust's own standard library and its sibling
-`rebound_rs`.
+`rebound_rs`. (One exception: if you want to *re-run the C-versus-Rust
+verification* described below, you need `clang`, Apple's C compiler — which
+the same `xcode-select --install` already gave you.)
 
 Check Rust is installed:
 
@@ -108,7 +120,7 @@ This is the classic test of general relativity. Mercury's orbit slowly rotates
 in a way Newton's gravity alone cannot explain — 43 arcseconds per century.
 Switch on REBOUNDx's `gr_potential` force and you can watch it happen.
 
-Make a new project **beside the two cloned folders**:
+Make a new project **beside the two folders**:
 
 ```bash
 cargo new mercury
@@ -391,7 +403,10 @@ cargo build --release
 cargo test --release
 ```
 
-Expect **137 tests, 0 failures**:
+Expect **137 tests, 0 failures**. (The run also lists two items as
+"ignored": those are illustrative code fragments inside documentation
+comments, marked so they are shown but not executed. They are not skipped
+tests.)
 
 | Test file | Tests | Covers |
 |---|---|---|
@@ -417,36 +432,160 @@ rather than hidden in a configuration file.
 
 ## How this was verified
 
-The method: run the identical experiment in the Microsoft-C-compiled REBOUNDx
-and in this Rust code, dump every number as its raw 64-bit pattern, and compare
-byte for byte. A test passes only if **every bit of every number** matches.
+The method: run the identical experiment in the C REBOUNDx — compiled with
+`clang`, Apple's C compiler — and in this Rust code, dump every number as its
+raw 64-bit pattern, and compare byte for byte. A test passes only if **every
+bit of every number** matches.
 
-| What was checked | Result |
+Every figure below was measured on one machine: an Apple M5 Max running
+macOS Tahoe 26 (26.6.1), with Apple clang 21.0.0 and Rust 1.94.0. (This port
+was first made and verified on Windows 11 against Microsoft's C compiler;
+where the two platforms' stories differ, both are told below.)
+
+| What was checked | Result on this Mac |
 |---|---|
-| `tides_spin_pseudo_synchronization`, 10 and 100 orbits | **bit-identical** |
+| `tides_spin_pseudo_synchronization`, 10 and 100 orbits (t = 62.83…, t = 628.3…) | **bit-identical** |
 | `tides_spin_kozai`, t = 1,000 and t = 100,000 (adaptive IAS15) | **bit-identical** |
 | `tides_spin_migration_driven_obliquity_tides`, 10 and 100 orbits | **bit-identical** |
-| REBOUNDx binary file written by C, read by Rust | 25/25 items recovered exactly |
-| REBOUNDx binary file written by Rust, read by C | identical to C reading its own file |
-| Byte comparison of the two written files | 6,366 of 6,392 bytes identical |
+| REBOUNDx binary file written by C, read by Rust | 25/25 items recovered exactly; re-serialising reproduces every byte |
+| REBOUNDx binary file written by Rust, read by C | C's 28-line dump identical to C reading its own file |
+| Byte comparison of the two written files (10,784 bytes each) | 10,758 of 10,784 bytes identical |
 | Automated tests | 137 pass, 0 fail |
 
-Two of those rows deserve a sentence each.
+Six dynamical comparison runs, six exact matches. Two rows deserve a
+sentence each.
 
 **The Kozai result is the strongest.** IAS15 chooses its own step sizes, and
 those choices depend on the REBOUNDx forces. Matching bit for bit at
 t = 100,000 means both programs took the *identical sequence of thousands of
 adaptive steps* — not merely that they arrived at the same place.
 
-**The 26 differing bytes** in the binary file are one field in the header: the
-git hash, a stamp recording which source revision the library was compiled
-from. It contains no simulation data and neither library reads it back. Every
-byte of actual physics — masses, positions, velocities, parameters, names,
-types and orderings — matches.
+**The 26 differing bytes** in the binary file sit at offsets 37–62, inside
+one field of the header: the git hash, a stamp recording which source
+revision the library was compiled from. The C library writes the text
+`notavailable…` there; this port deliberately writes zeros (a documented
+deviation — see the differences section below). The field contains no
+simulation data and neither library reads it back. Every byte of actual
+physics — masses, positions, velocities, parameters, names, types and
+orderings — matches. (The Windows-era edition of this document said the
+files were 6,392 bytes; that number came from an earlier revision of the
+round-trip example. The current source writes 10,784-byte files on both
+platforms.)
 
-The C side of every comparison, and the full narrative of how the port was
-made and checked, is written out in `reboundx_port_test.md` in this
-repository, which repeats every command so it can be read on its own.
+### Two platforms, two shims — both on the C side
+
+The Rust code is identical on every platform. It is the *C reference* that
+needs a small piece of platform help, and each platform needs a different
+piece.
+
+**Windows needed a VLA shim; macOS does not.** Two REBOUNDx source files,
+`gr_full.c` and `interpolation.c`, use a C feature called variable-length
+arrays (a "VLA" is an array whose size is decided while the program runs,
+rather than fixed in advance). Microsoft's compiler does not support VLAs, so
+the Windows verification carried modified copies of those two files — still
+kept in `porttest/msvc_shim/` as the record of that port. Apple's `clang`
+supports VLAs, so on macOS both files compile completely unmodified.
+
+**macOS needs a rand_r shim; Windows does not.** Some REBOUND setups place
+particles at random using a function called `rand_r` — a recipe that turns a
+starting number (the "seed") into a stream of pseudo-random numbers. Upstream
+REBOUND carries its own copy of the GNU C library's `rand_r` recipe, but only
+switches it on when compiling for Windows. On macOS that switch is off, and
+the C build silently gets Apple's `rand_r` — a *different* recipe. Same seed,
+different random stream, different initial particles: a bit-for-bit
+comparison dies at the very first particle, before any physics has happened.
+The fix lives in the sibling crate, at
+`rebound_rust/porttest/macos_shim/rand_r_glibc.c`: the same GNU recipe
+compiled as its own object file and linked into every C comparison harness,
+so the C reference on macOS produces the same stream the identical C code
+produces on Linux and Windows. The Rust port implements the GNU recipe on
+every platform and needs no shim anywhere.
+
+**And one difference that vanished entirely: the math library.** On Windows,
+exactly one math function — `pow`, which raises a number to a power —
+disagreed between Microsoft's math library and Rust's, for about 0.03% of
+inputs, by at most 2 units in the last place. On this Mac that difference
+does not exist: a 200,000-sample sweep of 21 math-library functions (run as
+part of the sibling `rebound_rust` verification) found C and Rust
+**bit-identical on every function, `pow` included** — both sides resolve
+every math call to Apple's math library.
+
+### Re-running the C comparison yourself
+
+You do not need any of this to *use* the crate — it is how the claims above
+were established, complete enough to repeat. `~/work` stands in for wherever
+you keep the repository.
+
+First, the C reference sources. They are reference material, not part of the
+port, so they are cloned at the repository root (the repository's
+`.gitignore` already expects them there):
+
+```bash
+cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0
+git clone https://github.com/hannorein/rebound.git rebound/rebound
+git -C rebound/rebound checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb  # REBOUND 5.1.1
+git clone https://github.com/dtamayo/reboundx.git reboundx
+# this port translates REBOUNDx 5.1.0 — check out that release in reboundx/
+```
+
+Compile the two C libraries and the rand_r shim:
+
+```bash
+cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound/rebound/src
+clang -c -DBUILDINGLIBREBOUND -D_GNU_SOURCE -DSERVER \
+      -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb \
+      -O2 -ffp-contract=off *.c
+ar rcs librebound_static.a *.o
+
+cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/reboundx/src
+clang -c -I../../rebound/rebound/src -I. -D_GNU_SOURCE -DLIBREBOUNDX \
+      -O2 -ffp-contract=off *.c
+ar rcs libreboundx.a *.o
+
+cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/porttest/macos_shim
+clang -c -O2 rand_r_glibc.c
+```
+
+One flag deserves a sentence: `-ffp-contract=off`. Apple-Silicon processors
+have a "fused multiply-add" instruction that computes `a*b + c` in one step
+with one rounding instead of two. Faster, and slightly *more* accurate — but
+"slightly more accurate" means "different in the last bit", and the Rust
+compiler never fuses, so the comparison must forbid `clang` from fusing too.
+It plays the same role `/fp:precise` played for Microsoft's compiler on
+Windows.
+
+Now build one comparison harness and race it against the Rust example:
+
+```bash
+cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/reboundx_rust
+cargo build --release --examples
+cd porttest
+clang -I../../rebound/rebound/src -I../../reboundx/src -D_GNU_SOURCE \
+      -O2 -ffp-contract=off tides_spin_kozai_c.c \
+      ../../rebound_rust/porttest/macos_shim/rand_r_glibc.o \
+      ../../reboundx/src/libreboundx.a \
+      ../../rebound/rebound/src/librebound_static.a -lm -o tides_spin_kozai_c
+
+./tides_spin_kozai_c 1000                          # writes state_kozai_c.txt
+../target/release/examples/tides_spin_kozai 1000   # writes state_kozai_rust.txt
+
+cmp -s state_kozai_c.txt state_kozai_rust.txt && echo bit-identical
+shasum -a 256 state_kozai_c.txt state_kozai_rust.txt   # same hash = same bytes
+```
+
+`cmp -s` compares two files byte by byte and says nothing unless they differ;
+`shasum -a 256` prints each file's SHA-256 fingerprint, so equal fingerprints
+mean equal files. Run without the `1000` for the full t = 100,000 default.
+The other harnesses in `porttest/` (`tides_spin_pseudo_c.c`,
+`tides_spin_migration_c.c`, `rebx_binary_roundtrip_c.c`,
+`rebx_binary_read_c.c`) build with the same command shape. Expect a handful
+of harmless `clang` warnings about `void**` pointer casts in the harness
+files themselves — the libraries compile warning-free.
+
+The full narrative of how the port was made and checked, with every
+comparison written out, is in `reboundx_port_test.md` in this folder — a
+companion document, not a prerequisite: everything you need to repeat the
+comparison is on this page.
 
 ---
 
@@ -611,6 +750,7 @@ derivative work of it. The full text is in `LICENSE`.
 | Repository | What it is |
 |---|---|
 | [`once-ere/rebound_rust`](https://github.com/once-ere/rebound_rust) | `rebound_rs` — the pure-Rust REBOUND 5.1.1 this crate requires |
-| [`once-ere/rustSolveIt_Win11_SUNDIALS_7_8_0`](https://github.com/once-ere/rustSolveIt_Win11_SUNDIALS_7_8_0) | The physics simulator whose verification method these ports were built with; carries a copy of both |
+| `rustSolveIt_macos-silicon_SUNDIALS_7_8_0` | **This repository** — the macOS / Apple Silicon edition of the physics simulator whose verification method these ports were built with; carries `rebound_rust/` and `reboundx_rust/` side by side at its top level |
+| [`once-ere/rustSolveIt_Win11_SUNDIALS_7_8_0`](https://github.com/once-ere/rustSolveIt_Win11_SUNDIALS_7_8_0) | The Windows 11 edition, where these ports were first made and verified against Microsoft's C compiler |
 | [`hannorein/rebound`](https://github.com/hannorein/rebound) | The original REBOUND, in C |
 | [`dtamayo/reboundx`](https://github.com/dtamayo/reboundx) | The original REBOUNDx, in C |

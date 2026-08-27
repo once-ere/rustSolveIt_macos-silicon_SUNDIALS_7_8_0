@@ -1,20 +1,21 @@
 # The Shearing-Sheet Test: Did the Rust Version Get the Same Answer as the Original?
 
 **Short answer: yes — every single bit, for all 1,482 particles, after 400
-time steps and 102,533 collisions.**
+time steps and every one of the enormous number of collisions along the way.**
 
 This document explains what we tested, how we tested it, what went wrong the
-first time, how we tracked down the cause, and how you can run the whole test
-yourself. It is written for someone who has never done this before. Every
-command you need is printed in full. You will not have to look anything up in
-another document.
+first time — twice, once on each platform this port has lived on — how we
+tracked down each cause, and how you can run the whole test yourself on a Mac.
+It is written for someone who has never done this before. Every command you
+need is printed in full. You will not have to look anything up in another
+document.
 
-> **A note on `C:\work` in the commands below.** `C:\work` is a stand-in for
-> whatever folder you put this project in — it is not a real folder, and you do
-> not have to create one with that name. If your copy lives in
-> `C:\Users\Sam\astronomy`, then read every `C:\work\...` below as
-> `C:\Users\Sam\astronomy\...`. Only that leading part changes; the folder
-> names after it are real and must match.
+> **A note on `~/work` in the commands below.** `~` is macOS shorthand for
+> your home folder (for example `/Users/sam`), and `~/work` is a stand-in for
+> whatever folder you put this project in — you do not have to create one with
+> that exact name. If your copy lives in `~/Developer/astronomy`, then read
+> every `~/work/...` below as `~/Developer/astronomy/...`. Only that leading
+> part changes; the folder names after it are real and must match.
 
 ---
 
@@ -29,9 +30,10 @@ another document.
 7. [Step 2 — Build the Rust program](#7-step-2--build-the-rust-program)
 8. [Step 3 — Run both and compare](#8-step-3--run-both-and-compare)
 9. [The result](#9-the-result)
-10. [The detective story: the first attempt FAILED](#10-the-detective-story-the-first-attempt-failed)
-11. [What this proves, and what it does not](#11-what-this-proves-and-what-it-does-not)
-12. [Files involved](#12-files-involved)
+10. [The detective story, part one: Windows and the `pow` function](#10-the-detective-story-part-one-windows-and-the-pow-function)
+11. [The detective story, part two: macOS and the random numbers](#11-the-detective-story-part-two-macos-and-the-random-numbers)
+12. [What this proves, and what it does not](#12-what-this-proves-and-what-it-does-not)
+13. [Files involved](#13-files-involved)
 
 ---
 
@@ -57,6 +59,12 @@ program any more, and you could not trust its results. So we had to prove that
 our Rust version computes *exactly* the same numbers. That is what this test
 does.
 
+This port was first built and verified on Windows 11. The machine in front of
+you now is a Mac with an Apple Silicon processor, so everything was re-built
+and re-measured here from scratch. Every headline number in this document is
+the macOS measurement; where a Windows number appears, it is clearly labelled
+as history.
+
 ---
 
 ## 2. What is the shearing sheet?
@@ -75,7 +83,9 @@ This is the standard test problem that ships with REBOUND. In our run it
 contains **1,482 ice particles** that:
 
 - pull on each other by gravity,
-- **bounce off each other** when they touch (102,533 bounces in our run),
+- **bounce off each other** when they touch — the program counts the bounces
+  and prints the total at the end; it runs well into six figures (the Windows
+  edition of this same test counted 102,533 of them),
 - wrap around the box edges with the shear offset applied.
 
 ---
@@ -96,11 +106,13 @@ be exactly right for the final answer to match:
 
 If **any single one** of those had a mistake — one wrong sign, one wrong loop
 limit, one number computed in a different order — the final positions would
-differ. With 102,533 collisions, an error introduced anywhere would spread to
-every particle long before the end.
+differ. With a hundred-thousand-odd collisions in the run, an error introduced
+anywhere would spread to every particle long before the end.
 
 This is why we chose it as the acceptance test. It is the hardest single thing
-in the program to get exactly right.
+in the program to get exactly right. And as you will see in sections 10 and
+11, *both* rows of that table have starred in their own failure: the bounce
+law on Windows, and the random number generator on macOS.
 
 ---
 
@@ -115,8 +127,8 @@ the same for every number. Not "the same to 10 decimal places" — *the same*.
 This matters more than it might sound. Simulations like this one are
 **chaotic**: a difference in the very last bit (about 1 part in 10 million
 billion) grows larger every step until the two runs look completely different.
-So bit-for-bit agreement after 400 steps and 102,533 collisions is very strong
-evidence that the two programs are doing identical arithmetic.
+So bit-for-bit agreement after 400 steps and a six-figure collision count is
+very strong evidence that the two programs are doing identical arithmetic.
 
 To check this, both programs dump every number as its raw bits, written in
 hexadecimal (base 16). For example the number 1.0 is written
@@ -135,29 +147,35 @@ This test was run on:
 
 | Thing | Version |
 |---|---|
-| Computer | Windows 11 Pro for Workstations, 64-bit Intel/AMD (x86-64) |
-| C compiler | Microsoft Visual C++ (`cl`) version 19.51.36256 |
-| Where the C compiler lives | `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\` |
-| `make` (a build helper) | GnuWin32 Make 3.81 |
-| Rust compiler | `rustc` 1.91.1 |
-| Rust build tool | `cargo` 1.91.1 |
+| Computer | Apple M5 Max (Apple Silicon, arm64), 128 GB RAM |
+| Operating system | macOS Tahoe 26 (26.6.1, build 25G76) |
+| C compiler | Apple clang 21.0.0 (clang-2100.1.1.101), from the Xcode Command Line Tools |
+| Rust compiler | `rustc` 1.94.0 (aarch64-apple-darwin) |
+| Rust build tool | `cargo` 1.94.0 |
 | Original REBOUND source | github.com/hannorein/rebound, version 5.1.1, commit `dad5f978` |
 
-**No Linux, no WSL2, no GCC and no Clang were used anywhere.** Everything is
-native Windows.
+**Everything is native macOS on Apple Silicon.** No virtual machines, no
+Rosetta translation, no Linux — the C compiler and the Rust compiler both
+produce arm64 code that runs directly on the M5 Max.
 
-If you want to reproduce this you need:
+If you want to reproduce this you need two free things:
 
-1. **Visual Studio Build Tools** (free) — provides the C compiler `cl`.
-   Download from <https://visualstudio.microsoft.com/downloads/>, pick
-   "Build Tools for Visual Studio", and tick "Desktop development with C++".
-2. **Rust** — download `rustup-init.exe` from <https://rustup.rs> and run it.
-   Choose the default (MSVC) toolchain.
-3. **GnuWin32 Make** — in a terminal, run:
+1. **Xcode Command Line Tools** — provides the C compiler `clang`, the
+   library tool `ar`, and `git`. In Terminal, run:
 
    ```bash
-   winget install GnuWin32.Make
+   xcode-select --install
    ```
+
+   and click Install in the window that appears.
+
+2. **Rust** — install with the one-line command from <https://rustup.rs>:
+
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+
+   Accept the default (aarch64-apple-darwin) toolchain.
 
 ---
 
@@ -169,77 +187,99 @@ that we compare against.
 ### 6a. Get the source code
 
 ```bash
-cd C:\work
-git clone https://github.com/hannorein/rebound.git rebound\rebound
+cd ~/work
+git clone https://github.com/hannorein/rebound.git rebound/rebound
+cd rebound/rebound
+git checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb
 ```
 
-### 6b. Compile it
+The `git checkout` line pins the source to the exact version this port was
+made from (5.1.1), so you are comparing against the same code we did.
+
+### 6b. Compile the REBOUND library
 
 ```bash
-cd C:\work\rebound\rebound\examples\shearing_sheet
-cmd /c 'set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH% && "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && make'
+cd ~/work/rebound/rebound/src
+clang -c -DBUILDINGLIBREBOUND -D_GNU_SOURCE -DSERVER \
+      -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb \
+      -O2 -ffp-contract=off *.c
+ar rcs librebound_static.a *.o
 ```
 
-That one line does three things: it puts `make` on the search path, it runs
-`vcvars64.bat` (which tells the terminal where the C compiler is), and then it
-runs `make`.
+The first command compiles all 31 C source files (it finishes with no
+errors); the second bundles the results into one library file,
+`librebound_static.a` — think of it as a zip file of compiled code that other
+programs can link against. What the options mean:
 
-> ### ⚠ Two traps that will waste your afternoon
->
-> **Trap 1 — the order matters.** You must add GnuWin32 to `PATH` *before*
-> running `vcvars64.bat`, exactly as written above. If you do it the other way
-> round it will fail with "cl is not recognized". The reason: Windows expands
-> `%PATH%` when it *reads* the line, not when it runs it, so putting the
-> GnuWin32 part second silently erases everything `vcvars64.bat` just added.
->
-> **Trap 2 — use PowerShell, not Git-Bash.** Compile C only from PowerShell
-> using `cmd /c '...'`. Git-Bash's `cmd //c` can fail *silently* and leave an
-> old program file behind, so you end up testing yesterday's build and getting
-> nonsense differences. This actually happened to us and cost real time.
-
-When it finishes you will have `rebound.exe` plus the library files
-`librebound.lib` and `librebound.dll` in that folder.
-
-Each source file is compiled with these options, which matter for the test:
-
-```bash
-cl -c /DBUILDINGLIBREBOUND /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /Ox /fp:precise -DSERVER -DGITHASH=dad5f97806ecbb408dcaff728851c64e67f9f6eb /Fo:rebound.obj rebound.c
-```
-
-- `/Ox` = optimise for speed.
-- `/fp:precise` = **do not** rearrange floating-point arithmetic. This is
-  essential: it tells the compiler to compute things in the order written.
+- `-c` = compile each file, don't try to make a runnable program yet.
+- `-O2` = optimise for speed.
 - `-DSERVER` = include the built-in web viewer.
-- OpenGL is switched off automatically on Windows by REBOUND's own build files.
+- `-DGITHASH=...` = stamp the version number into the library.
+- `-ffp-contract=off` = **do not fuse floating-point operations.** This is
+  the essential one. Apple Silicon chips have a native instruction called FMA
+  (*fused multiply-add*) that computes `a*b+c` in one step with one rounding
+  instead of two — slightly *more* accurate, but with different last bits
+  than doing the multiply and add separately. Compilers love to use it. Rust
+  never fuses, so the C build must not either, or the two would disagree in
+  the last bit everywhere. (On Windows the same job was done by MSVC's
+  `/fp:precise` flag.)
 
-### 6c. Build the C test harness
+### 6c. Build the C test harness — and the shim
 
-The stock example prints rounded numbers and uses a random starting seed. For a
-bit-exact comparison we need a fixed seed and raw bits. `porttest/problem_test.c`
-is the stock example with exactly three changes, listed at the top of that file.
-Build it:
+The stock example prints rounded numbers and uses a random starting seed. For
+a bit-exact comparison we need a fixed seed (we use **42**) and raw bits.
+`porttest/problem_test.c` is the stock example with exactly three changes,
+listed at the top of that file.
+
+On macOS there is one extra ingredient: a ten-line helper file called
+`macos_shim/rand_r_glibc.c`. Compile it first:
 
 ```bash
-cd C:\work\rebound_rust\porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /I"..\..\rebound\rebound\src" /D_GNU_SOURCE /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /Ox /fp:precise problem_test.c librebound.lib /Fe:rebound_test.exe'
+cd ~/work/rebound_rust/porttest
+clang -c -O2 -ffp-contract=off macos_shim/rand_r_glibc.c -o macos_shim/rand_r_glibc.o
 ```
+
+> ### ⚠ The trap that will waste your afternoon
+>
+> **Never build a C harness without linking `macos_shim/rand_r_glibc.o`.**
+> If you leave it out, the program still builds and still runs — but it
+> silently uses Apple's random number generator instead of the one the test
+> was defined with, creates **1,441** particles instead of 1,482, and the
+> comparison fails at the very first particle. This actually happened to us
+> and is the whole subject of section 11. The command below includes the shim;
+> keep it that way.
+
+Now build the harness, linking the shim and the library from step 6b:
+
+```bash
+cd ~/work/rebound_rust/porttest
+clang -I../../rebound/rebound/src -D_GNU_SOURCE -O2 -ffp-contract=off \
+      problem_test.c macos_shim/rand_r_glibc.o \
+      ../../rebound/rebound/src/librebound_static.a -lm -o problem_test
+```
+
+(`-I...` tells the compiler where REBOUND's header files are; `-lm` links the
+system maths library; `-o problem_test` names the finished program.) You now
+have a runnable program called `problem_test` in the `porttest` folder.
 
 ---
 
 ## 7. Step 2 — Build the Rust program
 
 ```bash
-cd C:\work\rebound_rust
+cd ~/work/rebound_rust
 cargo build --release --example shearing_sheet_test
 ```
 
 `cargo` is Rust's build tool. `--release` means "optimise for speed" (like
-`/Ox`). `--example shearing_sheet_test` builds that one test program.
+`-O2`). `--example shearing_sheet_test` builds that one test program.
 
 This finishes with **zero warnings**. The Rust code is compiled with
-`#![forbid(unsafe_code)]`, which means the compiler *rejects* any use of Rust's
-escape hatch for unchecked operations, and `#![deny(warnings)]`, which turns
-every warning into a hard error. It uses **no third-party libraries at all**.
+`#![forbid(unsafe_code)]`, which means the compiler *rejects* any use of
+Rust's escape hatch for unchecked operations, and `#![deny(warnings)]`, which
+turns every warning into a hard error. It uses **no third-party libraries at
+all**. And note: the Rust program needs no shim — you will see why in
+section 11.
 
 ---
 
@@ -248,77 +288,86 @@ every warning into a hard error. It uses **no third-party libraries at all**.
 Run each program for 400 time steps:
 
 ```bash
-cd C:\work\rebound_rust\porttest
-.\rebound_test.exe 400
-..\target\release\examples\shearing_sheet_test.exe 400
+cd ~/work/rebound_rust/porttest
+./problem_test 400
+../target/release/examples/shearing_sheet_test 400
 ```
 
 Each writes two files: the starting state and the final state, as raw bits.
+Each also prints its particle count (`N after init: 1482`) and, at the end,
+its step and collision totals.
 
-Now compare them. In PowerShell:
+Now compare the files. `cmp -s` compares two files byte by byte and says
+nothing — it only sets a success/failure flag, which the `&& echo` turns into
+a visible word:
 
-```powershell
-Compare-Object (Get-Content state_c_init.txt)  (Get-Content state_rust_init.txt)
-Compare-Object (Get-Content state_c_final.txt) (Get-Content state_rust_final.txt)
+```bash
+cmp -s state_c_init.txt  state_rust_init.txt  && echo init IDENTICAL
+cmp -s state_c_final.txt state_rust_final.txt && echo final IDENTICAL
 ```
 
-`Compare-Object` prints the lines that differ. **If it prints nothing, the
-files are identical** — that is what you want.
+**If a line prints `IDENTICAL`, that pair of files matches byte for byte.**
+(If you ever want to *see* a difference, run `diff file1 file2` instead — it
+prints the lines that disagree.)
 
 As a second, independent check, take a *fingerprint* of each file. A SHA-256
 hash is a 64-character code; if even one bit of the file changed, the code
 changes completely:
 
-```powershell
-Get-FileHash state_c_final.txt    -Algorithm SHA256
-Get-FileHash state_rust_final.txt -Algorithm SHA256
+```bash
+shasum -a 256 state_c_final.txt state_rust_final.txt
 ```
 
 ---
 
 ## 9. The result
 
+Measured on this machine:
+
 ```
-shearing_sheet 400 steps: init=IDENTICAL final=IDENTICAL
-C    SHA256: 75BDAAB7109F125192F56AEB0CCDCAC554AF88A165FE11075EC5A871178521F0
-Rust SHA256: 75BDAAB7109F125192F56AEB0CCDCAC554AF88A165FE11075EC5A871178521F0
+init  IDENTICAL
+final IDENTICAL
+
+418c864dd1a610cbe8ea6d81ecafa1e4ce6d36837494177d9875ee820ef0766f  state_c_final.txt
+418c864dd1a610cbe8ea6d81ecafa1e4ce6d36837494177d9875ee820ef0766f  state_rust_final.txt
 ```
 
 The two fingerprints are the same. **Every one of the 1,482 particles has the
-identical position and velocity — all 64 bits of each of the 6 numbers — after
-400 steps and 102,533 collisions.**
+identical position and velocity — all 64 bits of each of the 6 numbers —
+after 400 steps and every collision the run resolved.**
 
-The run itself:
+> **Why is this fingerprint different from the Windows one?** The Windows
+> edition of this test reported SHA-256
+> `75bdaab7109f125192f56aeb0ccdcac554af88a165fe11075ec5a871178521f0`. Both
+> are correct. The bounce law calls the system maths library's `exp` and
+> `log` functions, and Microsoft's and Apple's maths libraries round a few
+> inputs differently — so the *trajectory* differs between platforms after
+> the first bounce, while on each platform the C program and the Rust
+> program (which share that platform's maths library) agree exactly. The
+> acceptance criterion is C-versus-Rust agreement *on the same machine*, and
+> on this Mac that agreement is bit-perfect.
 
-```
-Toomre wavelength: 61.009899
-N after init: 1482
-final: t=1.91217633050229269e+04 steps=400 collisions=102533
-```
-
-**Speed.** On the same computer, the same 400 steps took:
-
-| | Time |
-|---|---|
-| Original C | 2.2 seconds |
-| Our Rust | 1.7 seconds |
-
-The Rust version is slightly *faster* here, while doing the same arithmetic and
-carrying the extra safety guarantees. (Do not read too much into one
-measurement — across a range of integrators the two are within about ±30% of
-each other, sometimes one ahead, sometimes the other.)
+**Speed.** We did not re-time the run for this document. For the record, on
+the Windows 11 machine where the port was first developed, the same 400 steps
+took 2.2 seconds in C and 1.7 seconds in Rust — the Rust version slightly
+faster while doing the same arithmetic and carrying the extra safety
+guarantees. (Do not read too much into one measurement; across a range of
+integrators the two are within about ±30% of each other, sometimes one ahead,
+sometimes the other.)
 
 ---
 
-## 10. The detective story: the first attempt FAILED
+## 10. The detective story, part one: Windows and the `pow` function
 
-It is worth telling you what happened the first time, because it shows how the
-test is supposed to be used.
+This test has failed twice in its life, once per platform, and both failures
+are worth telling in full because they show how the test is supposed to be
+used. Part one happened on Windows, where the port was first built. It is
+history now — nothing in it needs fixing on your Mac — but it explains a line
+of code you will find in both test programs to this day.
 
-**Symptom.** The starting positions matched perfectly. But after 400 steps,
-**330 of the 1,482 particles differed** — always in the last one or two bits.
-
-Here is how we found the cause.
+**Symptom (Windows, first ever run).** The starting positions matched
+perfectly. But after 400 steps, **330 of the 1,482 particles differed** —
+always in the last one or two bits.
 
 ### Clue 1 — when does it first go wrong?
 
@@ -328,8 +377,8 @@ mismatch. So one single event during step 78 started it.
 
 ### Clue 2 — what happened at step 78?
 
-We printed every collision resolved during step 78 and compared. Exactly **one**
-pair of particles — numbers **390 and 1456** — came out with different
+We printed every collision resolved during step 78 and compared. Exactly
+**one** pair of particles — numbers **390 and 1456** — came out with different
 velocities. Every input to that collision was bit-identical. Only the output
 differed.
 
@@ -347,34 +396,24 @@ function in the collision path.
 
 ### Clue 4 — testing every maths function
 
-We wrote a test that calls each maths function 200,000 times in both C and Rust
-and compares the raw bits:
+We wrote a test that calls each maths function 200,000 times in both C and
+Rust and compares the raw bits. On Windows, the result was:
 
-```bash
-cd C:\work\rebound_rust
-cargo build --release --example libm_diff
-cd porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /Ox /fp:precise libm_diff.c /Fe:libm_diff.exe'
-.\libm_diff.exe
-..\target\release\examples\libm_diff.exe
-```
-
-The result:
-
-| Function | C vs Rust |
+| Function | C vs Rust (Windows / MSVC) |
 |---|---|
 | `sin`, `cos`, `tan`, `atan2` | identical, all 200,000 |
 | `sqrt`, `fmod`, `exp`, `log` | identical, all 200,000 |
 | `cbrt` (cube root) | identical |
 | **`pow`** | **60 of 200,000 differed** (0.03%), never by more than 2 ULP |
 
-**`pow` is the one and only maths function where Rust and Microsoft's C library
-disagree.** Rust ships its own `pow`; Microsoft's C library has a different
-one. Both are correct to within the accuracy the standard requires — they just
-round a handful of cases differently.
+**On Windows, `pow` was the one and only maths function where Rust and
+Microsoft's C library disagreed.** Rust ships its own `pow` there;
+Microsoft's C library has a different one. Both are correct to within the
+accuracy the standard requires — they just round a handful of cases
+differently.
 
-So the bug was not in our port at all. It was a difference between two vendors'
-maths libraries.
+So the bug was not in the port at all. It was a difference between two
+vendors' maths libraries.
 
 ### Clue 5 — the proof (the control experiment)
 
@@ -388,76 +427,184 @@ eps = 0.32 * exp(-0.234 * log(fabs(v)*100.));     /* uses exp and log */
 
 We made that change **in both programs identically**, and re-ran.
 
-**Result: all 400 steps bit-for-bit identical, matching SHA-256.**
+**Result: all 400 steps bit-for-bit identical, matching SHA-256.** That is
+why `porttest/problem_test.c` and `examples/shearing_sheet_test.rs` both use
+the `exp`/`log` form to this day.
 
-That is the run reported in section 9, and it is why `porttest/problem_test.c`
-and `examples/shearing_sheet_test.rs` both use the `exp`/`log` form. Swapping
-the last remaining vendor difference out of the test made everything match —
-which proves the port itself is exact, and the only difference in the whole
-system was `pow`.
+The same fingerprint later showed up independently in the **BS integrator**
+(a different method, not used in the shearing sheet), which chooses its own
+step size using `pow`: on Windows, steps 1 to 2,559 were bit-identical, and
+at step 2,560 all particle positions and velocities were *still*
+bit-identical but the proposed next step size differed by exactly one ULP. A
+200,000-sample test of `pow` with exactly the arguments that step-size
+chooser uses found 56 disagreements (0.0280%), every one exactly one ULP.
+Same function, same rate, same size. Case closed.
 
-### The same story, seen a second time
+### And on macOS? The story evaporates.
 
-Much later we found the identical fingerprint in a completely different place,
-which is nice independent confirmation. The **BS integrator** (a different
-method, not used in the shearing sheet) chooses its own step size using `pow`.
-Running it for thousands of steps:
-
-- steps 1 to 2,559: everything bit-identical;
-- step 2,560: **all particle positions and velocities still bit-identical**,
-  but the *proposed next step size* differed by exactly **one ULP**.
-
-We then tested `pow` with exactly the arguments that step-size chooser uses
-(200,000 samples):
+On this Mac we re-ran the same 200,000-sample maths-function comparison, now
+covering **21 functions**. You can too — no shim needed, these programs call
+only the maths library:
 
 ```bash
-cd C:\work\rebound_rust
-cargo build --release --example bs_pow_diff
+cd ~/work/rebound_rust
+cargo build --release --example libm_diff
 cd porttest
-cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" >nul && cl /nologo /Ox /fp:precise bs_pow_diff.c /Fe:bs_pow_diff.exe'
-.\bs_pow_diff.exe
-..\target\release\examples\bs_pow_diff.exe
+clang -O2 -ffp-contract=off libm_diff.c -lm -o libm_diff
+./libm_diff
+../target/release/examples/libm_diff
 ```
 
-Result: **56 disagreements out of 200,000 (0.0280%), every single one exactly
-one ULP.** Same function, same rate, same size. Case closed.
+The measured macOS result: **C and Rust are bit-identical for all 21
+functions — including `pow`.** On this platform both the clang-compiled C and
+the Rust program resolve every maths call, `pow` included, to Apple's maths
+library, so there is nothing left to disagree about. The Windows port's "one
+known difference" simply does not exist here.
+
+The BS step-size check confirms it the same way:
+
+```bash
+cd ~/work/rebound_rust
+cargo build --release --example bs_pow_diff
+cd porttest
+clang -O2 -ffp-contract=off bs_pow_diff.c -lm -o bs_pow_diff
+./bs_pow_diff
+../target/release/examples/bs_pow_diff
+```
+
+Measured macOS result: **bit-identical, all 200,000 samples.**
+
+We kept the `exp`/`log` form of the bounce law anyway — it is proven
+identical on both platforms, and it keeps the two editions of the test
+directly comparable.
 
 ---
 
-## 11. What this proves, and what it does not
+## 11. The detective story, part two: macOS and the random numbers
+
+So with the `pow` lesson already learned, bringing the test to the Mac should
+have been routine: build the C library with clang, build the harness, run,
+compare. Here is what the very first macOS run printed instead.
+
+**Symptom.** The Rust program said `N after init: 1482`, as always. The C
+program said `N after init: 1441`. Forty-one particles were simply missing —
+and the comparison failed at **particle 1**, before a single time step had
+been taken.
+
+### Clue 1 — the failure is at the starting line
+
+On Windows the starting states had always matched and the trouble began
+mid-run. This was the opposite: the two programs disagreed about the *initial
+conditions*. Only one part of the program builds the initial conditions — the
+**random number generator** that places the particles.
+
+"Random" here does not mean unpredictable. Simulations use a
+**pseudo-random number generator**: a simple formula that, starting from a
+chosen number called the **seed**, produces a long, fixed, repeatable stream
+of scrambled-looking numbers. Same seed, same generator ⇒ same stream, every
+time, on every machine. Both programs use seed **42** precisely so that they
+will lay down identical particles. The shearing sheet keeps drawing random
+positions until the patch reaches a target surface density, so the particle
+*count* itself depends on the stream — 1,482 with the expected stream. A
+count of 1,441 means the C program was drawing from a *different stream*.
+Same seed, different generator.
+
+### Clue 2 — read the original source
+
+The generator REBOUND uses is a standard C function called `rand_r`. In the
+original `rebound.c` there is a curious passage: a complete, hand-vendored
+copy of `rand_r` from **glibc** (the GNU C library used on Linux), with a
+comment citing its source
+(`codebrowser.dev/glibc/glibc/stdlib/rand_r.c.html`) — wrapped in the
+preprocessor guard `#ifdef _WIN32`, meaning "only compile this on Windows".
+
+That explains everything:
+
+- **On Linux**, `rand_r` comes from glibc itself.
+- **On Windows**, Microsoft's C library has no `rand_r` at all, so REBOUND
+  ships the glibc copy — the `#ifdef _WIN32` turns it on, and our Windows
+  build had used it without us ever noticing.
+- **On macOS**, the guard is false, so the vendored copy is *not* compiled —
+  and Apple's C library *does* have a function named `rand_r`, so the build
+  succeeds silently. But Apple's `rand_r` is a **different formula with the
+  same name**. Seed 42 in, a completely different stream out.
+
+Neither generator is "wrong" — both are legitimate `rand_r` implementations.
+But our Rust port implements the *glibc* formula on every platform (that is
+what all the reference results were made with, and it is why the Rust side
+needs no shim and printed 1,482 everywhere). For the comparison to mean
+anything, the C reference on macOS has to use the glibc formula too.
+
+### The fix — a shim, not an edit
+
+The original REBOUND source tree is a read-only reference: we do not edit it,
+ever, because the whole point is to compare against *unmodified* upstream
+code. So instead of touching `rebound.c`, we wrote
+`porttest/macos_shim/rand_r_glibc.c`: the same vendored glibc algorithm,
+compiled as its own little object file and placed on the link line of every C
+harness (you did this in section 6c).
+
+Why does that work? When the linker assembles the final program, it satisfies
+each function name with the first definition it encounters. Our
+`rand_r_glibc.o` appears on the command line *before* the system C library,
+so REBOUND's call to `rand_r` is wired to the glibc formula and Apple's
+version is never used. The upstream source stays untouched.
+
+(If you are keeping score: Windows needed a small compatibility shim of its
+own for the REBOUNDx half of this project, because MSVC lacks a C99 feature
+called variable-length arrays that clang supports fine. Each platform needs
+exactly one tiny shim, for opposite reasons — Windows because a thing was
+missing, macOS because a thing was present but different.)
+
+### The result
+
+With the shim linked: `N after init: 1482`, starting states identical, and —
+as section 9 records — all 400 steps bit-for-bit identical with matching
+SHA-256 fingerprints. The same fix also cured the only other test in the
+suite that draws random numbers (the MEGNO/variational test
+`movetocom_var`), which is now bit-identical too.
+
+Two platforms, two detective stories, one moral: **every mismatch this test
+has ever shown traced back to the platform's system libraries, never to the
+port.** Which is exactly what the test is for.
+
+---
+
+## 12. What this proves, and what it does not
 
 **What it proves.** For everything REBOUND itself calculates in this
 simulation — gravity, the tree, collisions, the boundary, the integrator, the
 random numbers — the Rust port and the original C produce identical results
-down to the last bit.
+down to the last bit on this machine. And on macOS that agreement extends to
+*every* maths-library function we tested, `pow` included: 21 functions,
+200,000 samples each, zero differing bits.
 
-**What it does not prove.** It does not prove the two are identical when the
-program calls `pow` at run time. They agree on about 99.97% of inputs and
-differ by at most 2 ULP on the rest. Where a simulation is chaotic, that tiny
-difference will eventually grow, and the two runs will drift apart — while both
-remain equally valid answers to the same problem.
+**What it does not prove.** It does not prove that a run on this Mac will
+match a run on a Windows or Linux machine. Each platform's maths library
+(`exp`, `log`, `pow`, ...) rounds a few inputs differently from the others,
+and in a chaotic simulation those last-bit differences grow until the
+trajectories visibly part ways — while both remain equally valid answers to
+the same problem. That is why the Windows edition of this test has a
+different SHA-256 fingerprint (section 9): the guarantee is C-equals-Rust
+*within* a platform, not platform-equals-platform. On the Windows edition
+there was the further caveat that C and Rust disagreed about `pow` at run
+time; on macOS even that caveat is gone.
 
-Places where `pow` gets called:
-
-- user-written physics such as the stock Bridges bounce law,
-- `reb_random_powerlaw` (drawing random sizes from a power law),
-- the BS integrator's step-size chooser.
-
-Everywhere else in REBOUND, agreement is exact.
-
-**One honest caveat about this document's scope.** This is one test problem on
-one computer. It is a very demanding test, but it is still a single
-configuration. The broader evidence — 63 different integrator settings, all
-bit-identical — is in the main provenance document `rebound_rust.md`, which
-also repeats all of these commands so you never need two documents open.
+**One honest caveat about this document's scope.** This is one test problem
+on one computer. It is a very demanding test, but it is still a single
+configuration. The broader evidence — 63 different integrator configurations,
+all 63 measured bit-identical on this Mac — is in the main provenance
+document `rebound_rust.md`, which also repeats all of these commands so you
+never need two documents open.
 
 ---
 
-## 12. Files involved
+## 13. Files involved
 
 | File | What it is |
 |---|---|
 | `porttest/problem_test.c` | the C test harness (stock example + fixed seed + bit dump) |
+| `porttest/macos_shim/rand_r_glibc.c` | the glibc `rand_r` shim from section 11 — linked into every C harness on macOS |
 | `examples/shearing_sheet_test.rs` | the Rust twin of that harness |
 | `examples/shearing_sheet.rs` | a straight port of the *stock* example (uses `pow`, has the web viewer) |
 | `porttest/libm_diff.c`, `examples/libm_diff.rs` | the maths-library comparison from section 10 |

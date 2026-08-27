@@ -134,3 +134,19 @@ A. B. Olde Daalhuis, D. W. Lozier, B. I. Schneider, R. F. Boisvert,
 C. W. Clark, B. R. Miller, B. V. Saunders, H. S. Cohl and M. A. McClain,
 eds. NIST publishes **no** reference implementation; its "Software" page
 is a bibliography of third-party packages.
+
+---
+
+## `rebound_rust/` and `reboundx_rust/` — the N-body ports
+
+| | |
+|---|---|
+| Upstream (rebound_rust) | `hannorein/rebound` **5.1.1** @ `dad5f978` — translated, not vendored |
+| Upstream (reboundx_rust) | `dtamayo/reboundx` **5.1.0** — translated, not vendored |
+| What they are | Pure-Rust, zero-`unsafe`, dependency-free translations of the REBOUND N-body code and its REBOUNDx extra-physics library |
+| Licence | **GPL-3.0-or-later** (each folder's own `LICENSE`) — note: unlike the BSD-3-Clause code elsewhere in this repository, these two folders are GPL; they are self-contained works that share the repository without sharing code with it |
+| Modified here? | Translation by this project's authors; verified bit-for-bit against the upstream C compiled locally (see `REBOUND_REBOUNDX_MACOS_PROVENANCE.md`) |
+
+The upstream C trees themselves are **not** committed: `.gitignore`
+reserves `/rebound/` and `/reboundx/` for local reference clones used by
+the verification harnesses.

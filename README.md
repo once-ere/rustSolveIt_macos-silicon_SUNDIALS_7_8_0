@@ -97,6 +97,35 @@ and L); **622 passed workspace-wide on macOS/Apple Silicon**
 - `PLAN.md` — the integration plan / design record (union mapping,
   grammar, solver mapping, verification results).
 
+## The REBOUND / REBOUNDx N-body ports
+
+This repository also carries two further pure-Rust astronomy libraries,
+built with the same discipline (zero `unsafe`, zero dependencies, zero
+warnings, C names preserved) and verified bit-for-bit against their
+originals compiled with Apple clang **on this machine**:
+
+- [`rebound_rust/`](rebound_rust) — `rebound_rs` 5.1.1, a translation of
+  Hanno Rein et al.'s [REBOUND](https://github.com/hannorein/rebound)
+  N-body code: 63 integrator configurations bit-identical, the
+  1,482-particle shearing sheet byte-identical (equal SHA-256),
+  Simulationarchive files interchangeable with the C build in all six
+  directions, 394 tests, 13 examples — each with its own Jupyter
+  notebook.
+- [`reboundx_rust/`](reboundx_rust) — `reboundx_rs` 5.1.0, a translation
+  of Dan Tamayo et al.'s [REBOUNDx](https://github.com/dtamayo/reboundx)
+  extra-physics library: all six `tides_spin` acceptance runs
+  bit-identical (including the full Kozai run's thousands of adaptive
+  steps), binary files interchangeable with C-REBOUNDx, 137 tests,
+  4 examples with notebooks.
+
+Both folders are GPL-3.0-or-later (their own LICENSE files — unlike the
+BSD-3-Clause simulator around them). The complete guide, written for a
+reader who has never programmed, is
+[`rebound_rust/rebound_rust.md`](rebound_rust/rebound_rust.md) (also as
+a 36-page PDF); the macOS port provenance with every command and
+measured result is
+[`REBOUND_REBOUNDX_MACOS_PROVENANCE.md`](REBOUND_REBOUNDX_MACOS_PROVENANCE.md).
+
 ## Six solver families, four questions
 
 | you type | question | solver |

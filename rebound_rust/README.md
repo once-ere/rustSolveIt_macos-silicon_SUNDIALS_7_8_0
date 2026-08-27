@@ -33,14 +33,14 @@ running macOS 26, Apple clang 21, Rust 1.94):
 
 | Test | Result |
 |---|---|
-| All 21 maths functions (`sin`, `cos`, `tan`, `atan2`, `sqrt`, `fmod`, `exp`, `log`, `cbrt`, `pow`, …), 200,000 samples each | **all bit-identical — including `pow`** |
+| All nine tested maths functions (`sin`, `cos`, `tan`, `atan2`, `pow`, `sqrt`, `fmod`, `exp`, `log`), 200,000 samples each, plus an `exp`/`log` differential | **all bit-identical — including `pow`** |
 | 63 REBOUND integrator configurations, 500 steps each | **all bit-identical** |
 | Shearing sheet: seed 42, 1,482 particles, 400 steps | **byte-identical dumps, equal SHA-256** (`418c864d…`) |
 | All 65 orbital-derivative functions | **130/130 outputs bit-identical** |
 | Frequency analysis (MFT, FMFT, FMFT2) | **bit-identical** |
-| MEGNO / variational equations (`movetocom_var`) | **bit-identical** |
+| MEGNO (a chaos indicator) / variational equations (`movetocom_var`) | **bit-identical** |
 | Simulationarchive files written by C, continued in Rust — and vice versa | **6/6 directions bit-identical** |
-| Web server: blob served by Rust, loaded by the C build | **bit-identical state** |
+| Web server: simulation blob (the simulation's raw bytes) served by Rust, loaded by the C build | **bit-identical state** |
 | REBOUNDx `tides_spin` examples (3 of them), short and long runs | **all 6 runs bit-identical, spins included** |
 | REBOUNDx binary files written by C, read by Rust — and vice versa | **round-trips identical, 25/25 checks passed** |
 | Automated test suites: 394 (REBOUND) + 137 (REBOUNDx) | **531 pass, 0 fail** |
@@ -80,10 +80,10 @@ clang compiles those files unmodified.)
 
 ### The one known difference — there isn't one on macOS
 
-On this platform, **no tested maths function differs**. All 21 functions —
-`pow` (raise-to-a-power) included — are bit-identical between the C build and
-the Rust build across 200,000 sample inputs each, because both clang-compiled
-C and Rust resolve those calls to Apple's maths library.
+On this platform, **no tested maths function differs**. All nine tested
+functions — `pow` (raise-to-a-power) included — are bit-identical between the
+C build and the Rust build across 200,000 sample inputs each, because both
+clang-compiled C and Rust resolve those calls to Apple's maths library.
 
 The Windows sister port's record is different, and worth keeping for history:
 there, `pow` was the single function where Rust's implementation and
@@ -152,12 +152,14 @@ fn main() {
 
 Run it with `cargo run --release` from inside `~/work/myproject`.
 
-Adding extra physics with REBOUNDx (general-relativistic precession):
+Adding extra physics with REBOUNDx (general-relativistic precession) —
+continuing from the example above, with `sim` already created:
 
 ```rust
 use rebound_rs::*;
 use reboundx_rs::*;
 
+// with `sim` from the two-body example in scope:
 rebx_attach(&mut sim);
 let gr = rebx_load_force(&mut sim, "gr_potential").unwrap();
 rebx_add_force(&mut sim, gr);
@@ -167,16 +169,18 @@ if let Some(rebx) = rebx_extras_mut(&mut sim) {
 reb_simulation_integrate(&mut sim, 1000.0);
 ```
 
-There are **17 runnable examples** across the two crates (13 REBOUND +
-4 REBOUNDx), each run with
+There are **17 runnable examples** across the two crates (a *crate* is a Rust
+package/library — here, 13 examples in the REBOUND crate + 4 in the REBOUNDx
+crate), each run with
 
 ```bash
 cargo run --release --example <name>
 ```
 
 from the crate's folder, and **every one of the 17 has a companion Jupyter
-notebook** (an interactive document mixing runnable code with explanation) in
-`notebooks/` — including `tides_spin_pseudo`.
+notebook** (an interactive document mixing runnable code with explanation).
+All 17 notebooks live in this crate's folder, `rebound_rust/notebooks/` —
+including the four REBOUNDx ones, such as `tides_spin_pseudo`.
 
 ---
 
@@ -300,7 +304,7 @@ Both crates live as **top-level folders inside the
 |---|---|
 | `src/` | the REBOUND translation (29 modules) |
 | `examples/` | runnable examples — 13 here + 4 in `reboundx_rust/`, 17 in all, each with a companion Jupyter notebook |
-| `notebooks/` | the executed notebooks, one per example (including `tides_spin_pseudo`) |
+| `notebooks/` | the executed notebooks, one per example — all 17 live here, including the four REBOUNDx ones (such as `tides_spin_pseudo`) |
 | `porttest/` | C reference harnesses, their raw-bit output, and the macOS `rand_r` shim in `macos_shim/` |
 | `rebound_rust.md` / `.pdf` | **the master document**: complete instructions, provenance and verification for both ports |
 | `shearing_sheet_port_test.md` | the shearing-sheet acceptance test, in full |

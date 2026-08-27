@@ -89,14 +89,17 @@ and settle the spin.
 
 **Exercises:** the WHFast integrator, the `tides_spin` force, and REBOUNDx's
 ability to evolve spin vectors as extra differential equations alongside the
-orbits.
+orbits. (An **integrator** is the part of the program that advances the
+simulation through time in many small steps. WHFast takes steps of a fixed
+size; IAS15, in Test 2, picks each step's size as it goes.)
 
 ### Test 2 — `tides_spin_kozai`
 
 A planet with a distant stellar companion, undergoing a **Kozai cycle** — the
 companion's pull periodically drives the planet's orbit to a very high
-eccentricity, then back. During those high-eccentricity phases the planet
-swings very close to its star.
+**eccentricity** (the measure of how stretched-out the oval of an orbit is),
+then back. During those high-eccentricity phases the planet swings very close
+to its star.
 
 **Exercises:** the **adaptive** IAS15 integrator, which chooses its own step
 size. This is a much harder test than it sounds: for the results to match
@@ -122,9 +125,14 @@ half-way through by setting the migration timescale to infinity.
 | Integrator | WHFast (fixed step) | IAS15 (**adaptive**) | WHFast (fixed step) |
 | Bodies | 2 | 3 | 3 |
 | REBOUNDx forces | 1 | 2 | 2 |
-| Spin ODE evolution | yes | yes | yes |
+| Spin equations evolved alongside the orbits (ODEs — ordinary differential equations) | yes | yes | yes |
 | Rotation into the invariable plane | yes | yes | yes |
 | Parameter changed mid-run | no | no | **yes** |
+
+(About that last-but-one row: before the run starts, both programs tilt the
+whole system so that its combined spin-plus-orbit rotation axis points
+straight up — astronomers call this working in the **invariable plane**. It is
+one more calculation that must agree bit-for-bit.)
 
 ## 4. What "bit-for-bit identical" means
 
@@ -139,8 +147,10 @@ in the very last bit grows with every step until the two runs look completely
 different. So bit-for-bit agreement is the only test that really proves the
 arithmetic is the same.
 
-Both programs therefore print every number as raw bits in hexadecimal. The
-number 1.0 prints as `3ff0000000000000`. We then compare the files.
+Both programs therefore print every number as raw bits in **hexadecimal** — a
+compact base-16 notation where each character stands for four bits, so 64 bits
+fit in 16 characters. The number 1.0 prints as `3ff0000000000000`. We then
+compare the files.
 
 ## 5. The equipment
 
@@ -151,7 +161,7 @@ number 1.0 prints as `3ff0000000000000`. We then compare the files.
 | C compiler | Apple `clang` 21.0.0 (clang-2100.1.1.101), from the Xcode Command Line Tools |
 | Rust | `rustc` 1.94.0, `cargo` 1.94.0 (`aarch64-apple-darwin`) |
 | REBOUND (C) | version 5.1.1, commit `dad5f978` |
-| REBOUNDx (C) | version 5.1.0 |
+| REBOUNDx (C) | version 5.1.0 (the upstream `5.1.0` release tag, commit `e884547a`) |
 
 No Linux, no virtual machine, no Homebrew compiler — everything native macOS:
 Apple's clang, Apple's system maths library, Apple Silicon.
@@ -163,24 +173,36 @@ Apple's clang, Apple's system maths library, Apple Silicon.
 #    librarian (ar). A dialog pops up; click Install.
 xcode-select --install
 
-# 2. Rust, from the official installer at https://rustup.rs — it gives you
-#    the rustc compiler and the cargo build tool for Apple Silicon.
+# 2. Rust. The official installer at https://rustup.rs is the one command
+#    below (the site shows this very same line). Accept the default choices
+#    and it gives you the rustc compiler and the cargo build tool for
+#    Apple Silicon.
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 ## 6. Step 1 — Build the original C REBOUNDx
 
 ### 6a. Get both sources
 
+Your project folder already contains the Rust ports, `rebound_rust/` and
+`reboundx_rust/`. The two `git clone` commands below (`git` comes with the
+Command Line Tools from §5) add the original C source code beside them, so
+all four folders sit next to each other.
+
 ```bash
 cd ~/work
 git clone https://github.com/hannorein/rebound.git rebound/rebound
 git clone https://github.com/dtamayo/reboundx.git reboundx
 
-# Pin REBOUND to the exact revision we tested against:
+# Pin both trees to the exact revisions we tested against — without this
+# you would get whatever today's newest version is, and the bit-for-bit
+# comparison below would no longer be guaranteed:
 git -C rebound/rebound checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb
+git -C reboundx checkout 5.1.0
 ```
 
-(The REBOUNDx copy we tested was version 5.1.0.)
+(`5.1.0` is REBOUNDx's official release tag; it names commit
+`e884547a9d9790dd4779a9c129b72da8225ff67a`.)
 
 ### 6b. Build C REBOUND, and make a static library from it
 
@@ -287,7 +309,8 @@ harnesses are those examples with exactly three changes, listed at the top of
 each file:
 
 1. `<unistd.h>` dropped (nothing from it is used),
-2. `system("rm ...")` removed,
+2. the shell call `system("rm ...")` replaced by the C function `remove()`
+   (the same file deletion, no shell involved),
 3. the text output replaced by a final dump of every state variable as raw bits.
 
 **The physics setup is byte-for-byte the stock example.**
@@ -359,12 +382,17 @@ byte**. With `-s` ("silent") it prints nothing and just reports success or
 failure, so we chain it with `&&`/`||` to print a one-word verdict:
 `IDENTICAL` if every byte matches, `DIFFERENT` otherwise.
 
-Each simulation is run twice — once at a short end time, once at a long one:
+Each simulation is run twice — once at a short end time, once ten times
+longer. The odd-looking numbers are simply **times, in the simulations' own
+units**: in those units a body at distance 1 takes exactly 2π ≈ 6.283 time
+units to go around once, so t = 62.83 is 10 × 2π and t = 628.3 is 100 × 2π.
+(They are *not* counts of the simulated planets' orbits — a hot Jupiter with a
+3-day year completes over a thousand of its own orbits by t = 62.83.)
 
 ```bash
 cd ~/work/reboundx_rust/porttest
 
-# ---- Test 1: pseudo-synchronisation — 10 orbits, then 100 orbits ----
+# ---- Test 1: pseudo-synchronisation — t = 62.83 (10 x 2*pi), then t = 628.3 ----
 ./tides_spin_pseudo_c 62.83185307179586
 ../target/release/examples/tides_spin_pseudo 62.83185307179586
 cmp -s state_pseudo_c.txt state_pseudo_rust.txt && echo IDENTICAL || echo DIFFERENT
@@ -382,7 +410,7 @@ cmp -s state_kozai_c.txt state_kozai_rust.txt && echo IDENTICAL || echo DIFFEREN
 ../target/release/examples/tides_spin_kozai 100000.0
 cmp -s state_kozai_c.txt state_kozai_rust.txt && echo IDENTICAL || echo DIFFERENT
 
-# ---- Test 3: migration + obliquity tides — 10 orbits, then 100 orbits ----
+# ---- Test 3: migration + obliquity tides — t = 62.83 (10 x 2*pi), then t = 628.3 ----
 ./tides_spin_migration_c 62.83185307179586
 ../target/release/examples/tides_spin_migration 62.83185307179586
 cmp -s state_migration_c.txt state_migration_rust.txt && echo IDENTICAL || echo DIFFERENT
@@ -425,12 +453,12 @@ All six runs, measured on the machine in §5:
 
 | Test | End time | Result |
 |---|---|---|
-| pseudo-synchronisation | 10 orbits (t = 62.83) | **BIT-IDENTICAL** |
-| pseudo-synchronisation | 100 orbits (t = 628.3) | **BIT-IDENTICAL** |
+| pseudo-synchronisation | short run (t = 62.83 = 10 × 2π) | **BIT-IDENTICAL** |
+| pseudo-synchronisation | long run (t = 628.3 = 100 × 2π) | **BIT-IDENTICAL** |
 | Kozai cycle | t = 1,000 | **BIT-IDENTICAL** |
 | Kozai cycle | t = 100,000 (the example's full default) | **BIT-IDENTICAL** |
-| migration + obliquity tides | 10 orbits (t = 62.83) | **BIT-IDENTICAL** |
-| migration + obliquity tides | 100 orbits (t = 628.3) | **BIT-IDENTICAL** |
+| migration + obliquity tides | short run (t = 62.83 = 10 × 2π) | **BIT-IDENTICAL** |
+| migration + obliquity tides | long run (t = 628.3 = 100 × 2π) | **BIT-IDENTICAL** |
 
 Every position, every velocity, every mass and **every spin vector** matched to
 all 64 bits, in all six runs.
@@ -490,10 +518,10 @@ REBOUNDx produces results identical to the original C, down to the last bit.
    that C and Rust agree *within* a platform, and here they do, exactly.
 
 **What about the maths functions themselves?** We measured that too, on this
-Mac: for each of **21** library maths functions (`sin`, `cos`, `tan`, `atan2`,
-`sqrt`, `fmod`, `exp`, `log`, `cbrt`, `pow`, and more), C and Rust were
-compared on 200,000 sample inputs each — and **every one, including `pow`, is
-bit-identical**. Both the clang-built C and the Rust resolve every such call
+Mac: for each of the **nine** library maths functions the comparison harness
+dumps (`sin`, `cos`, `tan`, `atan2`, `pow`, `sqrt`, `fmod`, `exp`, `log`),
+C and Rust were compared on 200,000 sample inputs each — and **every one,
+including `pow`, is bit-identical**. Both the clang-built C and the Rust resolve every such call
 to Apple's system maths library, so there is **no known divergent maths
 function on macOS**. The full comparison is written up in `rebound_rust.md`.
 

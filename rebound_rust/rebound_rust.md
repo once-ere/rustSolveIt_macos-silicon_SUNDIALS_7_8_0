@@ -498,8 +498,8 @@ Add the second dependency to `Cargo.toml`:
 
 ```toml
 [dependencies]
-rebound_rs  = { path = "C:/work/rebound_rust" }
-reboundx_rs = { path = "C:/work/reboundx_rust" }
+rebound_rs  = { path = "/Users/youruser/work/rebound_rust" }
+reboundx_rs = { path = "/Users/youruser/work/reboundx_rust" }
 ```
 
 The pattern is always the same:
@@ -612,6 +612,9 @@ cargo build --release --example frequency_test
 cargo build --release --example archive_test
 cargo build --release --example server_test
 cargo build --release --example addfmt_test
+cargo build --release --example kepler_rectilinear
+cargo build --release --example movetocom_var
+cargo build --release --example movetocom_var_test
 ```
 
 From `~/work/reboundx_rust`:
@@ -625,6 +628,7 @@ cargo doc   --no-deps --open
 cargo build --release --example tides_spin_pseudo
 cargo build --release --example tides_spin_kozai
 cargo build --release --example tides_spin_migration
+cargo build --release --example rebx_binary_roundtrip
 ```
 
 To run any example:
@@ -816,7 +820,7 @@ compiler. The same pattern carries REBOUNDx's state through
 ## 12. File-by-file accounting: REBOUND
 
 All 31 C translation units, and what happened to each. **29 Rust modules,
-19,075 lines.**
+19,288 lines** (measured at this revision with `wc -l src/*.rs`).
 
 | C file | Rust module | Status |
 |---|---|---|
@@ -858,17 +862,17 @@ integrate nothing, identically.
 ## 13. File-by-file accounting: REBOUNDx
 
 All 33 C translation units (8,452 lines of C, including headers) become 34 Rust
-modules (8,798 lines). Every `.c` file is accounted for below.
+modules (10,701 lines, measured at this revision with `wc -l src/*.rs`). Every `.c` file is accounted for below.
 
 ### Core machinery
 
 | C file | Lines | Rust module | Lines | Status |
 |---|---|---|---|---|
-| `core.c` | 1186 | `core.rs` | 1494 | Ported. All **107** default parameter registrations, in the same order with the same types (verified by direct diff against the C). `rebx_load_force`/`rebx_load_operator` carry the complete name → function tables. |
+| `core.c` | 1186 | `core.rs` | 1507 | Ported. All **107** default parameter registrations, in the same order with the same types (verified by direct diff against the C). `rebx_load_force`/`rebx_load_operator` carry the complete name → function tables. |
 | `rebxtools.c` | 291 | `rebxtools.rs` | 475 | Ported (com/jacobi helpers, `rebx_tools_spin_angular_momentum`, `rebx_simulation_irotate`). |
 | `linkedlist.c` | 106 | — | — | **Not applicable.** These are the linked-list helpers (`rebx_add_node`, `rebx_remove_node`, `rebx_len`). In Rust the lists are `Vec`s, so the helpers become ordinary vector operations. The C's *prepend* order is preserved by inserting at index 0 — see deviation 8 in section 14. |
-| `output.c` | 293 | `output.rs` | 640 | Binary serialization. Verified against the real C library in both directions — see §15.10. |
-| `input.c` | 732 | `input.rs` | 1097 | Binary deserialization. Reads files written by the C, and vice versa. |
+| `output.c` | 293 | `output.rs` | 636 | Binary serialization. Verified against the real C library in both directions — see §15.10. |
+| `input.c` | 732 | `input.rs` | 1238 | Binary deserialization. Reads files written by the C, and vice versa. |
 
 ### Forces
 
@@ -998,7 +1002,7 @@ section 9, on 2026-08-27.
 
 | What was checked | Scale | Result |
 |---|---|---|
-| Maths library agreement (§15.0) | 200,000 samples × 21 functions | **21 of 21 exact — `pow` included** (§16) |
+| Maths library agreement (§15.0) | 9 functions × 200,000 samples, + an exp/log differential | **all exact — `pow` included** (§16) |
 | Integrator matrix (§15.1) | 63 configurations × 500 steps | **63/63 bit-identical** |
 | Shearing sheet (§15.2) | 1,482 particles, 400 steps | **byte-identical, SHA-256 `418c864d…`** |
 | Orbital derivatives (§15.3) | 65 functions | **130/130 outputs bit-identical** |
@@ -1044,9 +1048,10 @@ cmp libm_c.txt libm_rust.txt && echo "bit-identical"
 ```
 
 **Result:** on macOS/Apple Silicon, the C and the Rust are **bit-identical
-for every function tested — `pow` included**: `sin`, `cos`, `tan`, `atan2`,
-`sqrt`, `fmod`, `exp`, `log`, `cbrt` and `pow`, over all 200,000 samples
-each. The reason is simple: on macOS, both clang-compiled C *and* Rust
+for every function tested — `pow` included**. The harness dumps nine
+functions per sample — `sin`, `cos`, `tan`, `atan2`, `pow`, `sqrt`,
+`fmod`, `exp` and `log` — over 200,000 samples each, plus an appended
+exp/log differential section. The reason is simple: on macOS, both clang-compiled C *and* Rust
 resolve every one of these calls to Apple's system maths library, so there
 are not two implementations to disagree. (On Windows, where Rust ships its
 own `pow`, that one function differed from Microsoft's — the story section
@@ -1106,11 +1111,11 @@ with the same verdict both times (the matrix uses fixed starting
 conditions, so it never touches the random generator; that is exactly why
 the shim could not affect it).
 
-One thing to know before you run it: **every harness in `porttest/` writes
-its results to the same two filenames**, `state_c_final.txt` and
-`state_rust_final.txt`. That is deliberate — it keeps the comparison
-command identical for every test — but it means each run overwrites the
-last one's dumps, and the sweep script above consumes them. If you run the
+One thing to know before you run it: **the integrator matrix and the
+shearing sheet share the same two dump filenames**, `state_c_final.txt`
+and `state_rust_final.txt` (the other harnesses each write their own
+uniquely named pair). That means a matrix run overwrites the sheet's
+dumps, and the sweep script above consumes them. If you run the
 sweep and then try to check the shearing sheet, you will find the shearing
 sheet's files gone. Just re-run that pair to recreate them:
 
@@ -1233,7 +1238,9 @@ After each `continue`, compare the continuer's dump against the writer's:
 pass. (The writer-state dumps of the two languages also match each other —
 that is the sixth direction in the tally.)
 
-**Result: identical in all four directions**, for `whfast-usafe` (which
+**Result: identical in all six directions** — three per configuration
+(the C→Rust continuation, the Rust→C continuation, and the two writers'
+own 300-step states against each other), for `whfast-usafe` (which
 round-trips unsynchronised Jacobi coordinates) and `ias15` (which round-trips
 the adaptive-step restart arrays). Archive files, including the incremental
 diff-blob append format, are fully interchangeable between the C and Rust
@@ -1291,7 +1298,7 @@ cmp archive_state_c.txt server_state_rust.txt && echo identical
 ```
 
 **Result: the C build loads the Rust-served blob to the bit-identical state**
-(3,448 bytes, header `REBOUND Binary File. Version: 5.`).
+(3,448 bytes, header `REBOUND Binary File. Version: 5.1`).
 
 ### 15.7 `add_fmt` and the built-in datasets
 
@@ -1667,7 +1674,9 @@ block from `src/lib.rs` and re-run clippy.
 5. **The C's own documented restrictions carry over unchanged** — for example
    MERCURIUS and TRACE emit the same warnings about variational equations and
    collision-search modes.
-6. **`cargo clippy` is not clean** by design; see section 17.
+6. **`cargo clippy` is clean only because 469 default suggestions are
+   waived explicitly in the source**, each with its reason on the line
+   (section 17); deleting the waiver block resurfaces them, by design.
 
 ## 19. How to reproduce every result yourself
 
@@ -1735,9 +1744,10 @@ done
 
 (`libm_diff` and `bs_pow_diff` never call REBOUND, so for those two the
 shim and library are simply unused; linking them anyway keeps the loop
-uniform. Two harnesses print a benign compiler warning each — a `%zu`
-format nit and a pointer-cast nit, both in the *harness* code, not the
-libraries.)
+uniform. One harness in this loop — `movetocom_var_test.c` — prints a
+benign `%zu`-format compiler warning; one in the REBOUNDx loop below —
+`tides_spin_pseudo_c.c` — prints a benign pointer-cast warning. Both are
+in the *harness* code, not the libraries.)
 
 Build the five REBOUNDx harnesses (note the link order — the REBOUNDx
 library first, then REBOUND's):
@@ -1801,7 +1811,17 @@ cmp frequency_c.txt frequency_rust.txt && echo "frequency identical"
 cmp addfmt_c.txt addfmt_rust.txt && echo "addfmt identical"
 ./movetocom_var_c      && ../target/release/examples/movetocom_var
 cmp movetocom_var_c.txt movetocom_var_rust.txt && echo "movetocom identical"
+./kepler_rectilinear_c > kr_c.txt 2>&1
+../target/release/examples/kepler_rectilinear > kr_rust.txt 2>&1
+diff kr_c.txt kr_rust.txt
 ```
+
+For the Kepler pair, `diff` should print exactly one difference: the first
+line is a human-readable banner whose zero exponent the two languages
+format differently (`e+00` from C's printf, `e0` from Rust) — no number is
+involved, and every `AFTER:` line of hexadecimal bit patterns must match
+exactly. This pair is the regression probe for Defect 1 of section 15.10;
+before that fix, the Rust side would hang forever instead of printing.
 
 The Simulationarchive round trips and the web server test are run with the
 commands printed in sections 15.5 and 15.6.

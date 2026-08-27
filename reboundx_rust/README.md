@@ -3,8 +3,9 @@
 A pure-Rust translation of **[REBOUNDx](https://github.com/dtamayo/reboundx)
 5.1.0** — "REBOUND eXtras", the library by **Dan Tamayo**, Hanno Rein and
 collaborators that adds extra physics (general relativity, tides, migration,
-radiation pressure, and more) to an N-body simulation run by
-**[REBOUND](https://github.com/hannorein/rebound)**.
+radiation pressure, and more) to an N-body simulation — a program that
+follows many bodies (planets, stars, moons) pulling on each other by
+gravity — run by **[REBOUND](https://github.com/hannorein/rebound)**.
 
 It is the companion of
 **[`rebound_rs`](https://github.com/once-ere/rebound_rust)**, the pure-Rust
@@ -12,7 +13,8 @@ translation of REBOUND itself, and it depends on it exactly as the C
 `libreboundx` links against `librebound`.
 
 - Zero `unsafe`, zero external dependencies (Rust's standard library only),
-  zero build warnings, zero `clippy` warnings.
+  zero build warnings, zero warnings from `clippy`, Rust's strict style
+  checker.
 - C function and struct names preserved (`rebx_attach`, `rebx_add_force`,
   `rebx_set_param_double`, `rebx_tides_spin`, …), so the upstream REBOUNDx
   documentation still tells you what everything does.
@@ -35,7 +37,8 @@ you already have the right arrangement.** `rebound_rust/` and
 `reboundx_rust/` are both top-level folders of that repository, sitting side
 by side, and `cargo build` inside `reboundx_rust` works immediately. The
 rest of this section is for anyone who copies `reboundx_rust` out on its
-own, or clones the two crates from their stand-alone repositories.
+own, or clones the two crates (a *crate* is Rust's word for one package
+of code — a library or a program) from their stand-alone repositories.
 
 **`cargo build` will fail if you take only this folder.** That is not a
 bug — it is the same arrangement the original C library uses, and it is worth
@@ -97,7 +100,7 @@ The fix is always the same: put `rebound_rust` next to `reboundx_rust`.
 
 | You need | Why | Get it |
 |---|---|---|
-| **Rust** (1.91 or newer; this port was built and verified with 1.94.0) | compiles the code | <https://rustup.rs> — the installer does everything |
+| **Rust** (this port was built and verified with 1.94.0) | compiles the code | <https://rustup.rs> — the installer does everything |
 | **Git** | downloads the repositories | comes with Apple's Xcode Command Line Tools: run `xcode-select --install` in Terminal |
 
 Nothing else. No C compiler, no Python, no libraries to hunt down — this crate
@@ -123,6 +126,7 @@ Switch on REBOUNDx's `gr_potential` force and you can watch it happen.
 Make a new project **beside the two folders**:
 
 ```bash
+cd ..            # back beside rebound_rust/ and reboundx_rust/
 cargo new mercury
 cd mercury
 ```
@@ -206,7 +210,7 @@ Run it:
 cargo run --release
 ```
 
-You will see:
+You will see output like:
 
 ```
 after t = 302.6504 (200 orbits)
@@ -218,9 +222,9 @@ after t = 302.6504 (200 orbits)
 Read that last line. `pomega` is the direction the orbit points. It started at
 zero and has rotated. The size and shape of the orbit (`a` and `e`) did not
 change at all — general relativity does not shrink Mercury's orbit, it turns
-it. Divide the rotation by 200 orbits and convert to arcseconds per century
-and you get the textbook 43 arcsec/century. **The force really is doing
-physics.**
+it. And the size is right: (1.0037e-4 rad / 200 orbits) x (about 415
+Mercury orbits per century) x (206,265 arcseconds per radian) = the
+textbook 43 arcsec/century. **The force really is doing physics.**
 
 ---
 
@@ -339,7 +343,8 @@ Setters and getters, one per type:
 
 Every getter returns `Option`: `Some(value)` if the parameter was set, `None`
 if it was not. Reading a parameter of the wrong type gives `None` rather than
-nonsense — in C that same mistake is undefined behaviour.
+nonsense — in C that same mistake is undefined behaviour (C's term for
+"anything may happen, including silently wrong answers").
 
 ### `rebx_with`: when you need both at once
 
@@ -444,9 +449,9 @@ where the two platforms' stories differ, both are told below.)
 
 | What was checked | Result on this Mac |
 |---|---|
-| `tides_spin_pseudo_synchronization`, 10 and 100 orbits (t = 62.83…, t = 628.3…) | **bit-identical** |
-| `tides_spin_kozai`, t = 1,000 and t = 100,000 (adaptive IAS15) | **bit-identical** |
-| `tides_spin_migration_driven_obliquity_tides`, 10 and 100 orbits | **bit-identical** |
+| `tides_spin_pseudo_synchronization`, run to t = 62.83… and t = 628.3… (times in code units; 62.83 = 10 × 2π) | **bit-identical** |
+| `tides_spin_kozai`, run to t = 1,000 and t = 100,000 (adaptive IAS15) | **bit-identical** |
+| `tides_spin_migration_driven_obliquity_tides`, run to t = 62.83… and t = 628.3… | **bit-identical** |
 | REBOUNDx binary file written by C, read by Rust | 25/25 items recovered exactly; re-serialising reproduces every byte |
 | REBOUNDx binary file written by Rust, read by C | C's 28-line dump identical to C reading its own file |
 | Byte comparison of the two written files (10,784 bytes each) | 10,758 of 10,784 bytes identical |
@@ -505,8 +510,9 @@ every platform and needs no shim anywhere.
 exactly one math function — `pow`, which raises a number to a power —
 disagreed between Microsoft's math library and Rust's, for about 0.03% of
 inputs, by at most 2 units in the last place. On this Mac that difference
-does not exist: a 200,000-sample sweep of 21 math-library functions (run as
-part of the sibling `rebound_rust` verification) found C and Rust
+does not exist: a 200,000-sample sweep of nine math-library functions
+(`sin`, `cos`, `tan`, `atan2`, `pow`, `sqrt`, `fmod`, `exp` and `log`, run
+as part of the sibling `rebound_rust` verification) found C and Rust
 **bit-identical on every function, `pow` included** — both sides resolve
 every math call to Apple's math library.
 
@@ -525,7 +531,7 @@ cd ~/work/rustSolveIt_macos-silicon_SUNDIALS_7_8_0
 git clone https://github.com/hannorein/rebound.git rebound/rebound
 git -C rebound/rebound checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb  # REBOUND 5.1.1
 git clone https://github.com/dtamayo/reboundx.git reboundx
-# this port translates REBOUNDx 5.1.0 — check out that release in reboundx/
+git -C reboundx checkout 5.1.0  # REBOUNDx 5.1.0 = e884547a9d9790dd4779a9c129b72da8225ff67a
 ```
 
 Compile the two C libraries and the rand_r shim:
@@ -578,9 +584,10 @@ shasum -a 256 state_kozai_c.txt state_kozai_rust.txt   # same hash = same bytes
 mean equal files. Run without the `1000` for the full t = 100,000 default.
 The other harnesses in `porttest/` (`tides_spin_pseudo_c.c`,
 `tides_spin_migration_c.c`, `rebx_binary_roundtrip_c.c`,
-`rebx_binary_read_c.c`) build with the same command shape. Expect a handful
-of harmless `clang` warnings about `void**` pointer casts in the harness
-files themselves — the libraries compile warning-free.
+`rebx_binary_read_c.c`) build with the same command shape. Expect at most
+one harmless `clang` warning (a `void**` pointer cast in
+`tides_spin_pseudo_c.c`, a harness file) — the libraries themselves compile
+warning-free.
 
 The full narrative of how the port was made and checked, with every
 comparison written out, is in `reboundx_port_test.md` in this folder — a
@@ -591,7 +598,7 @@ comparison is on this page.
 
 ## What is inside
 
-34 Rust source files, 10,692 lines, translated from 8,452 lines of C.
+34 Rust source files, 10,701 lines, translated from 8,452 lines of C.
 
 | File | Lines | What it does |
 |---|---|---|

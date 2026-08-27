@@ -1,7 +1,8 @@
 # The REBOUNDx Tests: Did the Rust Version Get the Same Answer?
 
 **Short answer: yes — every single bit, in all three test simulations, and
-byte-for-byte in the save-file round trip.**
+byte-for-byte in the save-file round trip (apart from one deliberately
+blanked version-stamp field in the file header, explained in section 10).**
 
 This document explains what REBOUNDx is, which three simulations we used to test
 our Rust translation of it, exactly how we ran the test, and what we found. It
@@ -93,8 +94,11 @@ spinning fast. Tides should rapidly round out the orbit, straighten the tilt,
 and settle the spin.
 
 **Exercises:** the WHFast integrator, the `tides_spin` force, and REBOUNDx's
-ability to evolve spin vectors as extra differential equations alongside the
-orbits.
+ability to evolve spin vectors as extra differential equations (ODEs —
+ordinary differential equations) alongside the orbits. An **integrator** is
+the part of the program that advances the simulation through time, one small
+step at a time; WHFast takes steps of a fixed size, while IAS15 (Test 2
+below) chooses each step's size as it goes.
 
 ### Test 2 — `tides_spin_kozai`
 
@@ -127,9 +131,14 @@ half-way through by setting the migration timescale to infinity.
 | Integrator | WHFast (fixed step) | IAS15 (**adaptive**) | WHFast (fixed step) |
 | Bodies | 2 | 3 | 3 |
 | REBOUNDx forces | 1 | 2 | 2 |
-| Spin ODE evolution | yes | yes | yes |
+| Spin evolved as extra equations (ODEs) | yes | yes | yes |
 | Rotation into the invariable plane | yes | yes | yes |
 | Parameter changed mid-run | no | no | **yes** |
+
+One row needs a word: before the run starts, both programs tilt the whole
+system so that its total rotation — spins and orbits added together — points
+straight up. The reference plane this defines is called the **invariable
+plane**, and that setup calculation, too, must agree bit for bit.
 
 ## 4. What "bit-for-bit identical" means
 
@@ -144,8 +153,10 @@ in the very last bit grows with every step until the two runs look completely
 different. So bit-for-bit agreement is the only test that really proves the
 arithmetic is the same.
 
-Both programs therefore print every number as raw bits in hexadecimal. The
-number 1.0 prints as `3ff0000000000000`. We then compare the files.
+Both programs therefore print every number as raw bits in hexadecimal —
+base-16 notation, where each character `0`–`9`, `a`–`f` stands for four
+bits, so 64 bits fit in 16 characters. The number 1.0 prints as
+`3ff0000000000000`. We then compare the files.
 
 ## 5. The equipment
 
@@ -156,7 +167,7 @@ number 1.0 prints as `3ff0000000000000`. We then compare the files.
 | C compiler | Apple clang 21.0.0, from the Xcode Command Line Tools |
 | Rust | `rustc` 1.94.0, `cargo` 1.94.0 (aarch64-apple-darwin) |
 | REBOUND (C) | version 5.1.1, commit `dad5f978` |
-| REBOUNDx (C) | version 5.1.0 |
+| REBOUNDx (C) | version 5.1.0 (the `5.1.0` release tag, commit `e884547a`) |
 
 No Linux, no emulation, no GCC — everything native macOS on Apple Silicon.
 All commands below are typed into the **Terminal** application (Applications →
@@ -179,7 +190,18 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cd ~/work
 git clone https://github.com/hannorein/rebound.git rebound/rebound
 git clone https://github.com/dtamayo/reboundx.git reboundx
+git -C rebound/rebound checkout dad5f97806ecbb408dcaff728851c64e67f9f6eb
+git -C reboundx checkout 5.1.0
 ```
+
+The two `git checkout` lines lock the sources to the exact versions this
+document measured — REBOUND 5.1.1 at commit `dad5f978…`, and REBOUNDx at its
+`5.1.0` release tag (commit `e884547a…`). Without them, the clones would give
+you whatever the newest code happened to be on the day you ran them, and the
+bit-for-bit results below might silently fail to reproduce. And yes, the
+doubled folder name `rebound/rebound` is on purpose: REBOUNDx's build expects
+to find REBOUND's source at `../rebound/rebound` relative to itself, so we
+match that layout.
 
 ### 6b. Build C REBOUND, and make a static library from it
 
@@ -198,8 +220,9 @@ likes to know about.
 
 > **Why a *static* library?** The normal build makes a shared library (a
 > `.dylib` on macOS), which only exposes the functions marked as public API.
-> Our test harnesses call a few internal ones, so we bundle all the object
-> files into a static library instead.
+> Our test harnesses (the small test programs built in step 6d below) call a
+> few internal ones, so we bundle all the object files into a static library
+> instead.
 
 > ### ⚠ The one flag that really matters: `-ffp-contract=off`
 >
@@ -335,9 +358,11 @@ cd ~/work/reboundx_rust/porttest
 ../target/release/examples/tides_spin_migration 62.83185307179586
 ```
 
-Each writes a file of raw bits. Compare them with `cmp`, the Mac's byte-by-byte
-file comparer — it stays silent when the files are identical, so we add an
-`echo` to make success visible:
+Each writes a file of raw bits into the current folder — the C programs write
+`state_pseudo_c.txt`, `state_kozai_c.txt` and `state_migration_c.txt`; the
+Rust programs write the matching `state_*_rust.txt` files. Compare them with
+`cmp`, the Mac's byte-by-byte file comparer — it stays silent when the files
+are identical, so we add an `echo` to make success visible:
 
 ```bash
 cmp state_pseudo_c.txt    state_pseudo_rust.txt    && echo pseudo identical
@@ -365,16 +390,20 @@ with the long end times: `628.3185307179586` for the first and third tests, and
 ## 9. The results
 
 Each simulation was run twice on this Mac: once at a short end time, and once
-at a long one.
+at a long one. The end times are in the simulation's own time units, in which
+a body orbiting at distance 1 takes exactly 2π to go around once — so
+t = 62.83 is 10 × 2π, ten of those reference "years", and t = 628.3 is a
+hundred. (The close-in planets in these tests orbit much faster than that
+reference body, so they complete far more orbits than ten in that span.)
 
 | Test | End time | Result |
 |---|---|---|
-| pseudo-synchronisation | 10 orbits (t = 62.83) | **BIT-IDENTICAL** |
-| pseudo-synchronisation | 100 orbits (t = 628.3) | **BIT-IDENTICAL** |
+| pseudo-synchronisation | short run (t = 62.83 = 10 × 2π) | **BIT-IDENTICAL** |
+| pseudo-synchronisation | long run (t = 628.3 = 100 × 2π) | **BIT-IDENTICAL** |
 | Kozai cycle | t = 1,000 | **BIT-IDENTICAL** |
 | Kozai cycle | t = 100,000 (the example's full default) | **BIT-IDENTICAL** |
-| migration + obliquity tides | 10 orbits (t = 62.83) | **BIT-IDENTICAL** |
-| migration + obliquity tides | 100 orbits (t = 628.3) | **BIT-IDENTICAL** |
+| migration + obliquity tides | short run (t = 62.83 = 10 × 2π) | **BIT-IDENTICAL** |
+| migration + obliquity tides | long run (t = 628.3 = 100 × 2π) | **BIT-IDENTICAL** |
 
 Every position, every velocity, every mass and **every spin vector** matched to
 all 64 bits, in all six runs.
@@ -393,8 +422,10 @@ The Rust port writes and reads the same file format, and this test checks that
 claim from both directions.
 
 The test state is deliberately awkward: three particles, two forces
-(`gr_potential` and `central_force`), two operators (`modify_mass` and
-`drift`, scheduled before and after the timestep), and parameters of several
+(`gr_potential` and `central_force`), two **operators** — effects that,
+instead of applying a continuous force, make a discrete change to the system
+just before or just after each timestep (here `modify_mass` and `drift`, one
+scheduled before and one after) — and parameters of several
 types — decimal numbers, whole numbers, a 3-component vector, and a parameter
 that *points at* one of the forces. Two small C harnesses drive the C side; the
 Rust side is one example program that writes, reads back, and checks
@@ -449,7 +480,8 @@ cmp -l rebx_c_reference.bin rebx_binary_roundtrip.bin
 
 Measured on this Mac: **both files are exactly 10,784 bytes**, and `cmp -l`
 (which lists every differing byte) reports **26 differences, at byte positions
-37 through 62** (counting the first byte as 1) — and nowhere else. Those 26
+38 through 63** (`cmp` counts the first byte as 1; counting from zero these
+are bytes 37 through 62 of the file) — and nowhere else. Those 26
 bytes are the file header's *githash field*, a stamp recording which
 source-control version of the writer produced the file: the C writes the text
 `notavailable` padded out, and the Rust deliberately writes zeros there. This
@@ -513,10 +545,11 @@ And the save-file format round-trips byte-for-byte in both directions.
    operators, the extras state). The others are covered by the Rust test suite
    rather than by a bit-exact comparison against C.
 2. **On this Mac, no maths-library difference was found — not even `pow`.**
-   We measured it directly: 200,000 sampled inputs for each of 21 mathematical
-   functions (`sin`, `cos`, `tan`, `atan2`, `sqrt`, `fmod`, `exp`, `log`,
-   `cbrt`, `pow` and the rest), C against Rust, compared bit for bit — **every
-   function was bit-identical, including `pow`** (raise-to-a-power). The
+   We measured it directly: 200,000 sampled inputs for each of the nine
+   mathematical functions the comparison harness exercises (`sin`, `cos`,
+   `tan`, `atan2`, `pow`, `sqrt`, `fmod`, `exp`, `log`), plus a separate
+   `exp`/`log` differential check, C against Rust, compared bit for bit —
+   **every function was bit-identical, including `pow`** (raise-to-a-power). The
    reason: on macOS, both the clang-built C and the Rust resolve every one of
    those calls to Apple's system maths library, so they cannot disagree. This
    is a genuine platform difference from the Windows 11 edition of this test,

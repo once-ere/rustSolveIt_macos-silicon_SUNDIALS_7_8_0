@@ -84,8 +84,10 @@ contains **1,482 ice particles** that:
 
 - pull on each other by gravity,
 - **bounce off each other** when they touch — the program counts the bounces
-  and prints the total at the end; it runs well into six figures (the Windows
-  edition of this same test counted 102,533 of them),
+  and prints the total at the end; on this Mac the run resolved **102,478**
+  of them (the number is recorded in the `collisions_log_n` line both
+  programs write into their final-state files; the Windows edition of this
+  same test counted 102,533),
 - wrap around the box edges with the shear offset applied.
 
 ---
@@ -111,8 +113,8 @@ anywhere would spread to every particle long before the end.
 
 This is why we chose it as the acceptance test. It is the hardest single thing
 in the program to get exactly right. And as you will see in sections 10 and
-11, *both* rows of that table have starred in their own failure: the bounce
-law on Windows, and the random number generator on macOS.
+11, two of the rows in that table have each starred in their own failure: the
+hard-sphere bounce law on Windows, and the random number generator on macOS.
 
 ---
 
@@ -127,7 +129,7 @@ the same for every number. Not "the same to 10 decimal places" — *the same*.
 This matters more than it might sound. Simulations like this one are
 **chaotic**: a difference in the very last bit (about 1 part in 10 million
 billion) grows larger every step until the two runs look completely different.
-So bit-for-bit agreement after 400 steps and a six-figure collision count is
+So bit-for-bit agreement after 400 steps and 102,478 collisions is
 very strong evidence that the two programs are doing identical arithmetic.
 
 To check this, both programs dump every number as its raw bits, written in
@@ -221,18 +223,20 @@ programs can link against. What the options mean:
   instead of two — slightly *more* accurate, but with different last bits
   than doing the multiply and add separately. Compilers love to use it. Rust
   never fuses, so the C build must not either, or the two would disagree in
-  the last bit everywhere. (On Windows the same job was done by MSVC's
-  `/fp:precise` flag.)
+  the last bit everywhere. (On Windows the same job was done by the
+  `/fp:precise` flag of MSVC, Microsoft's C compiler.)
 
 ### 6c. Build the C test harness — and the shim
 
-The stock example prints rounded numbers and uses a random starting seed. For
-a bit-exact comparison we need a fixed seed (we use **42**) and raw bits.
-`porttest/problem_test.c` is the stock example with exactly three changes,
-listed at the top of that file.
+The stock example prints rounded numbers and uses a random starting seed — a
+*seed* is the starting number that determines the entire "random" sequence,
+explained fully in section 11. For a bit-exact comparison we need a fixed
+seed (we use **42**) and raw bits. `porttest/problem_test.c` is the stock
+example with exactly three changes, listed at the top of that file.
 
-On macOS there is one extra ingredient: a ten-line helper file called
-`macos_shim/rand_r_glibc.c`. Compile it first:
+On macOS there is one extra ingredient: a small helper file called
+`macos_shim/rand_r_glibc.c` — its entire algorithm is about twenty lines of
+arithmetic. Compile it first:
 
 ```bash
 cd ~/work/rebound_rust/porttest
@@ -334,7 +338,7 @@ final IDENTICAL
 
 The two fingerprints are the same. **Every one of the 1,482 particles has the
 identical position and velocity — all 64 bits of each of the 6 numbers —
-after 400 steps and every collision the run resolved.**
+after 400 steps and all 102,478 collisions the run resolved.**
 
 > **Why is this fingerprint different from the Windows one?** The Windows
 > edition of this test reported SHA-256
@@ -351,9 +355,9 @@ after 400 steps and every collision the run resolved.**
 the Windows 11 machine where the port was first developed, the same 400 steps
 took 2.2 seconds in C and 1.7 seconds in Rust — the Rust version slightly
 faster while doing the same arithmetic and carrying the extra safety
-guarantees. (Do not read too much into one measurement; across a range of
-integrators the two are within about ±30% of each other, sometimes one ahead,
-sometimes the other.)
+guarantees. (Do not read too much into one measurement; on that Windows
+machine, across a range of integrators, the two were within about ±30% of
+each other, sometimes one ahead, sometimes the other.)
 
 ---
 
@@ -396,14 +400,13 @@ function in the collision path.
 
 ### Clue 4 — testing every maths function
 
-We wrote a test that calls each maths function 200,000 times in both C and
-Rust and compares the raw bits. On Windows, the result was:
+We wrote a test that calls each of nine maths functions 200,000 times in
+both C and Rust and compares the raw bits. On Windows, the result was:
 
 | Function | C vs Rust (Windows / MSVC) |
 |---|---|
 | `sin`, `cos`, `tan`, `atan2` | identical, all 200,000 |
 | `sqrt`, `fmod`, `exp`, `log` | identical, all 200,000 |
-| `cbrt` (cube root) | identical |
 | **`pow`** | **60 of 200,000 differed** (0.03%), never by more than 2 ULP |
 
 **On Windows, `pow` was the one and only maths function where Rust and
@@ -442,9 +445,12 @@ Same function, same rate, same size. Case closed.
 
 ### And on macOS? The story evaporates.
 
-On this Mac we re-ran the same 200,000-sample maths-function comparison, now
-covering **21 functions**. You can too — no shim needed, these programs call
-only the maths library:
+On this Mac we re-ran the same 200,000-sample maths-function comparison. The
+test dumps **nine functions** — `sin`, `cos`, `tan`, `atan2`, `pow`, `sqrt`,
+`fmod`, `exp` and `log` — plus an extra `exp`/`log` cross-check appended to
+the same dump. You can too — no shim needed, these programs call only the
+maths library. Each program writes its dump to a file (`libm_c.txt` and
+`libm_rust.txt`), and the final `cmp` line compares them:
 
 ```bash
 cd ~/work/rebound_rust
@@ -453,10 +459,12 @@ cd porttest
 clang -O2 -ffp-contract=off libm_diff.c -lm -o libm_diff
 ./libm_diff
 ../target/release/examples/libm_diff
+cmp -s libm_c.txt libm_rust.txt && echo libm IDENTICAL
 ```
 
-The measured macOS result: **C and Rust are bit-identical for all 21
-functions — including `pow`.** On this platform both the clang-compiled C and
+The measured macOS result: `libm IDENTICAL` — **C and Rust are bit-identical
+for all nine functions, including `pow`.** On this platform both the
+clang-compiled C and
 the Rust program resolve every maths call, `pow` included, to Apple's maths
 library, so there is nothing left to disagree about. The Windows port's "one
 known difference" simply does not exist here.
@@ -470,9 +478,11 @@ cd porttest
 clang -O2 -ffp-contract=off bs_pow_diff.c -lm -o bs_pow_diff
 ./bs_pow_diff
 ../target/release/examples/bs_pow_diff
+cmp -s bs_pow_c.txt bs_pow_rust.txt && echo bs_pow IDENTICAL
 ```
 
-Measured macOS result: **bit-identical, all 200,000 samples.**
+Measured macOS result: `bs_pow IDENTICAL` — **bit-identical, all 200,000
+samples.**
 
 We kept the `exp`/`log` form of the bounce law anyway — it is proven
 identical on both platforms, and it keeps the two editions of the test
@@ -551,18 +561,21 @@ so REBOUND's call to `rand_r` is wired to the glibc formula and Apple's
 version is never used. The upstream source stays untouched.
 
 (If you are keeping score: Windows needed a small compatibility shim of its
-own for the REBOUNDx half of this project, because MSVC lacks a C99 feature
-called variable-length arrays that clang supports fine. Each platform needs
-exactly one tiny shim, for opposite reasons — Windows because a thing was
-missing, macOS because a thing was present but different.)
+own for the REBOUNDx half of this project — REBOUNDx is an add-on effects
+package ported alongside REBOUND, covered in its own document — because MSVC
+lacks a C99 feature called variable-length arrays that clang supports fine.
+Each platform needs exactly one tiny shim, for opposite reasons — Windows
+because a thing was missing, macOS because a thing was present but
+different.)
 
 ### The result
 
 With the shim linked: `N after init: 1482`, starting states identical, and —
 as section 9 records — all 400 steps bit-for-bit identical with matching
 SHA-256 fingerprints. The same fix also cured the only other test in the
-suite that draws random numbers (the MEGNO/variational test
-`movetocom_var`), which is now bit-identical too.
+suite that draws random numbers — the MEGNO/variational test
+`movetocom_var` (MEGNO is a standard measure of how chaotic an orbit is) —
+which is now bit-identical too.
 
 Two platforms, two detective stories, one moral: **every mismatch this test
 has ever shown traced back to the platform's system libraries, never to the
@@ -576,7 +589,7 @@ port.** Which is exactly what the test is for.
 simulation — gravity, the tree, collisions, the boundary, the integrator, the
 random numbers — the Rust port and the original C produce identical results
 down to the last bit on this machine. And on macOS that agreement extends to
-*every* maths-library function we tested, `pow` included: 21 functions,
+*every* maths-library function we tested, `pow` included: nine functions,
 200,000 samples each, zero differing bits.
 
 **What it does not prove.** It does not prove that a run on this Mac will
@@ -612,6 +625,12 @@ never need two documents open.
 | `porttest/state_c_init.txt`, `state_c_final.txt` | the C program's raw-bit output |
 | `porttest/state_rust_init.txt`, `state_rust_final.txt` | the Rust program's raw-bit output |
 | `notebooks/shearing_sheet_test.ipynb` | a Jupyter notebook that runs all of this and shows the result |
+
+The four `state_*.txt` files are *outputs*, not sources: every run of the
+section 8 commands recreates them. If one of them is missing from your copy
+(or looks stale), that just means the programs have not been run yet — run
+`./problem_test 400` and `../target/release/examples/shearing_sheet_test 400`
+from the `porttest` folder and all four appear fresh.
 
 ---
 

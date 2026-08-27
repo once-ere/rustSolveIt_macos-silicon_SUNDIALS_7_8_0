@@ -448,8 +448,8 @@ Add the second dependency to \texttt{Cargo.toml}:
 
 \begin{lstlisting}
 [dependencies]
-rebound_rs  = { path = "C:/work/rebound_rust" }
-reboundx_rs = { path = "C:/work/reboundx_rust" }
+rebound_rs  = { path = "/Users/youruser/work/rebound_rust" }
+reboundx_rs = { path = "/Users/youruser/work/reboundx_rust" }
 \end{lstlisting}
 
 The pattern is always the same:
@@ -577,6 +577,9 @@ cargo build --release --example frequency_test
 cargo build --release --example archive_test
 cargo build --release --example server_test
 cargo build --release --example addfmt_test
+cargo build --release --example kepler_rectilinear
+cargo build --release --example movetocom_var
+cargo build --release --example movetocom_var_test
 \end{lstlisting}
 
 From \texttt{\textasciitilde{}/work/reboundx\_rust}:
@@ -590,6 +593,7 @@ cargo doc   --no-deps --open
 cargo build --release --example tides_spin_pseudo
 cargo build --release --example tides_spin_kozai
 cargo build --release --example tides_spin_migration
+cargo build --release --example rebx_binary_roundtrip
 \end{lstlisting}
 
 To run any example:
@@ -727,7 +731,7 @@ This is exactly equivalent to what the C does, and it is checked by the compiler
 
 \section{12. File-by-file accounting: REBOUND}
 
-All 31 C translation units, and what happened to each. \textbf{29 Rust modules, 19,075 lines.}
+All 31 C translation units, and what happened to each. \textbf{29 Rust modules, 19,288 lines} (measured at this revision with \texttt{wc -l src/*.rs}).
 
 \begin{longtable}{L{0.171\linewidth}L{0.099\linewidth}L{0.679\linewidth}}
 \toprule
@@ -769,7 +773,7 @@ C file & Rust module & Status \\
 
 \section{13. File-by-file accounting: REBOUNDx}
 
-All 33 C translation units (8,452 lines of C, including headers) become 34 Rust modules (8,798 lines). Every \texttt{.c} file is accounted for below.
+All 33 C translation units (8,452 lines of C, including headers) become 34 Rust modules (10,701 lines, measured at this revision with \texttt{wc -l src/*.rs}). Every \texttt{.c} file is accounted for below.
 
 \subsection{Core machinery}
 
@@ -782,11 +786,11 @@ C file & Lines & Rust module & Lines & Status \\
 C file & Lines & Rust module & Lines & Status \\
 \midrule
 \endhead
-\texttt{core.c} & 1186 & \texttt{core.rs} & 1494 & Ported. All \textbf{107} default parameter registrations, in the same order with the same types (verified by direct diff against the C). \texttt{rebx\_load\_force}/\texttt{rebx\_load\_operator} carry the complete name \(\rightarrow\) function tables. \\
+\texttt{core.c} & 1186 & \texttt{core.rs} & 1507 & Ported. All \textbf{107} default parameter registrations, in the same order with the same types (verified by direct diff against the C). \texttt{rebx\_load\_force}/\texttt{rebx\_load\_operator} carry the complete name \(\rightarrow\) function tables. \\
 \texttt{rebxtools.c} & 291 & \texttt{rebxtools.rs} & 475 & Ported (com/jacobi helpers, \texttt{rebx\_tools\_spin\_angular\_momentum}, \texttt{rebx\_simulation\_irotate}). \\
 \texttt{linkedlist.c} & 106 & --- & --- & \textbf{Not applicable.} These are the linked-list helpers (\texttt{rebx\_add\_node}, \texttt{rebx\_remove\_node}, \texttt{rebx\_len}). In Rust the lists are \texttt{Vec}s, so the helpers become ordinary vector operations. The C's \emph{prepend} order is preserved by inserting at index 0 --- see deviation 8 in section 14. \\
-\texttt{output.c} & 293 & \texttt{output.rs} & 640 & Binary serialization. Verified against the real C library in both directions --- see \S{}15.10. \\
-\texttt{input.c} & 732 & \texttt{input.rs} & 1097 & Binary deserialization. Reads files written by the C, and vice versa. \\
+\texttt{output.c} & 293 & \texttt{output.rs} & 636 & Binary serialization. Verified against the real C library in both directions --- see \S{}15.10. \\
+\texttt{input.c} & 732 & \texttt{input.rs} & 1238 & Binary deserialization. Reads files written by the C, and vice versa. \\
 \bottomrule
 \end{longtable}
 
@@ -873,7 +877,7 @@ The method throughout: run the identical experiment in the clang-compiled C and 
 
 \subsection{The record at a glance}
 
-\begin{longtable}{L{0.239\linewidth}L{0.225\linewidth}L{0.486\linewidth}}
+\begin{longtable}{L{0.203\linewidth}L{0.335\linewidth}L{0.412\linewidth}}
 \toprule
 What was checked & Scale & Result \\
 \midrule
@@ -882,7 +886,7 @@ What was checked & Scale & Result \\
 What was checked & Scale & Result \\
 \midrule
 \endhead
-Maths library agreement (\S{}15.0) & 200,000 samples \(\times\) 21 functions & \textbf{21 of 21 exact --- \texttt{pow} included} (\S{}16) \\
+Maths library agreement (\S{}15.0) & 9 functions \(\times\) 200,000 samples, + an exp/log differential & \textbf{all exact --- \texttt{pow} included} (\S{}16) \\
 Integrator matrix (\S{}15.1) & 63 configurations \(\times\) 500 steps & \textbf{63/63 bit-identical} \\
 Shearing sheet (\S{}15.2) & 1,482 particles, 400 steps & \textbf{byte-identical, SHA-256 \texttt{418c864d\ldots{}}} \\
 Orbital derivatives (\S{}15.3) & 65 functions & \textbf{130/130 outputs bit-identical} \\
@@ -926,7 +930,7 @@ clang -O2 -ffp-contract=off libm_diff.c -lm -o libm_diff
 cmp libm_c.txt libm_rust.txt && echo "bit-identical"
 \end{lstlisting}
 
-\textbf{Result:} on macOS/Apple Silicon, the C and the Rust are \textbf{bit-identical for every function tested --- \texttt{pow} included}: \texttt{sin}, \texttt{cos}, \texttt{tan}, \texttt{atan2}, \texttt{sqrt}, \texttt{fmod}, \texttt{exp}, \texttt{log}, \texttt{cbrt} and \texttt{pow}, over all 200,000 samples each. The reason is simple: on macOS, both clang-compiled C \emph{and} Rust resolve every one of these calls to Apple's system maths library, so there are not two implementations to disagree. (On Windows, where Rust ships its own \texttt{pow}, that one function differed from Microsoft's --- the story section 16 preserves.)
+\textbf{Result:} on macOS/Apple Silicon, the C and the Rust are \textbf{bit-identical for every function tested --- \texttt{pow} included}. The harness dumps nine functions per sample --- \texttt{sin}, \texttt{cos}, \texttt{tan}, \texttt{atan2}, \texttt{pow}, \texttt{sqrt}, \texttt{fmod}, \texttt{exp} and \texttt{log} --- over 200,000 samples each, plus an appended exp/log differential section. The reason is simple: on macOS, both clang-compiled C \emph{and} Rust resolve every one of these calls to Apple's system maths library, so there are not two implementations to disagree. (On Windows, where Rust ships its own \texttt{pow}, that one function differed from Microsoft's --- the story section 16 preserves.)
 
 This is what makes true bit-identity testing possible at all --- and on this platform it holds with no exceptions.
 
@@ -970,7 +974,7 @@ ALL CONFIGURATIONS BIT-IDENTICAL
 
 \textbf{Result: 63 of 63 configurations bit-identical} --- and the sweep was run twice, before and after the \texttt{rand\_r} shim of section 10c was introduced, with the same verdict both times (the matrix uses fixed starting conditions, so it never touches the random generator; that is exactly why the shim could not affect it).
 
-One thing to know before you run it: \textbf{every harness in \texttt{porttest/} writes its results to the same two filenames}, \texttt{state\_c\_final.txt} and \texttt{state\_rust\_final.txt}. That is deliberate --- it keeps the comparison command identical for every test --- but it means each run overwrites the last one's dumps, and the sweep script above consumes them. If you run the sweep and then try to check the shearing sheet, you will find the shearing sheet's files gone. Just re-run that pair to recreate them:
+One thing to know before you run it: \textbf{the integrator matrix and the shearing sheet share the same two dump filenames}, \texttt{state\_c\_final.txt} and \texttt{state\_rust\_final.txt} (the other harnesses each write their own uniquely named pair). That means a matrix run overwrites the sheet's dumps, and the sweep script above consumes them. If you run the sweep and then try to check the shearing sheet, you will find the shearing sheet's files gone. Just re-run that pair to recreate them:
 
 \begin{lstlisting}
 cd ~/work/rebound_rust/porttest
@@ -1053,7 +1057,7 @@ cd ~/work/rebound_rust/porttest
 
 After each \texttt{continue}, compare the continuer's dump against the writer's: \texttt{cmp archive\_state\_c.txt archive\_state\_rust.txt} staying silent is the pass. (The writer-state dumps of the two languages also match each other --- that is the sixth direction in the tally.)
 
-\textbf{Result: identical in all four directions}, for \texttt{whfast-usafe} (which round-trips unsynchronised Jacobi coordinates) and \texttt{ias15} (which round-trips the adaptive-step restart arrays). Archive files, including the incremental diff-blob append format, are fully interchangeable between the C and Rust builds.
+\textbf{Result: identical in all six directions} --- three per configuration (the C\(\rightarrow\)Rust continuation, the Rust\(\rightarrow\)C continuation, and the two writers' own 300-step states against each other), for \texttt{whfast-usafe} (which round-trips unsynchronised Jacobi coordinates) and \texttt{ias15} (which round-trips the adaptive-step restart arrays). Archive files, including the incremental diff-blob append format, are fully interchangeable between the C and Rust builds.
 
 \subsubsection{Why the \texttt{.bin} files are not committed}
 
@@ -1088,7 +1092,7 @@ curl -s http://localhost:12873/keyboard/81
 cmp archive_state_c.txt server_state_rust.txt && echo identical
 \end{lstlisting}
 
-\textbf{Result: the C build loads the Rust-served blob to the bit-identical state} (3,448 bytes, header \texttt{REBOUND Binary File. Version: 5.}).
+\textbf{Result: the C build loads the Rust-served blob to the bit-identical state} (3,448 bytes, header \texttt{REBOUND Binary File. Version: 5.1}).
 
 \subsection{15.7 \texttt{add\_fmt} and the built-in datasets}
 
@@ -1346,7 +1350,7 @@ Both crates are clean under both tools, and nothing is hidden: the waivers are i
 \item \textbf{Excluded subsystems}: the OpenGL 3-D display (\texttt{display.c}, \texttt{glad.c}) and MPI (\texttt{communication\_mpi.c}). Neither is part of either reference C build (section 9). The browser-based viewer, which \emph{is} the ported visualisation path, works the same on both platforms.
 \item \textbf{Not carried, and why}: - \texttt{reb\_simulation\_output\_screenshot} --- needs the browser display round-trip; - \texttt{reb\_integrator\_register} (registering your own integrator at run time) --- the Rust integrator set is a closed \texttt{enum}; - the WHFast512 AVX-512 assembly core.
 \item \textbf{The C's own documented restrictions carry over unchanged} --- for example MERCURIUS and TRACE emit the same warnings about variational equations and collision-search modes.
-\item \textbf{\texttt{cargo clippy} is not clean} by design; see section 17.
+\item \textbf{\texttt{cargo clippy} is clean only because 469 default suggestions are waived explicitly in the source}, each with its reason on the line (section 17); deleting the waiver block resurfaces them, by design.
 \end{enumerate}
 
 \section{19. How to reproduce every result yourself}
@@ -1406,7 +1410,7 @@ for f in addfmt_test archive_test bs_pow_diff derivatives_test \
 done
 \end{lstlisting}
 
-(\texttt{libm\_diff} and \texttt{bs\_pow\_diff} never call REBOUND, so for those two the shim and library are simply unused; linking them anyway keeps the loop uniform. Two harnesses print a benign compiler warning each --- a \texttt{\%zu} format nit and a pointer-cast nit, both in the \emph{harness} code, not the libraries.)
+(\texttt{libm\_diff} and \texttt{bs\_pow\_diff} never call REBOUND, so for those two the shim and library are simply unused; linking them anyway keeps the loop uniform. One harness in this loop --- \texttt{movetocom\_var\_test.c} --- prints a benign \texttt{\%zu}-format compiler warning; one in the REBOUNDx loop below --- \texttt{tides\_spin\_pseudo\_c.c} --- prints a benign pointer-cast warning. Both are in the \emph{harness} code, not the libraries.)
 
 Build the five REBOUNDx harnesses (note the link order --- the REBOUNDx library first, then REBOUND's):
 
@@ -1462,7 +1466,12 @@ cmp frequency_c.txt frequency_rust.txt && echo "frequency identical"
 cmp addfmt_c.txt addfmt_rust.txt && echo "addfmt identical"
 ./movetocom_var_c      && ../target/release/examples/movetocom_var
 cmp movetocom_var_c.txt movetocom_var_rust.txt && echo "movetocom identical"
+./kepler_rectilinear_c > kr_c.txt 2>&1
+../target/release/examples/kepler_rectilinear > kr_rust.txt 2>&1
+diff kr_c.txt kr_rust.txt
 \end{lstlisting}
+
+For the Kepler pair, \texttt{diff} should print exactly one difference: the first line is a human-readable banner whose zero exponent the two languages format differently (\texttt{e+00} from C's printf, \texttt{e0} from Rust) --- no number is involved, and every \texttt{AFTER:} line of hexadecimal bit patterns must match exactly. This pair is the regression probe for Defect 1 of section 15.10; before that fix, the Rust side would hang forever instead of printing.
 
 The Simulationarchive round trips and the web server test are run with the commands printed in sections 15.5 and 15.6.
 

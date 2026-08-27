@@ -155,7 +155,7 @@ cd ../..
 
 | check | command (from the repo root) | measured result |
 |---|---|---|
-| maths library, 21 functions × 200,000 samples | `cd rebound_rust/porttest && ./libm_diff && ../target/release/examples/libm_diff && cmp libm_c.txt libm_rust.txt` | **bit-identical — `pow` included** (the Windows port's one known `pow` difference does not exist here: both languages call Apple's libm) |
+| maths library: sin, cos, tan, atan2, pow, sqrt, fmod, exp, log × 200,000 samples each, + an exp/log differential | `cd rebound_rust/porttest && ./libm_diff && ../target/release/examples/libm_diff && cmp libm_c.txt libm_rust.txt` | **bit-identical — `pow` included** (the Windows port's one known `pow` difference does not exist here: both languages call Apple's libm) |
 | BS step-size `pow` shapes | `./bs_pow_diff && ../target/release/examples/bs_pow_diff && cmp bs_pow_c.txt bs_pow_rust.txt` | **bit-identical** |
 | integrator matrix, 63 configurations × 500 steps | `bash rebound_rust/porttest/run_integrator_matrix.sh 500` | **"63 of 63 configurations bit-identical. ALL CONFIGURATIONS BIT-IDENTICAL"** (run twice: before and after the shim) |
 | ias15, 1000-step adaptive run | `./integrators_test ias15 2 1000` both sides, `cmp` | **bit-identical** |

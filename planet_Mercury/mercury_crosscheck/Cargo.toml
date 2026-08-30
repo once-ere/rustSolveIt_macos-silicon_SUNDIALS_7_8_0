@@ -1,0 +1,15 @@
+[workspace]
+
+[package]
+name = "mercury_crosscheck"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Independent cross-check of the Mercury tidal despin rate using the workspace's pure-Rust REBOUNDx port (tides_spin, Eggleton/Lu constant-time-lag model) against the Hut (1981) secular formula used by mercury_rs. GPL because it links the GPL rebound/reboundx ports; the main mercury_rs crate does not."
+
+[dependencies]
+rebound_rs = { path = "../../rebound_rust" }
+reboundx_rs = { path = "../../reboundx_rust" }
+
+[profile.release]
+opt-level = 3

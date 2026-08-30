@@ -1,0 +1,15 @@
+[workspace]
+
+[package]
+name = "mercury_rs"
+version = "0.1.0"
+edition = "2021"
+license = "BSD-3-Clause"
+description = "Mercury 3:2 spin-orbit resonant capture: two-body Sun-Mercury, Hut (1981) constant-time-lag tides + permanent-triaxiality torque, integrated with the vendored pure-Rust SUNDIALS 7.8.0 CVODE (BDF + Newton + dense)."
+
+[dependencies]
+sundials_core = { path = "../../sundials_rs/crates/sundials_core" }
+cvode_rs = { path = "../../sundials_rs/crates/cvode_rs" }
+
+[profile.release]
+opt-level = 3

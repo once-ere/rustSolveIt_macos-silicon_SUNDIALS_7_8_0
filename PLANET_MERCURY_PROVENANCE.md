@@ -118,6 +118,51 @@ splitting read-safe `run_dir` from owning-run `fresh_run_dir`.
 
 From a clone of this repository:
 `cd planet_Mercury/mercury_rs && cargo build --release && cargo test --release`
-(15 tests), then follow `planet_Mercury/INSTRUCTIONS_FOR_TEACHERS_AND_STUDENTS.md`
+(19 tests), then follow `planet_Mercury/INSTRUCTIONS_FOR_TEACHERS_AND_STUDENTS.md`
 — one top-to-bottom notebook run (~1 hour) regenerates every dataset, database,
 check, and the display page, deterministically.
+
+## 6. TEST 2 — Jupiter + Einstein (second commit, same day)
+
+Commissioned by the instruction "now run your second test: add Jupiter and
+Einstein's GR correction". Implemented as a separate six-state module
+(`planet_Mercury/mercury_rs/src/test2.rs`, state y = [a, e, M, ϖ, θ, Ω]) plus
+five new CLI runs (`t2-gr-check`, `t2-jupiter-check`, `t2-movie`, `t2-sweep`,
+`t2-final`), leaving every test-1 code path and number untouched.
+
+**Physics added.** (a) General relativity's apsidal precession
+dϖ/dt = 3nGM☉/(c²a(1−e²)) — 42.98″/century at Mercury's orbit; (b) Jupiter's
+secular forcing in Laplace–Lagrange form (fixed Jupiter, e_J = 0.0489,
+ϖ_J = 0): de/dt += A12·e_J·sin(ϖ−ϖ_J), dϖ/dt += A11 + A12(e_J/e)cos(ϖ−ϖ_J),
+with Laplace coefficients from a deterministic 4096-point trapezoid rule,
+unit-tested against the textbook power series to 1e-10. The handle torque's
+argument becomes 2(θ−f−ϖ) and the resonance angle γ₂ = 2θ−3M−2ϖ (re-anchoring
+leaves γ₂ exactly invariant — unit-tested). Only the tidal strength carries the
+documented 1000× movie compression; the GR and Jupiter rates are real.
+
+**Measured verification (this machine, 2026-08-30).** Gate A: GR alone
+integrates to 42.983″/cy vs 42.983 analytic (rel. diff 7×10⁻¹³). Gate B:
+Jupiter alone gives forced-eccentricity amplitude 4.5438×10⁻³ and period
+808.8 kyr, both equal to the Laplace–Lagrange predictions. Full chain:
+restart root at Ω/n = 1.6 to 5×10⁻¹² (t = 4.4612 Myr movie time); sweep 2/16
+phase branches captured (canonical branch 1, capture t = 4.6779 Myr);
+canonical continuation to 10 Myr — settled mean spin ratio **1.5000004545**
+vs predicted 1.5 + ϖ̇/n = **1.5000003777** (GR 42.98 + Jupiter 160.24″/cy):
+the lock sits 4.5×10⁻⁷ above exactly 3/2 — **it follows the precessing
+ellipse, not the stars**. Perihelion advanced 54.57 rad = 203.21″/cy vs
+203.22 predicted; e oscillated 0.19846–0.20563 through braking, capture, and
+lock; final P_orb 87.9678 d. Test 1's angular-momentum ledger is deliberately
+absent in test 2: the Laplace–Lagrange terms exchange angular momentum with
+Jupiter, which the model does not track — checking a two-body conservation
+law there would be checking the wrong law (stated in the program's output,
+the notebook, and the plan documents).
+
+**Artifacts.** Second notebook `planet_Mercury/notebook/mercury_test2_jupiter_gr.ipynb`
+(authored by `build_notebook2.py`, executed for real, byte-determinism proven
+by double execution), its own database schema (`data/mercury_test2.sqlite3`
+with a `run_extra` provenance table and a `pomega_rad` sample column — the
+database itself is regenerable and not committed, per DEV-6), display page
+baker `planet_Mercury/gui/bake_page2.py` → `gui/mercury_test2.html`, four new
+analytic unit tests (19 total), and TEST-2 addenda in
+`planet_Mercury/plan/07_PROVENANCE_AND_DEVIATIONS.md` (Part 6) and
+`planet_Mercury/INSTRUCTIONS_FOR_TEACHERS_AND_STUDENTS.md` (Part G).

@@ -1035,6 +1035,606 @@ fn run_e() -> Result<bool, String> {
 }
 
 // ---------------------------------------------------------------------------
+// TEST 2 — Jupiter + Einstein (six-state runs; see src/test2.rs)
+// ---------------------------------------------------------------------------
+
+use mercury_rs::test2;
+use mercury_rs::test2::{Cmd2, Detector2, Sample2, Segment2, State2, Stats2};
+
+fn manifest2(run_id: &str, description: &str, k2tau: f64, ic: &State2) -> output::Manifest {
+    let mut m = base_manifest(
+        run_id,
+        description,
+        k2tau.max(1.0e-300),
+        &State {
+            t: ic.t,
+            y: [ic.y[0], ic.y[1], ic.y[2], ic.y[4], ic.y[5]],
+        },
+    );
+    if k2tau <= 0.0 {
+        m.tau_lag_s = 0.0;
+        m.compression = 0.0;
+    }
+    m.extras.push(("pomega0_rad".into(), fmt_e(ic.y[3], 17)));
+    m.extras.push(("m_jupiter_kg".into(), fmt_e(test2::M_JUP, 6)));
+    m.extras.push(("a_jupiter_m".into(), fmt_e(test2::A_JUP, 6)));
+    m.extras.push(("e_jupiter".into(), fmt_e(test2::E_JUP, 6)));
+    let ll = test2::ll_rates();
+    m.extras.push(("ll_A11_rad_s".into(), fmt_e(ll.a11, 8)));
+    m.extras.push(("ll_A12_rad_s".into(), fmt_e(ll.a12, 8)));
+    m.extras.push((
+        "gr_rate_rad_s".into(),
+        fmt_e(test2::gr_pomega_dot(params::A0, params::E0), 8),
+    ));
+    m
+}
+
+fn finish2(
+    dir: &std::path::Path,
+    m: output::Manifest,
+    stats: &Stats2,
+    t_end: f64,
+    ok: bool,
+) -> Result<bool, String> {
+    let s = Stats {
+        n_steps: stats.n_steps,
+        n_rhs: stats.n_rhs,
+        n_reanchor: stats.n_reanchor,
+    };
+    finish_manifest(dir, m, &s, t_end, ok)
+}
+
+/// TEST 2 gate A — Einstein alone must reproduce the famous 43"/century.
+fn t2_gr_check() -> Result<bool, String> {
+    println!("test 2 gate A (T2_gr_check): GR perihelion advance vs the famous 43\"/century");
+    let dir = output::fresh_run_dir("T2_gr_check")?;
+    let ic = test2::initial_state2();
+    let p = test2::Rhs2Params {
+        k2tau: 0.0,
+        triaxial_on: false,
+        gr_on: true,
+        jupiter_on: false,
+        a11: 0.0,
+        a12: 0.0,
+        root_ratio: -1.0,
+    };
+    let mut samples: Vec<Sample2> = Vec::new();
+    let mut stats = Stats2::default();
+    let mut noop = |_s: &Sample2| Cmd2::Continue;
+    let spec = Segment2 {
+        p,
+        t_end: 1000.0 * params::YEAR,
+        cadence: 10.0 * params::YEAR,
+        stop_on_root: false,
+        reanchor: false,
+        stage_tag: 'S',
+        record: true,
+    };
+    let end = test2::integrate_segment6(&ic, &spec, &mut noop, &mut samples, &mut stats)?;
+    let measured = end.state.y[3] / end.state.t;
+    let predicted = test2::gr_pomega_dot(params::A0, params::E0);
+    let rel = (measured - predicted).abs() / predicted;
+    let mut ok = true;
+    ok &= check(
+        rel < 1.0e-3,
+        "T2a.gr_precession_rate",
+        &format!(
+            "measured {} \"/century vs analytic {} \"/century (rel diff {})",
+            fmt_f(test2::arcsec_cy(measured), 3),
+            fmt_f(test2::arcsec_cy(predicted), 3),
+            fmt_e(rel, 3)
+        ),
+    );
+    let rows = test2::write_samples2(&dir, &samples)?;
+    output::write_events(&dir, &[])?;
+    println!("  wrote {rows} samples");
+    let m = manifest2(
+        "T2_gr_check",
+        "TEST 2 gate A: GR apsidal precession alone (tides, Jupiter, triaxial all off)",
+        0.0,
+        &ic,
+    );
+    finish2(&dir, m, &stats, end.state.t, ok)
+}
+
+/// TEST 2 gate B — Jupiter alone must reproduce the Laplace-Lagrange forced
+/// eccentricity oscillation (amplitude |A12/A11| e_J, period 2 pi / A11).
+fn t2_jupiter_check() -> Result<bool, String> {
+    println!("test 2 gate B (T2_jupiter): Jupiter's secular forcing vs Laplace-Lagrange theory");
+    let dir = output::fresh_run_dir("T2_jupiter")?;
+    let ic = test2::initial_state2();
+    let ll = test2::ll_rates();
+    let p = test2::Rhs2Params {
+        k2tau: 0.0,
+        triaxial_on: false,
+        gr_on: false,
+        jupiter_on: true,
+        a11: ll.a11,
+        a12: ll.a12,
+        root_ratio: -1.0,
+    };
+    let mut samples: Vec<Sample2> = Vec::new();
+    let mut stats = Stats2::default();
+    let mut noop = |_s: &Sample2| Cmd2::Continue;
+    let spec = Segment2 {
+        p,
+        t_end: 2.0e6 * params::YEAR,
+        cadence: 200.0 * params::YEAR,
+        stop_on_root: false,
+        reanchor: false,
+        stage_tag: 'S',
+        record: true,
+    };
+    let end = test2::integrate_segment6(&ic, &spec, &mut noop, &mut samples, &mut stats)?;
+    let e_min = samples.iter().map(|s| s.e).fold(f64::INFINITY, f64::min);
+    let e_max = samples.iter().map(|s| s.e).fold(f64::NEG_INFINITY, f64::max);
+    let amp_measured = 0.5 * (e_max - e_min);
+    let amp_predicted = (ll.a12 / ll.a11).abs() * test2::E_JUP;
+    let mut maxima: Vec<f64> = Vec::new();
+    for w in samples.windows(3) {
+        if w[1].e > w[0].e && w[1].e > w[2].e {
+            maxima.push(w[1].t);
+        }
+    }
+    let period_measured = if maxima.len() >= 2 {
+        (maxima[maxima.len() - 1] - maxima[0]) / ((maxima.len() - 1) as f64)
+    } else {
+        0.0
+    };
+    let period_predicted = 2.0 * PI / ll.a11;
+    let mut ok = true;
+    ok &= check(
+        (amp_measured - amp_predicted).abs() / amp_predicted < 0.05,
+        "T2b.forced_eccentricity_amplitude",
+        &format!(
+            "e oscillates {} .. {} -> amplitude {} vs LL prediction {}",
+            fmt_f(e_min, 5),
+            fmt_f(e_max, 5),
+            fmt_e(amp_measured, 4),
+            fmt_e(amp_predicted, 4)
+        ),
+    );
+    ok &= check(
+        period_measured > 0.0
+            && (period_measured - period_predicted).abs() / period_predicted < 0.05,
+        "T2b.secular_period",
+        &format!(
+            "measured {} kyr vs LL prediction {} kyr (Jupiter-driven perihelion circulation)",
+            fmt_f(period_measured / (1000.0 * params::YEAR), 1),
+            fmt_f(period_predicted / (1000.0 * params::YEAR), 1)
+        ),
+    );
+    let rows = test2::write_samples2(&dir, &samples)?;
+    output::write_events(&dir, &[])?;
+    println!("  wrote {rows} samples");
+    let m = manifest2(
+        "T2_jupiter",
+        "TEST 2 gate B: Jupiter's Laplace-Lagrange secular forcing alone (tides, GR, triaxial off)",
+        0.0,
+        &ic,
+    );
+    finish2(&dir, m, &stats, end.state.t, ok)
+}
+
+/// TEST 2 braking movie: full physics, to the restart save at Omega/n = 1.6.
+fn t2_movie() -> Result<bool, String> {
+    println!("test 2 (T2_movie): braking with tides x1000 + GR + Jupiter, to the restart at 1.6");
+    let dir = output::fresh_run_dir("T2_movie")?;
+    let ic = test2::initial_state2();
+    let mut samples: Vec<Sample2> = Vec::new();
+    let mut events: Vec<Event> = Vec::new();
+    let mut stats = Stats2::default();
+
+    let mut count = 0usize;
+    let mut obs1 = |s: &Sample2| {
+        count += 1;
+        if count % 500 == 0 {
+            println!(
+                "  [S] t = {} Myr  Omega/n = {}  e = {}",
+                fmt_f(myr(s.t), 3),
+                fmt_f(s.ratio, 4),
+                fmt_f(s.e, 5)
+            );
+        }
+        Cmd2::Continue
+    };
+    let spec1 = Segment2 {
+        p: test2::full_params(false, params::STAGE_HANDOVER_RATIO),
+        t_end: 8.0e6 * params::YEAR,
+        cadence: 1000.0 * params::YEAR,
+        stop_on_root: true,
+        reanchor: false,
+        stage_tag: 'S',
+        record: true,
+    };
+    let end1 = test2::integrate_segment6(&ic, &spec1, &mut obs1, &mut samples, &mut stats)?;
+    let mut seen_52 = false;
+    for s in &samples {
+        if !seen_52 && s.ratio < 2.5 {
+            seen_52 = true;
+            events.push(Event { t: s.t, name: "cross_5:2".into(), value: s.ratio });
+        }
+    }
+    let handover = end1
+        .root_state
+        .ok_or_else(|| "T2_movie: the 2.2 handover root never fired within 8 Myr".to_string())?;
+    events.push(Event {
+        t: handover.t,
+        name: "stage_handover".into(),
+        value: handover.y[5] / params::mean_motion(handover.y[0]),
+    });
+    println!("  stage handover at t = {} Myr", fmt_f(myr(handover.t), 4));
+
+    let start2 = handover.reanchored();
+    let mut seen_21_at: Option<(f64, f64)> = None;
+    let mut count2 = 0usize;
+    let mut obs2 = |s: &Sample2| {
+        count2 += 1;
+        if seen_21_at.is_none() && s.ratio < 2.0 {
+            seen_21_at = Some((s.t, s.ratio));
+        }
+        if count2 % 2000 == 0 {
+            println!(
+                "  [R] t = {} Myr  Omega/n = {}  e = {}",
+                fmt_f(myr(s.t), 3),
+                fmt_f(s.ratio, 4),
+                fmt_f(s.e, 5)
+            );
+        }
+        Cmd2::Continue
+    };
+    let spec2 = Segment2 {
+        p: test2::full_params(true, params::RESTART_RATIO),
+        t_end: handover.t + 3.0e6 * params::YEAR,
+        cadence: 100.0 * params::YEAR,
+        stop_on_root: true,
+        reanchor: true,
+        stage_tag: 'R',
+        record: true,
+    };
+    let end2 = test2::integrate_segment6(&start2, &spec2, &mut obs2, &mut samples, &mut stats)?;
+    if let Some((t, v)) = seen_21_at {
+        events.push(Event { t, name: "cross_2:1".into(), value: v });
+    }
+    let restart_raw = end2.root_state.ok_or_else(|| {
+        format!(
+            "T2_movie: the 1.6 restart root never fired (final ratio {})",
+            fmt_f(end2.state.y[5] / params::mean_motion(end2.state.y[0]), 4)
+        )
+    })?;
+    let restart = restart_raw.reanchored();
+    test2::write_restart6(&dir, &restart)?;
+    let restart_ratio = restart.y[5] / params::mean_motion(restart.y[0]);
+    events.push(Event { t: restart.t, name: "restart_saved".into(), value: restart_ratio });
+
+    let mut ok = true;
+    ok &= check(
+        (restart_ratio - params::RESTART_RATIO).abs() < 1.0e-6,
+        "T2m.restart_ratio_exact",
+        &format!("root-found Omega/n = {} (target 1.6)", fmt_e(restart_ratio, 12)),
+    );
+    ok &= check(
+        (2.0e6..=7.5e6).contains(&(restart.t / params::YEAR)),
+        "T2m.restart_time_plausible",
+        &format!("restart at t = {} Myr", fmt_f(myr(restart.t), 4)),
+    );
+    ok &= check(
+        seen_52 && seen_21_at.is_some(),
+        "T2m.crossings_recorded",
+        "5:2 and 2:1 crossings in the event log",
+    );
+    let rows = test2::write_samples2(&dir, &samples)?;
+    output::write_events(&dir, &events)?;
+    println!("  wrote {rows} samples, {} events", events.len());
+    let m = manifest2(
+        "T2_movie",
+        "TEST 2 braking movie: tides x1000 + GR + Jupiter secular terms, to the restart at Omega/n = 1.6",
+        k2tau_movie(),
+        &ic,
+    );
+    finish2(&dir, m, &stats, restart.t, ok)
+}
+
+fn t2_one_branch(
+    restart: State2,
+    branch_id: usize,
+    n_branches: usize,
+) -> Result<(BranchOutcome, Stats2), String> {
+    let offset = (branch_id as f64) * (PI / (n_branches as f64));
+    let mut st = restart;
+    st.y[4] += offset;
+    let mut det = Detector2::standard(true);
+    let mut stats = Stats2::default();
+    let mut samples: Vec<Sample2> = Vec::new();
+    let spec = Segment2 {
+        p: test2::full_params(true, 1.5),
+        t_end: restart.t + 1.5e6 * params::YEAR,
+        cadence: 100.0 * params::YEAR,
+        stop_on_root: false,
+        reanchor: true,
+        stage_tag: 'R',
+        record: false,
+    };
+    let mut obs = |s: &Sample2| det.observe(s);
+    let end = test2::integrate_segment6(&st, &spec, &mut obs, &mut samples, &mut stats)?;
+    let final_ratio = end.state.y[5] / params::mean_motion(end.state.y[0]);
+    match det.decision {
+        Some(Decision::Captured { t_capture }) => Ok((
+            BranchOutcome {
+                branch_id,
+                theta_offset: offset,
+                captured: true,
+                t_outcome: t_capture,
+                final_ratio,
+            },
+            stats,
+        )),
+        Some(Decision::Passed { t, ratio }) => Ok((
+            BranchOutcome {
+                branch_id,
+                theta_offset: offset,
+                captured: false,
+                t_outcome: t,
+                final_ratio: ratio,
+            },
+            stats,
+        )),
+        None => Err(format!(
+            "T2 branch {branch_id}: undecided after 1.5 Myr (final ratio {})",
+            fmt_f(final_ratio, 4)
+        )),
+    }
+}
+
+fn t2_sweep(n_branches: usize) -> Result<bool, String> {
+    println!("test 2 (T2_sweep): {n_branches}-branch phase sweep with Jupiter + GR active");
+    let b_dir = output::run_dir("T2_movie")?;
+    let restart = test2::read_restart6(&b_dir)?;
+    let dir = output::fresh_run_dir("T2_sweep")?;
+    let workers = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(4)
+        .min(8);
+    println!("  restart: t = {} Myr", fmt_f(myr(restart.t), 4));
+    let (tx, rx) =
+        std::sync::mpsc::channel::<(usize, Result<(BranchOutcome, Stats2), String>)>();
+    let mut spawned = 0usize;
+    for w in 0..workers {
+        let tx = tx.clone();
+        let ids: Vec<usize> = (0..n_branches).filter(|k| k % workers == w).collect();
+        spawned += ids.len();
+        std::thread::spawn(move || {
+            for k in ids {
+                let res = t2_one_branch(restart, k, n_branches);
+                if tx.send((k, res)).is_err() {
+                    return;
+                }
+            }
+        });
+    }
+    drop(tx);
+    let mut collected: Vec<(usize, Result<(BranchOutcome, Stats2), String>)> =
+        rx.iter().take(spawned).collect();
+    collected.sort_by_key(|(k, _)| *k);
+    let mut outcomes: Vec<BranchOutcome> = Vec::with_capacity(n_branches);
+    let mut stats = Stats2::default();
+    for (k, res) in collected {
+        let (b, s) = res.map_err(|e| format!("branch {k}: {e}"))?;
+        outcomes.push(b);
+        stats.n_steps += s.n_steps;
+        stats.n_rhs += s.n_rhs;
+        stats.n_reanchor += s.n_reanchor;
+    }
+    outcomes.sort_by_key(|b| b.branch_id);
+    let captured: Vec<usize> =
+        outcomes.iter().filter(|b| b.captured).map(|b| b.branch_id).collect();
+    let canonical = captured.first().copied();
+    for b in &outcomes {
+        println!(
+            "  branch {:2}  offset = {} rad  {}  t = {} Myr  final ratio = {}",
+            b.branch_id,
+            fmt_e(b.theta_offset, 6),
+            if b.captured { "CAPTURED" } else { "passed  " },
+            fmt_f(myr(b.t_outcome), 4),
+            fmt_f(b.final_ratio, 4)
+        );
+    }
+    println!(
+        "  capture fraction with Jupiter's eccentricity cycle in play: {}/{}",
+        captured.len(),
+        outcomes.len()
+    );
+    let mut ok = true;
+    ok &= check(
+        outcomes.len() == n_branches,
+        "T2s.all_branches_decided",
+        &format!("{} of {n_branches}", outcomes.len()),
+    );
+    let any = !captured.is_empty();
+    ok &= check(
+        any,
+        "T2s.at_least_one_capture",
+        if any {
+            "canonical branch selected"
+        } else {
+            "ZERO captures — run the documented finer-grid contingency re-sweep"
+        },
+    );
+    output::write_branches(&dir, &outcomes, canonical)?;
+    output::write_events(&dir, &[])?;
+    let mut m = manifest2(
+        "T2_sweep",
+        "TEST 2 phase sweep at the 3:2 crossing with GR + Jupiter active",
+        k2tau_movie(),
+        &restart,
+    );
+    m.extras.push(("branches".into(), format!("{n_branches}")));
+    m.extras.push((
+        "canonical_branch".into(),
+        canonical.map(|k| format!("{k}")).unwrap_or_else(|| "-1".to_string()),
+    ));
+    let ok = finish2(&dir, m, &stats, restart.t + 1.5e6 * params::YEAR, ok)?;
+    if !any {
+        println!("FAILURE");
+        std::process::exit(3);
+    }
+    Ok(ok)
+}
+
+/// TEST 2 canonical continuation: capture and lock WITH the precessing
+/// ellipse — the settled mean spin ratio must be 1.5 + pomega_dot/n.
+fn t2_final(branch: usize, n_branches: usize) -> Result<bool, String> {
+    if branch >= n_branches {
+        return Err(format!(
+            "t2-final: --branch {branch} was never swept (valid: 0..{})",
+            n_branches - 1
+        ));
+    }
+    println!("test 2 (T2_final): branch {branch} continued to 10 Myr with Jupiter + GR");
+    let b_dir = output::run_dir("T2_movie")?;
+    let restart = test2::read_restart6(&b_dir)?;
+    let dir = output::fresh_run_dir("T2_final")?;
+    let offset = (branch as f64) * (PI / (n_branches as f64));
+    let mut st = restart;
+    st.y[4] += offset;
+
+    let mut det = Detector2::standard(false);
+    let mut samples: Vec<Sample2> = Vec::new();
+    let mut stats = Stats2::default();
+    let mut count = 0usize;
+    let mut obs = |s: &Sample2| {
+        count += 1;
+        if count % 5000 == 0 {
+            println!(
+                "  t = {} Myr  Omega/n = {}  e = {}",
+                fmt_f(myr(s.t), 3),
+                fmt_f(s.ratio, 6),
+                fmt_f(s.e, 5)
+            );
+        }
+        det.observe(s)
+    };
+    let spec = Segment2 {
+        p: test2::full_params(true, 1.5),
+        t_end: params::T_FINAL,
+        cadence: 100.0 * params::YEAR,
+        stop_on_root: false,
+        reanchor: true,
+        stage_tag: 'R',
+        record: true,
+    };
+    let end = test2::integrate_segment6(&st, &spec, &mut obs, &mut samples, &mut stats)?;
+
+    let mut events: Vec<Event> = Vec::new();
+    if let Some(cross) = end.root_state {
+        events.push(Event {
+            t: cross.t,
+            name: "cross_3:2".into(),
+            value: cross.y[5] / params::mean_motion(cross.y[0]),
+        });
+    }
+    let t_capture = match det.decision {
+        Some(Decision::Captured { t_capture }) => {
+            events.push(Event { t: t_capture, name: "capture_detected".into(), value: 1.5 });
+            Some(t_capture)
+        }
+        _ => None,
+    };
+    events.push(Event { t: end.state.t, name: "reanchor".into(), value: stats.n_reanchor as f64 });
+
+    let n0 = params::mean_motion(params::A0);
+    let pw_dot_pred = test2::predicted_pomega_dot();
+    let expected_ratio = 1.5 + pw_dot_pred / n0;
+
+    let mut ok = true;
+    ok &= check(
+        t_capture.is_some(),
+        "T2f.capture_detected",
+        &t_capture
+            .map(|t| format!("captured at t = {} Myr with Jupiter + GR active", fmt_f(myr(t), 4)))
+            .unwrap_or_else(|| "branch did not capture — reselect the canonical branch".to_string()),
+    );
+    if let Some(tc) = t_capture {
+        let settled: Vec<&Sample2> =
+            samples.iter().filter(|s| s.t > tc + 1.0e6 * params::YEAR).collect();
+        if settled.is_empty() {
+            ok = check(false, "T2f.locked_mean_ratio", "no settled-era samples");
+        } else {
+            let mean_ratio: f64 =
+                settled.iter().map(|s| s.ratio).sum::<f64>() / (settled.len() as f64);
+            ok &= check(
+                (mean_ratio - expected_ratio).abs() <= 1.5e-7,
+                "T2f.lock_follows_the_precessing_ellipse",
+                &format!(
+                    "settled mean Omega/n = {} vs predicted 1.5 + pomega_dot/n = {} (GR {} + Jupiter {} \"/century)",
+                    fmt_e(mean_ratio, 10),
+                    fmt_e(expected_ratio, 10),
+                    fmt_f(test2::arcsec_cy(test2::gr_pomega_dot(params::A0, params::E0)), 2),
+                    fmt_f(test2::arcsec_cy(test2::ll_rates().a11), 2)
+                ),
+            );
+            ok &= check(
+                (mean_ratio - 1.5) >= 2.0e-7,
+                "T2f.shift_off_exact_three_halves",
+                &format!(
+                    "mean ratio exceeds exactly 1.5 by {} — the lock tracks the precessing perihelion, not the stars",
+                    fmt_e(mean_ratio - 1.5, 4)
+                ),
+            );
+        }
+        let e_min = samples.iter().map(|s| s.e).fold(f64::INFINITY, f64::min);
+        let e_max = samples.iter().map(|s| s.e).fold(f64::NEG_INFINITY, f64::max);
+        let ll = test2::ll_rates();
+        let amp_pred = (ll.a12 / ll.a11).abs() * test2::E_JUP;
+        ok &= check(
+            ((0.5 * (e_max - e_min)) - amp_pred).abs() / amp_pred < 0.3,
+            "T2f.jupiter_eccentricity_cycle",
+            &format!(
+                "e oscillates {} .. {} through braking, capture, and lock (LL amplitude {})",
+                fmt_f(e_min, 5),
+                fmt_f(e_max, 5),
+                fmt_e(amp_pred, 4)
+            ),
+        );
+        let pw_rate = (end.state.y[3] - st.y[3]) / (end.state.t - st.t);
+        ok &= check(
+            (pw_rate - pw_dot_pred).abs() / pw_dot_pred < 0.05,
+            "T2f.perihelion_advance",
+            &format!(
+                "perihelion advanced {} rad over the run = {} \"/century (predicted {}; 43.0 of it is Einstein's)",
+                fmt_f(end.state.y[3] - st.y[3], 2),
+                fmt_f(test2::arcsec_cy(pw_rate), 2),
+                fmt_f(test2::arcsec_cy(pw_dot_pred), 2)
+            ),
+        );
+        let last = samples.last().ok_or_else(|| "T2_final produced no samples".to_string())?;
+        ok &= check(
+            (last.p_orb / DAY - OBSERVED_P_ORB_D).abs() / OBSERVED_P_ORB_D < 1.0e-3,
+            "T2f.P_orb",
+            &format!("final P_orb = {} d (observed 87.969)", fmt_f(last.p_orb / DAY, 4)),
+        );
+        println!("  NOTE: angular momentum is deliberately NOT ledger-checked in test 2 — the");
+        println!("  Laplace-Lagrange terms exchange orbital angular momentum with Jupiter,");
+        println!("  which this model does not track.");
+    } else {
+        ok = false;
+    }
+
+    let rows = test2::write_samples2(&dir, &samples)?;
+    output::write_events(&dir, &events)?;
+    println!("  wrote {rows} samples, {} events", events.len());
+    let mut m = manifest2(
+        "T2_final",
+        "TEST 2 canonical continuation: capture and lock with GR + Jupiter — the lock follows the precessing ellipse",
+        k2tau_movie(),
+        &st,
+    );
+    m.extras.push(("branch".into(), format!("{branch}")));
+    m.extras.push(("theta_offset_rad".into(), fmt_e(offset, 17)));
+    finish2(&dir, m, &stats, end.state.t, ok)
+}
+
+// ---------------------------------------------------------------------------
 
 fn getopt(args: &[String], name: &str, default: usize) -> usize {
     for i in 0..args.len() {
@@ -1075,9 +1675,21 @@ fn main() {
         }
         "run-d" => run_d(),
         "run-e" => run_e(),
+        "t2-gr-check" => t2_gr_check(),
+        "t2-jupiter-check" => t2_jupiter_check(),
+        "t2-movie" => t2_movie(),
+        "t2-sweep" => t2_sweep(getopt(&args, "--branches", 16)),
+        "t2-final" => {
+            let k = getopt(&args, "--branch", usize::MAX);
+            if k == usize::MAX {
+                Err("t2-final needs --branch <k> (the captured branch from t2-sweep)".to_string())
+            } else {
+                t2_final(k, getopt(&args, "--branches", 16))
+            }
+        }
         _ => {
             eprintln!(
-                "usage: mercury_rs <print-config|run-a|run-b|sweep [--branches N]|run-b-final --branch K|run-d|run-e>"
+                "usage: mercury_rs <print-config|run-a|run-b|sweep [--branches N]|run-b-final --branch K|run-d|run-e|t2-gr-check|t2-jupiter-check|t2-movie|t2-sweep [--branches N]|t2-final --branch K>"
             );
             std::process::exit(2);
         }

@@ -138,3 +138,62 @@ sweep, mirror-then-push) are each forced by arithmetic or by the machine's real
 directory/git layout, are documented here, and are submitted for approval as
 decisions D1–D6 (restated in full in Part 0) before anything is built. Approval of
 the master plan is approval of these resolutions.
+
+## Part 6 — TEST 2 addendum (Jupiter + Einstein), as built
+
+Test 2 was commissioned after test 1 shipped, with the instruction: "now run your
+second test: add Jupiter and Einstein's GR correction". It adds exactly the two
+pieces of physics the assignment reserved for the second test, on top of the
+approved test-1 model, in a separate six-variable module (`mercury_rs/src/test2.rs`)
+so that every test-1 code path, number, and verdict is untouched.
+
+**The model additions (restated in full).**
+
+- **Einstein's correction**: a constant-in-form apsidal drift
+  dϖ/dt = 3 n G M_sun / (c² a (1 − e²)) added to a NEW sixth state variable ϖ
+  (the perihelion longitude). At the spec's a₀, e₀ this is 42.98 arcseconds per
+  century — the historical GR test value.
+- **Jupiter's perturbations**, in the classic **Laplace–Lagrange secular** form
+  (orbit-averaged; Jupiter itself on a fixed orbit, ϖ_J = 0, e_J = 0.0489,
+  m_J = 1.89813×10²⁷ kg, a_J = 7.78479×10¹¹ m): de/dt += A12 e_J sin(ϖ − ϖ_J)
+  and dϖ/dt += A11 + A12 (e_J/e) cos(ϖ − ϖ_J), with A11 = +n/4 (m_J/M_sun) α²
+  b⁽¹⁾₃⁄₂(α) ≈ 160 ″/cy and A12 = −n/4 (m_J/M_sun) α² b⁽²⁾₃⁄₂(α); the Laplace
+  coefficients are computed by a deterministic 4096-point trapezoid rule and
+  unit-tested against the textbook power series to 10⁻¹⁰.
+- **The resonance angle moves house**: the handle torque's argument becomes
+  2(θ − f − ϖ) and the libration angle γ₂ = 2θ − 3M − 2ϖ, because the lock is to
+  the ORBIT'S SHAPE and the shape now turns. Test 1's re-anchoring
+  (M −= 2πj, θ −= 3πj) leaves γ₂ exactly invariant (unit-tested).
+
+**What is deliberately NOT checked in test 2, and why.** Test 1's
+angular-momentum ledger is absent: the Laplace–Lagrange terms exchange angular
+momentum with Jupiter, which the model does not track, so a two-body conservation
+check would be checking the wrong law. The program's output, the notebook, and
+this document all state this.
+
+**Movie-compression scope (documented deviation, same spirit as D2).** Only the
+TIDAL strength is compressed 1000×; Einstein's and Jupiter's rates run at their
+real values. Consequence: the braking movie contains ~12 Jupiter eccentricity
+cycles instead of the thousands of the real history. The headline lock-offset
+check is unaffected because it compares the measured mean ratio against the same
+real ϖ̇ that acted in the integration.
+
+**The headline acceptance target.** With the ellipse precessing at
+ϖ̇ = GR + A11, a locked spin must average Ω = 1.5 n + ϖ̇, i.e. a mean spin ratio
+of 1.5 + ϖ̇/n ≈ 1.5000003772 — about 3.8×10⁻⁷ ABOVE exactly 3/2. The build must
+measure that offset to |Δ| ≤ 1.5×10⁻⁷ and show it exceeds 2×10⁻⁷: **the lock
+follows the precessing ellipse, not the stars.**
+
+**Verification gates (all must print SUCCESS).** Gate T2-A: GR alone reproduces
+42.98 ″/cy to 10⁻³ (measured: rel. diff 7×10⁻¹³). Gate T2-B: Jupiter alone
+reproduces the LL forced-eccentricity amplitude |A12/A11| e_J and period 2π/A11
+to 5% (measured: 4.5438×10⁻³ vs 4.5438×10⁻³; 808.8 kyr vs 808.8 kyr). Then the
+full chain: T2_movie (braking to the 1.6 restart), T2_sweep (16 phase branches),
+T2_final (canonical capture + lock with all checks). Four new analytic unit tests
+join the crate's suite (19 total). A second notebook
+(`notebook/mercury_test2_jupiter_gr.ipynb`, authored by `build_notebook2.py`,
+audited by the same structure rules, executed for real, byte-determinism proven
+by double execution) stores everything in its own documented database
+(`data/mercury_test2.sqlite3`, with a `run_extra` provenance table and a
+`pomega_rad` sample column) and bakes its own display page
+(`gui/mercury_test2.html` via `gui/bake_page2.py`).

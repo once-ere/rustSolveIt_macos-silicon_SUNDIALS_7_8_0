@@ -375,3 +375,102 @@ fn root_function_stops_at_the_crossing() {
         "root ratio {ratio}, expected 1.6 to 1e-9"
     );
 }
+
+// --- TEST 2 (Jupiter + Einstein) analytic expectations ----------------------
+
+/// The trapezoid Laplace coefficients must match the classic power series
+/// b_{3/2}^{(j)}(alpha) = 2 [prod] alpha^j [1 + ...] (Murray & Dermott 6.68),
+/// summed here by its exact term recurrence to machine precision.
+fn laplace_series(j: u32, alpha: f64) -> f64 {
+    let s = 1.5f64;
+    let mut pref = 2.0;
+    for i in 0..j {
+        pref *= (s + i as f64) / ((i + 1) as f64);
+    }
+    pref *= alpha.powi(j as i32);
+    let mut term = 1.0f64;
+    let mut sum = 1.0f64;
+    for k in 0..40 {
+        let kf = k as f64;
+        term *= (s + kf) * (s + j as f64 + kf) / ((kf + 1.0) * (j as f64 + kf + 1.0))
+            * (alpha * alpha);
+        sum += term;
+        if term < 1.0e-18 {
+            break;
+        }
+    }
+    pref * sum
+}
+
+#[test]
+fn laplace_coefficients_match_the_power_series() {
+    let alpha = params::A0 / mercury_rs::test2::A_JUP;
+    let b1 = mercury_rs::test2::laplace_b32(1, alpha);
+    let b2 = mercury_rs::test2::laplace_b32(2, alpha);
+    let b1_series = laplace_series(1, alpha);
+    let b2_series = laplace_series(2, alpha);
+    assert!(
+        ((b1 - b1_series) / b1_series).abs() < 1.0e-10,
+        "b1 trapezoid {b1} vs series {b1_series}"
+    );
+    assert!(
+        ((b2 - b2_series) / b2_series).abs() < 1.0e-10,
+        "b2 trapezoid {b2} vs series {b2_series}"
+    );
+}
+
+#[test]
+fn gr_precession_is_einsteins_43_arcsec_per_century() {
+    let rate = mercury_rs::test2::gr_pomega_dot(params::A0, params::E0);
+    let arcsec = mercury_rs::test2::arcsec_cy(rate);
+    assert!(
+        (arcsec - 42.98).abs() < 0.05,
+        "GR apsidal rate {arcsec} \"/cy, expected 42.98 +/- 0.05"
+    );
+}
+
+#[test]
+fn jupiter_secular_rates_have_the_right_size_and_sign() {
+    let ll = mercury_rs::test2::ll_rates();
+    let a11_arcsec = mercury_rs::test2::arcsec_cy(ll.a11);
+    assert!(ll.a11 > 0.0, "A11 must advance the perihelion");
+    assert!(ll.a12 < 0.0, "A12 must be negative (b32^(2) enters with -)");
+    assert!(
+        (150.0..170.0).contains(&a11_arcsec),
+        "A11 = {a11_arcsec} \"/cy, expected ~160"
+    );
+    let forced_amp = (ll.a12 / ll.a11).abs() * mercury_rs::test2::E_JUP;
+    assert!(
+        (0.004..0.005).contains(&forced_amp),
+        "forced eccentricity amplitude {forced_amp}, expected ~0.00454"
+    );
+}
+
+#[test]
+fn reanchoring_leaves_gamma2_invariant() {
+    let gamma2 = |y: &[f64; 6]| 2.0 * y[4] - 3.0 * y[2] - 2.0 * y[3];
+    let st = mercury_rs::test2::State2 {
+        t: 1.0e9,
+        y: [
+            params::A0,
+            params::E0,
+            40.0 * PI + 0.7,
+            0.1,
+            60.0 * PI + 1.05,
+            1.24e-4,
+        ],
+    };
+    let re = st.reanchored();
+    assert!(
+        (0.0..2.0 * PI).contains(&re.y[2]),
+        "re-anchored M = {} not in [0, 2 pi)",
+        re.y[2]
+    );
+    assert!(
+        (gamma2(&re.y) - gamma2(&st.y)).abs() < 1.0e-12,
+        "gamma2 changed: {} -> {}",
+        gamma2(&st.y),
+        gamma2(&re.y)
+    );
+    assert!((re.y[3] - st.y[3]).abs() == 0.0, "pomega must be untouched");
+}

@@ -244,3 +244,46 @@ what was explained.
 | The notebook takes very long | Expected: ~an hour in release mode; if you built without `--release` it can take many hours — rebuild |
 | Sweep reports zero captures | Impossible for the shipped, deterministic pipeline on this platform (it always finds 10/64); when re-creating the pipeline or running on another platform it is a real ~1% possibility — re-run section 6.4 once with `run("sweep", "--branches", "128")` (the documented contingency) |
 | Numbers differ from this document in the last digit | They should not (the pipeline is deterministic on this platform); if it persists after a clean re-run, that IS a reportable finding |
+
+## Part G — Test 2: Jupiter and Einstein (the second notebook)
+
+The folder ships a **second, independent notebook**:
+`notebook/mercury_test2_jupiter_gr.ipynb`. It adds the two pieces of physics the
+first lesson deliberately left out, and it is just as self-contained — every
+explanation is restated inside it.
+
+**What's new in the physics.**
+
+1. **Einstein's correction.** Very close to the Sun, gravity is a whisker
+   stronger than Newton's law predicts. The orbit stays an ellipse, but the
+   ellipse's long axis slowly swings around — 42.98 arcseconds per century, the
+   number that made general relativity famous. The notebook makes the simulator
+   reproduce it to better than one part in a thousand with everything else
+   switched off.
+2. **Jupiter's tugs** (in the classic averaged, "secular" form): they turn
+   Mercury's ellipse another ~160 arcseconds per century AND make the orbit's
+   ovalness breathe up and down by about 0.0045 on a ~809,000-year cycle. Both
+   are checked against the pencil-and-paper Laplace–Lagrange values.
+
+**The punchline your students should look for.** With the ellipse itself
+turning, a locked Mercury cannot average EXACTLY 1.5 spins per orbit any more —
+the lock tracks the moving perihelion, so the settled average is
+1.5 + (perihelion turn rate)/(orbital rate) ≈ 1.5000004. The notebook measures
+that four-parts-in-ten-million offset and checks it against the prediction:
+**the lock follows the precessing ellipse, not the stars.** A genuinely
+relativistic fingerprint, resolved by a 12-digit integration your class can run.
+
+**How to run it.** Identical to Parts A–B: same build, same JupyterLab
+environment, then open `mercury_test2_jupiter_gr.ipynb` and Shift+Enter top to
+bottom (or batch:
+`MERCURY_NO_BROWSER=1 python3 run_notebook.py mercury_test2_jupiter_gr.ipynb`).
+It writes its own database (`data/mercury_test2.sqlite3`) and bakes its own
+display page (`gui/mercury_test2.html`) — nothing it does touches the first
+lesson's files, so the two notebooks can be re-run in any order.
+
+**One honest difference to point out.** The first lesson's angular-momentum
+ledger is deliberately ABSENT from test 2: Jupiter's averaged tugs exchange
+angular momentum with Jupiter itself, which the model does not track, so a
+two-body "books must balance" check would be checking the wrong law. The
+notebook (and the simulator's own output) say so — auditing what a model can
+and cannot promise is itself the lesson there.

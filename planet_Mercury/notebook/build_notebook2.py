@@ -732,9 +732,16 @@ CELLS.append(md("""
 ## 10. Baking and opening the display page
 
 The last computational step turns the database into one self-contained
-browser page (`gui/mercury_test2.html`): the spin-ratio descent into the
-lock, the breathing eccentricity, and the perihelion odometer climbing
-through sixteen-odd full turns, with the headline numbers on top. The cell
+browser page (`gui/mercury_test2.html`) — an animated recorded-sample
+player in the same style as the first test's: the orbit panel shows the
+Sun at the focus and the ellipse visibly PRECESSING (the golden apsidal
+line and perihelion marker turn through ~15.7 full revolutions as Einstein
+and Jupiter drive them), Mercury rides the orbit with its long-axis
+"handle" and a spin/orbit dial, and four chart panels track the braking
+descent, the resonance angle gamma2 turning from circulation to libration,
+the breathing eccentricity, and the perihelion odometer — with play/scrub
+controls, keyboard shortcuts, and a Jump-to-capture button. The page only
+replays recorded CVODE samples; no physics runs in the browser. The cell
 bakes the page TWICE and proves the two bakes are byte-identical
 (determinism), then opens it in your browser — set MERCURY_NO_BROWSER=1 to
 skip opening (batch runs do).

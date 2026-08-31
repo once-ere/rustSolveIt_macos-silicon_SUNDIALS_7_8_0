@@ -1,0 +1,1950 @@
+<!doctype html><meta charset='utf-8'><title>The SolveIt Notebooks for Rust</title><style>body{font:13px/1.55 -apple-system,'Helvetica Neue',sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#1a1e26}h1{font-size:26px;border-bottom:3px solid #2b5aa0;padding-bottom:8px}h2{font-size:20px;color:#2b5aa0;border-bottom:1px solid #ccd;padding-bottom:4px;margin-top:34px;page-break-before:always}h3{font-size:15px;margin:22px 0 6px;color:#333}code{background:#eef1f6;padding:1px 4px;border-radius:3px;font:11.5px ui-monospace,Menlo,monospace}pre{background:#f4f6fa;border:1px solid #dde;padding:10px;border-radius:6px;font:11.5px ui-monospace,Menlo,monospace;overflow-x:auto}img{max-width:100%;border:1px solid #ccd;border-radius:6px;margin:6px 0;page-break-inside:avoid}ul{margin:6px 0}li{margin:2px 0}</style><h1>The SolveIt Notebooks for Rust — an encyclopedia</h1>
+
+<p><b>128 Jupyter notebooks</b>, every one project-authored, every one executed for real against the pure-Rust SUNDIALS 7.8.0 engine on this machine (128/128 green), organized into seven major topics. Each notebook lives in its own tagged subfolder together with its companion player script (<code>player_&lt;tag&gt;.py</code>), and each carries a prepended header cell with the exact commands to execute it, display its browser GUI, create/access its movies, and access its data — plus the full player script inline.</p>
+
+<p>Every simulation below was integrated by the vendored pure-Rust port of SUNDIALS 7.8.0 CVODE (BDF + Newton + dense solver) — no C, no FFI, no unsafe code — and every notebook checks its own physics against closed forms before it is allowed to say ok.</p>
+
+<h2>Contents</h2>
+
+<ul>
+<li><b>01_planet_mercury_tidal_locking</b> — 2 notebooks</li>
+<li><b>02_solveit_worked_examples</b> — 19 notebooks</li>
+<li><b>03_dynamics_and_routh</b> — 59 notebooks</li>
+<li><b>04_collisions</b> — 12 notebooks</li>
+<li><b>05_mechanism_videos</b> — 13 notebooks</li>
+<li><b>06_rust_compiled_examples</b> — 6 notebooks</li>
+<li><b>07_nbody_rebound_rust</b> — 17 notebooks</li>
+<li>Appendix A — excluded duplicates</li>
+<li>Appendix B — vendored upstream reference notebooks</li>
+<li>Appendix C — reproduction commands</li>
+</ul>
+
+<h2>01_planet_mercury_tidal_locking</h2>
+
+<p>Planet Mercury&#x27;s 3:2 spin-orbit capture, computed end to end by the pure-Rust SUNDIALS 7.8.0 CVODE solver: test 1 is the pure two-body story (tidal braking, resonance capture, lock), test 2 adds Einstein&#x27;s general-relativistic perihelion precession and Jupiter&#x27;s Laplace-Lagrange secular forcing — the lock follows the precessing ellipse. Each notebook builds its own SQLite database and bakes an animated browser player with a Jump-to-capture button.</p>
+
+<h3><code>mercury_test2_jupiter_gr</code></h3>
+
+<p>This is test 2 of the planet_Mercury project. Test 1 established, with a pure two-body model, that the Sun&#x27;s tides braked Mercury&#x27;s spin until the Sun&#x27;s grip on Mercury&#x27;s slightly lopsided shape snapped it into the strange 3:2 spin-orbit resonance — three spins for every two trips around the Sun. Test 2 now adds the two pieces of physics test 1 deliberately excluded: 1. Einstein&#x27;s general-relativistic correction. Near the Sun, gravity is    very slightly stronger than Newton&#x27;s law says. The orbit stays an ellipse,    but the ellipse&#x27;s long axis slowly swings around — the famous    43 arcseconds per century of extra perihelion advance that Newtonian    physics could not explain and Einstein&#x27;s…</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (17 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/01_planet_mercury_tidal_locking/mercury_test2_jupiter_gr/mercury_test2_jupiter_gr.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>planet_Mercury/notebook/mercury_test2_jupiter_gr.ipynb</code></li>
+<li><b>Database</b>: <code>planet_Mercury/data/mercury_test2.sqlite3</code> (SQLite)</li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/01_planet_mercury_tidal_locking/mercury_test2_jupiter_gr/player_mercury_test2_jupiter_gr.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/mercury_test2_jupiter_gr.png" alt="mercury_test2_jupiter_gr GUI">
+
+<h3><code>mercury_tidal_locking</code></h3>
+
+<p>Mercury spins on its axis exactly three times for every two trips around the Sun — a &quot;3:2 spin-orbit resonance,&quot; which is Mercury&#x27;s strange form of tidal locking (our Moon, by contrast, is locked 1:1 and always shows Earth one face). This notebook simulates how that happened: the Sun&#x27;s tides slowly braked Mercury&#x27;s once-fast spin over billions of years, until the Sun&#x27;s gravitational grip on Mercury&#x27;s slightly lopsided shape snapped the spin into step as it fell through the 3:2 ratio.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (18 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/01_planet_mercury_tidal_locking/mercury_tidal_locking/mercury_tidal_locking.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>planet_Mercury/notebook/mercury_tidal_locking.ipynb</code></li>
+<li><b>Database</b>: <code>planet_Mercury/data/mercury_orbit.sqlite3</code> (SQLite)</li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/01_planet_mercury_tidal_locking/mercury_tidal_locking/player_mercury_tidal_locking.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/mercury_tidal_locking.png" alt="mercury_tidal_locking GUI">
+
+<h2>02_solveit_worked_examples</h2>
+
+<p>The SolveIt worked examples: each notebook drives the posim simulator (pure-Rust SUNDIALS backend) through one classic physics problem with closed-form answers checked in the transcript.</p>
+
+<h3><code>solveit_01_elastic_head_on</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/01_elastic_head_on.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_01_elastic_head_on/solveit_01_elastic_head_on.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_01_elastic_head_on.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/01_elastic_head_on.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_01_elastic_head_on/player_solveit_01_elastic_head_on.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_01_elastic_head_on.png" alt="solveit_01_elastic_head_on GUI">
+
+<h3><code>solveit_02_keplers_third_law</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/02_keplers_third_law.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (19 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_02_keplers_third_law/solveit_02_keplers_third_law.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_02_keplers_third_law.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/02_keplers_third_law.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_02_keplers_third_law/player_solveit_02_keplers_third_law.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_02_keplers_third_law.png" alt="solveit_02_keplers_third_law GUI">
+
+<h3><code>solveit_03_three_conics</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/03_three_conics.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_03_three_conics/solveit_03_three_conics.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_03_three_conics.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/03_three_conics.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_03_three_conics/player_solveit_03_three_conics.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_03_three_conics.png" alt="solveit_03_three_conics GUI">
+
+<h3><code>solveit_04_restitution_ladder</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/04_restitution_ladder.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_04_restitution_ladder/solveit_04_restitution_ladder.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_04_restitution_ladder.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/04_restitution_ladder.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_04_restitution_ladder/player_solveit_04_restitution_ladder.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_04_restitution_ladder.png" alt="solveit_04_restitution_ladder GUI">
+
+<h3><code>solveit_05_cyclotron_bdf</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/05_cyclotron_bdf.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_05_cyclotron_bdf/solveit_05_cyclotron_bdf.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_05_cyclotron_bdf.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/05_cyclotron_bdf.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_05_cyclotron_bdf/player_solveit_05_cyclotron_bdf.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_05_cyclotron_bdf.png" alt="solveit_05_cyclotron_bdf GUI">
+
+<h3><code>solveit_06_symplectic_vs_adaptive</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/06_symplectic_vs_adaptive.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_06_symplectic_vs_adaptive/solveit_06_symplectic_vs_adaptive.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_06_symplectic_vs_adaptive.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/06_symplectic_vs_adaptive.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_06_symplectic_vs_adaptive/player_solveit_06_symplectic_vs_adaptive.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_06_symplectic_vs_adaptive.png" alt="solveit_06_symplectic_vs_adaptive GUI">
+
+<h3><code>solveit_07_dzhanibekov</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/07_dzhanibekov.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (20 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_07_dzhanibekov/solveit_07_dzhanibekov.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_07_dzhanibekov.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/07_dzhanibekov.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_07_dzhanibekov/player_solveit_07_dzhanibekov.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_07_dzhanibekov.png" alt="solveit_07_dzhanibekov GUI">
+
+<h3><code>solveit_08_magnetic_torque</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/08_magnetic_torque.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_08_magnetic_torque/solveit_08_magnetic_torque.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_08_magnetic_torque.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/08_magnetic_torque.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_08_magnetic_torque/player_solveit_08_magnetic_torque.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_08_magnetic_torque.png" alt="solveit_08_magnetic_torque GUI">
+
+<h3><code>solveit_09_newtons_cradle</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/09_newtons_cradle.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_09_newtons_cradle/solveit_09_newtons_cradle.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_09_newtons_cradle.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/09_newtons_cradle.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_09_newtons_cradle/player_solveit_09_newtons_cradle.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_09_newtons_cradle.png" alt="solveit_09_newtons_cradle GUI">
+
+<h3><code>solveit_10_no_tunnelling</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/10_no_tunnelling.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_10_no_tunnelling/solveit_10_no_tunnelling.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_10_no_tunnelling.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/10_no_tunnelling.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_10_no_tunnelling/player_solveit_10_no_tunnelling.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_10_no_tunnelling.png" alt="solveit_10_no_tunnelling GUI">
+
+<h3><code>solveit_11_lagrange_l4</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/11_lagrange_l4.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_11_lagrange_l4/solveit_11_lagrange_l4.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_11_lagrange_l4.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/11_lagrange_l4.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_11_lagrange_l4/player_solveit_11_lagrange_l4.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_11_lagrange_l4.png" alt="solveit_11_lagrange_l4 GUI">
+
+<h3><code>solveit_12_dumbbell_inertia</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/12_dumbbell_inertia.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_12_dumbbell_inertia/solveit_12_dumbbell_inertia.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_12_dumbbell_inertia.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/12_dumbbell_inertia.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_12_dumbbell_inertia/player_solveit_12_dumbbell_inertia.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_12_dumbbell_inertia.png" alt="solveit_12_dumbbell_inertia GUI">
+
+<h3><code>solveit_13_tilted_torus</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/13_tilted_torus.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_13_tilted_torus/solveit_13_tilted_torus.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_13_tilted_torus.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/13_tilted_torus.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_13_tilted_torus/player_solveit_13_tilted_torus.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_13_tilted_torus.png" alt="solveit_13_tilted_torus GUI">
+
+<h3><code>solveit_14_particle_in_a_box</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/14_particle_in_a_box.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_14_particle_in_a_box/solveit_14_particle_in_a_box.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_14_particle_in_a_box.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/14_particle_in_a_box.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_14_particle_in_a_box/player_solveit_14_particle_in_a_box.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_14_particle_in_a_box.png" alt="solveit_14_particle_in_a_box GUI">
+
+<h3><code>solveit_15_tunnelling</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/15_tunnelling.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_15_tunnelling/solveit_15_tunnelling.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_15_tunnelling.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/15_tunnelling.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_15_tunnelling/player_solveit_15_tunnelling.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_15_tunnelling.png" alt="solveit_15_tunnelling GUI">
+
+<h3><code>solveit_16_special_functions</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/16_special_functions.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_16_special_functions/solveit_16_special_functions.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_16_special_functions.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/16_special_functions.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_16_special_functions/player_solveit_16_special_functions.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_16_special_functions.png" alt="solveit_16_special_functions GUI">
+
+<h3><code>solveit_17_pendulum_dae</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/17_pendulum_dae.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_17_pendulum_dae/solveit_17_pendulum_dae.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_17_pendulum_dae.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/17_pendulum_dae.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_17_pendulum_dae/player_solveit_17_pendulum_dae.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_17_pendulum_dae.png" alt="solveit_17_pendulum_dae GUI">
+
+<h3><code>solveit_18_equilibrium_and_sensitivity</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/18_equilibrium_and_sensitivity.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_18_equilibrium_and_sensitivity/solveit_18_equilibrium_and_sensitivity.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_18_equilibrium_and_sensitivity.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/18_equilibrium_and_sensitivity.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_18_equilibrium_and_sensitivity/player_solveit_18_equilibrium_and_sensitivity.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_18_equilibrium_and_sensitivity.png" alt="solveit_18_equilibrium_and_sensitivity GUI">
+
+<h3><code>solveit_19_hinged_door</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/solveit/19_hinged_door.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_19_hinged_door/solveit_19_hinged_door.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/solveit_19_hinged_door.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/solveit/19_hinged_door.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/02_solveit_worked_examples/solveit_19_hinged_door/player_solveit_19_hinged_door.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/solveit_19_hinged_door.png" alt="solveit_19_hinged_door GUI">
+
+<h2>03_dynamics_and_routh</h2>
+
+<p>The dynamic notebooks — free rigid-body motion, charged particles in fields, orbital mechanics, and the 34 Routh rigid-body problems — each a machine-mode posim session with its analytic checks.</p>
+
+<h3><code>dynamic_billiard_box</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/billiard_box.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_billiard_box/dynamic_billiard_box.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_billiard_box.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/billiard_box.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_billiard_box/player_dynamic_billiard_box.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_billiard_box.png" alt="dynamic_billiard_box GUI">
+
+<h3><code>dynamic_billiard_break</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/billiard_break.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_billiard_break/dynamic_billiard_break.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_billiard_break.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/billiard_break.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_billiard_break/player_dynamic_billiard_break.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_billiard_break.png" alt="dynamic_billiard_break GUI">
+
+<h3><code>dynamic_bouncing_ball_restitution</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/bouncing_ball_restitution.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_bouncing_ball_restitution/dynamic_bouncing_ball_restitution.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_bouncing_ball_restitution.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/bouncing_ball_restitution.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_bouncing_ball_restitution/player_dynamic_bouncing_ball_restitution.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_bouncing_ball_restitution.png" alt="dynamic_bouncing_ball_restitution GUI">
+
+<h3><code>dynamic_box_of_shapes</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/box_of_shapes.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (11 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_box_of_shapes/dynamic_box_of_shapes.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_box_of_shapes.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/box_of_shapes.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_box_of_shapes/player_dynamic_box_of_shapes.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_box_of_shapes.png" alt="dynamic_box_of_shapes GUI">
+
+<h3><code>dynamic_box_of_shapes_m32</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/box_of_shapes_m32.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (11 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_box_of_shapes_m32/dynamic_box_of_shapes_m32.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_box_of_shapes_m32.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/box_of_shapes_m32.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_box_of_shapes_m32/player_dynamic_box_of_shapes_m32.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_box_of_shapes_m32.png" alt="dynamic_box_of_shapes_m32 GUI">
+
+<h3><code>dynamic_charged_in_b_field</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/charged_in_b_field.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_charged_in_b_field/dynamic_charged_in_b_field.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_charged_in_b_field.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/charged_in_b_field.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_charged_in_b_field/player_dynamic_charged_in_b_field.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_charged_in_b_field.png" alt="dynamic_charged_in_b_field GUI">
+
+<h3><code>dynamic_charged_in_e_field</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/charged_in_e_field.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_charged_in_e_field/dynamic_charged_in_e_field.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_charged_in_e_field.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/charged_in_e_field.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_charged_in_e_field/player_dynamic_charged_in_e_field.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_charged_in_e_field.png" alt="dynamic_charged_in_e_field GUI">
+
+<h3><code>dynamic_colliding_binary</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/colliding_binary.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_colliding_binary/dynamic_colliding_binary.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_colliding_binary.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/colliding_binary.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_colliding_binary/player_dynamic_colliding_binary.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_colliding_binary.png" alt="dynamic_colliding_binary GUI">
+
+<h3><code>dynamic_double_slit</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/double_slit.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (17 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_double_slit/dynamic_double_slit.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_double_slit.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/double_slit.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_double_slit/player_dynamic_double_slit.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_double_slit.png" alt="dynamic_double_slit GUI">
+
+<h3><code>dynamic_head_on_exchange</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/head_on_exchange.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_head_on_exchange/dynamic_head_on_exchange.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_head_on_exchange.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/head_on_exchange.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_head_on_exchange/player_dynamic_head_on_exchange.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_head_on_exchange.png" alt="dynamic_head_on_exchange GUI">
+
+<h3><code>dynamic_kepler_orbit</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/kepler_orbit.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_kepler_orbit/dynamic_kepler_orbit.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_kepler_orbit.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/kepler_orbit.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_kepler_orbit/player_dynamic_kepler_orbit.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_kepler_orbit.png" alt="dynamic_kepler_orbit GUI">
+
+<h3><code>dynamic_magnetic_spin_up</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/magnetic_spin_up.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_magnetic_spin_up/dynamic_magnetic_spin_up.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_magnetic_spin_up.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/magnetic_spin_up.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_magnetic_spin_up/player_dynamic_magnetic_spin_up.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_magnetic_spin_up.png" alt="dynamic_magnetic_spin_up GUI">
+
+<h3><code>dynamic_newtons_cradle</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/newtons_cradle.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_newtons_cradle/dynamic_newtons_cradle.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_newtons_cradle.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/newtons_cradle.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_newtons_cradle/player_dynamic_newtons_cradle.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_newtons_cradle.png" alt="dynamic_newtons_cradle GUI">
+
+<h3><code>dynamic_outer_solar_system</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/outer_solar_system.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_outer_solar_system/dynamic_outer_solar_system.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_outer_solar_system.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/outer_solar_system.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_outer_solar_system/player_dynamic_outer_solar_system.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_outer_solar_system.png" alt="dynamic_outer_solar_system GUI">
+
+<h3><code>dynamic_restitution_ladder</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/restitution_ladder.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_restitution_ladder/dynamic_restitution_ladder.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_restitution_ladder.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/restitution_ladder.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_restitution_ladder/player_dynamic_restitution_ladder.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_restitution_ladder.png" alt="dynamic_restitution_ladder GUI">
+
+<h3><code>dynamic_routh_double_star_period</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_double_star_period.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (27 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_double_star_period/dynamic_routh_double_star_period.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_double_star_period.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_double_star_period.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_double_star_period/player_dynamic_routh_double_star_period.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_double_star_period.png" alt="dynamic_routh_double_star_period GUI">
+
+<h3><code>dynamic_routh_p1_apsidal_symmetry</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_apsidal_symmetry.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (19 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_apsidal_symmetry/dynamic_routh_p1_apsidal_symmetry.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_apsidal_symmetry.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_apsidal_symmetry.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_apsidal_symmetry/player_dynamic_routh_p1_apsidal_symmetry.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_apsidal_symmetry.png" alt="dynamic_routh_p1_apsidal_symmetry GUI">
+
+<h3><code>dynamic_routh_p1_centre_of_gravity</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_centre_of_gravity.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_centre_of_gravity/dynamic_routh_p1_centre_of_gravity.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_centre_of_gravity.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_centre_of_gravity.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_centre_of_gravity/player_dynamic_routh_p1_centre_of_gravity.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_centre_of_gravity.png" alt="dynamic_routh_p1_centre_of_gravity GUI">
+
+<h3><code>dynamic_routh_p1_collinear_three_body</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_collinear_three_body.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (18 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_collinear_three_body/dynamic_routh_p1_collinear_three_body.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_collinear_three_body.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_collinear_three_body.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_collinear_three_body/player_dynamic_routh_p1_collinear_three_body.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_collinear_three_body.png" alt="dynamic_routh_p1_collinear_three_body GUI">
+
+<h3><code>dynamic_routh_p1_equal_periods</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_equal_periods.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_equal_periods/dynamic_routh_p1_equal_periods.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_equal_periods.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_equal_periods.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_equal_periods/player_dynamic_routh_p1_equal_periods.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_equal_periods.png" alt="dynamic_routh_p1_equal_periods GUI">
+
+<h3><code>dynamic_routh_p1_equilateral_three_body</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_equilateral_three_body.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (19 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_equilateral_three_body/dynamic_routh_p1_equilateral_three_body.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_equilateral_three_body.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_equilateral_three_body.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_equilateral_three_body/player_dynamic_routh_p1_equilateral_three_body.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_equilateral_three_body.png" alt="dynamic_routh_p1_equilateral_three_body GUI">
+
+<h3><code>dynamic_routh_p1_escape_velocity</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_escape_velocity.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_escape_velocity/dynamic_routh_p1_escape_velocity.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_escape_velocity.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_escape_velocity.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_escape_velocity/player_dynamic_routh_p1_escape_velocity.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_escape_velocity.png" alt="dynamic_routh_p1_escape_velocity GUI">
+
+<h3><code>dynamic_routh_p1_expanding_sphere</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_expanding_sphere.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (13 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_expanding_sphere/dynamic_routh_p1_expanding_sphere.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_expanding_sphere.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_expanding_sphere.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_expanding_sphere/player_dynamic_routh_p1_expanding_sphere.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_expanding_sphere.png" alt="dynamic_routh_p1_expanding_sphere GUI">
+
+<h3><code>dynamic_routh_p1_geometric_progression</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_geometric_progression.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_geometric_progression/dynamic_routh_p1_geometric_progression.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_geometric_progression.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_geometric_progression.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_geometric_progression/player_dynamic_routh_p1_geometric_progression.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_geometric_progression.png" alt="dynamic_routh_p1_geometric_progression GUI">
+
+<h3><code>dynamic_routh_p1_hodograph_circle</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_hodograph_circle.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_hodograph_circle/dynamic_routh_p1_hodograph_circle.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_hodograph_circle.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_hodograph_circle.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_hodograph_circle/player_dynamic_routh_p1_hodograph_circle.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_hodograph_circle.png" alt="dynamic_routh_p1_hodograph_circle GUI">
+
+<h3><code>dynamic_routh_p1_kepler_equation</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_kepler_equation.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_kepler_equation/dynamic_routh_p1_kepler_equation.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_kepler_equation.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_kepler_equation.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_kepler_equation/player_dynamic_routh_p1_kepler_equation.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_kepler_equation.png" alt="dynamic_routh_p1_kepler_equation GUI">
+
+<h3><code>dynamic_routh_p1_lambert_theorem</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_lambert_theorem.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_lambert_theorem/dynamic_routh_p1_lambert_theorem.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_lambert_theorem.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_lambert_theorem.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_lambert_theorem/player_dynamic_routh_p1_lambert_theorem.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_lambert_theorem.png" alt="dynamic_routh_p1_lambert_theorem GUI">
+
+<h3><code>dynamic_routh_p1_oblique_impact</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_oblique_impact.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (13 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_oblique_impact/dynamic_routh_p1_oblique_impact.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_oblique_impact.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_oblique_impact.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_oblique_impact/player_dynamic_routh_p1_oblique_impact.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_oblique_impact.png" alt="dynamic_routh_p1_oblique_impact GUI">
+
+<h3><code>dynamic_routh_p1_parabola_of_safety</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_parabola_of_safety.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (21 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_parabola_of_safety/dynamic_routh_p1_parabola_of_safety.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_parabola_of_safety.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_parabola_of_safety.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_parabola_of_safety/player_dynamic_routh_p1_parabola_of_safety.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_parabola_of_safety.png" alt="dynamic_routh_p1_parabola_of_safety GUI">
+
+<h3><code>dynamic_routh_p1_sphere_exchange</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_sphere_exchange.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_sphere_exchange/dynamic_routh_p1_sphere_exchange.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_sphere_exchange.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_sphere_exchange.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_sphere_exchange/player_dynamic_routh_p1_sphere_exchange.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_sphere_exchange.png" alt="dynamic_routh_p1_sphere_exchange GUI">
+
+<h3><code>dynamic_routh_p1_three_projectiles</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_three_projectiles.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_three_projectiles/dynamic_routh_p1_three_projectiles.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_three_projectiles.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_three_projectiles.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_three_projectiles/player_dynamic_routh_p1_three_projectiles.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_three_projectiles.png" alt="dynamic_routh_p1_three_projectiles GUI">
+
+<h3><code>dynamic_routh_p1_two_trajectories</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p1_two_trajectories.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (17 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_two_trajectories/dynamic_routh_p1_two_trajectories.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p1_two_trajectories.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p1_two_trajectories.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p1_two_trajectories/player_dynamic_routh_p1_two_trajectories.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p1_two_trajectories.png" alt="dynamic_routh_p1_two_trajectories GUI">
+
+<h3><code>dynamic_routh_p2_correlated_bodies</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_correlated_bodies.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_correlated_bodies/dynamic_routh_p2_correlated_bodies.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_correlated_bodies.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_correlated_bodies.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_correlated_bodies/player_dynamic_routh_p2_correlated_bodies.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_correlated_bodies.png" alt="dynamic_routh_p2_correlated_bodies GUI">
+
+<h3><code>dynamic_routh_p2_fixed_couple</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_fixed_couple.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_fixed_couple/dynamic_routh_p2_fixed_couple.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_fixed_couple.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_fixed_couple.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_fixed_couple/player_dynamic_routh_p2_fixed_couple.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_fixed_couple.png" alt="dynamic_routh_p2_fixed_couple GUI">
+
+<h3><code>dynamic_routh_p2_impulsive_couple</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_impulsive_couple.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_impulsive_couple/dynamic_routh_p2_impulsive_couple.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_impulsive_couple.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_impulsive_couple.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_impulsive_couple/player_dynamic_routh_p2_impulsive_couple.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_impulsive_couple.png" alt="dynamic_routh_p2_impulsive_couple GUI">
+
+<h3><code>dynamic_routh_p2_invariable_line</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_invariable_line.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_invariable_line/dynamic_routh_p2_invariable_line.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_invariable_line.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_invariable_line.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_invariable_line/player_dynamic_routh_p2_invariable_line.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_invariable_line.png" alt="dynamic_routh_p2_invariable_line GUI">
+
+<h3><code>dynamic_routh_p2_mean_axis_instability</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_mean_axis_instability.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (19 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_mean_axis_instability/dynamic_routh_p2_mean_axis_instability.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_mean_axis_instability.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_mean_axis_instability.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_mean_axis_instability/player_dynamic_routh_p2_mean_axis_instability.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_mean_axis_instability.png" alt="dynamic_routh_p2_mean_axis_instability GUI">
+
+<h3><code>dynamic_routh_p2_period_ratio</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_period_ratio.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (13 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_period_ratio/dynamic_routh_p2_period_ratio.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_period_ratio.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_period_ratio.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_period_ratio/player_dynamic_routh_p2_period_ratio.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_period_ratio.png" alt="dynamic_routh_p2_period_ratio GUI">
+
+<h3><code>dynamic_routh_p2_poinsot_rolling</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_poinsot_rolling.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_poinsot_rolling/dynamic_routh_p2_poinsot_rolling.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_poinsot_rolling.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_poinsot_rolling.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_poinsot_rolling/player_dynamic_routh_p2_poinsot_rolling.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_poinsot_rolling.png" alt="dynamic_routh_p2_poinsot_rolling GUI">
+
+<h3><code>dynamic_routh_p2_polhode_quarter_period</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_polhode_quarter_period.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_polhode_quarter_period/dynamic_routh_p2_polhode_quarter_period.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_polhode_quarter_period.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_polhode_quarter_period.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_polhode_quarter_period/player_dynamic_routh_p2_polhode_quarter_period.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_polhode_quarter_period.png" alt="dynamic_routh_p2_polhode_quarter_period GUI">
+
+<h3><code>dynamic_routh_p2_principal_axes_in_space</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_principal_axes_in_space.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_principal_axes_in_space/dynamic_routh_p2_principal_axes_in_space.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_principal_axes_in_space.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_principal_axes_in_space.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_principal_axes_in_space/player_dynamic_routh_p2_principal_axes_in_space.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_principal_axes_in_space.png" alt="dynamic_routh_p2_principal_axes_in_space GUI">
+
+<h3><code>dynamic_routh_p2_rolling_cones</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_rolling_cones.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (14 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_rolling_cones/dynamic_routh_p2_rolling_cones.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_rolling_cones.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_rolling_cones.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_rolling_cones/player_dynamic_routh_p2_rolling_cones.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_rolling_cones.png" alt="dynamic_routh_p2_rolling_cones GUI">
+
+<h3><code>dynamic_routh_p2_separatrix</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_separatrix.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (18 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_separatrix/dynamic_routh_p2_separatrix.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_separatrix.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_separatrix.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_separatrix/player_dynamic_routh_p2_separatrix.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_separatrix.png" alt="dynamic_routh_p2_separatrix GUI">
+
+<h3><code>dynamic_routh_p2_spin_stabilisation</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_spin_stabilisation.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_spin_stabilisation/dynamic_routh_p2_spin_stabilisation.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_spin_stabilisation.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_spin_stabilisation.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_spin_stabilisation/player_dynamic_routh_p2_spin_stabilisation.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_spin_stabilisation.png" alt="dynamic_routh_p2_spin_stabilisation GUI">
+
+<h3><code>dynamic_routh_p2_sylvester_time</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_sylvester_time.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (16 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_sylvester_time/dynamic_routh_p2_sylvester_time.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_sylvester_time.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_sylvester_time.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_sylvester_time/player_dynamic_routh_p2_sylvester_time.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_sylvester_time.png" alt="dynamic_routh_p2_sylvester_time GUI">
+
+<h3><code>dynamic_routh_p2_thin_rod</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_thin_rod.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (12 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_thin_rod/dynamic_routh_p2_thin_rod.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_thin_rod.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_thin_rod.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_thin_rod/player_dynamic_routh_p2_thin_rod.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_thin_rod.png" alt="dynamic_routh_p2_thin_rod GUI">
+
+<h3><code>dynamic_routh_p2_two_quadrics</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_two_quadrics.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (15 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_two_quadrics/dynamic_routh_p2_two_quadrics.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_two_quadrics.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_two_quadrics.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_two_quadrics/player_dynamic_routh_p2_two_quadrics.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_two_quadrics.png" alt="dynamic_routh_p2_two_quadrics GUI">
+
+<h3><code>dynamic_routh_p2_uniaxal_precession</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_p2_uniaxal_precession.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (13 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_uniaxal_precession/dynamic_routh_p2_uniaxal_precession.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_p2_uniaxal_precession.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_p2_uniaxal_precession.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_p2_uniaxal_precession/player_dynamic_routh_p2_uniaxal_precession.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_p2_uniaxal_precession.png" alt="dynamic_routh_p2_uniaxal_precession GUI">
+
+<h3><code>dynamic_routh_rectangle_diagonal</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/routh_rectangle_diagonal.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (17 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_rectangle_diagonal/dynamic_routh_rectangle_diagonal.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_routh_rectangle_diagonal.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/routh_rectangle_diagonal.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_routh_rectangle_diagonal/player_dynamic_routh_rectangle_diagonal.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_routh_rectangle_diagonal.png" alt="dynamic_routh_rectangle_diagonal GUI">
+
+<h3><code>dynamic_spin_up</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/spin_up.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_spin_up/dynamic_spin_up.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_spin_up.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/spin_up.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_spin_up/player_dynamic_spin_up.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_spin_up.png" alt="dynamic_spin_up GUI">
+
+<h3><code>dynamic_spinning_target</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/spinning_target.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_spinning_target/dynamic_spinning_target.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_spinning_target.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/spinning_target.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_spinning_target/player_dynamic_spinning_target.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_spinning_target.png" alt="dynamic_spinning_target GUI">
+
+<h3><code>dynamic_static_anchor</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/static_anchor.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_static_anchor/dynamic_static_anchor.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_static_anchor.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/static_anchor.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_static_anchor/player_dynamic_static_anchor.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_static_anchor.png" alt="dynamic_static_anchor GUI">
+
+<h3><code>dynamic_thin_wall_toi</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/thin_wall_toi.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_thin_wall_toi/dynamic_thin_wall_toi.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_thin_wall_toi.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/thin_wall_toi.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_thin_wall_toi/player_dynamic_thin_wall_toi.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_thin_wall_toi.png" alt="dynamic_thin_wall_toi GUI">
+
+<h3><code>dynamic_three_bodies</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/three_bodies.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_three_bodies/dynamic_three_bodies.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_three_bodies.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/three_bodies.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_three_bodies/player_dynamic_three_bodies.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_three_bodies.png" alt="dynamic_three_bodies GUI">
+
+<h3><code>dynamic_thrown_ball</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/thrown_ball.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_thrown_ball/dynamic_thrown_ball.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_thrown_ball.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/thrown_ball.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_thrown_ball/player_dynamic_thrown_ball.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_thrown_ball.png" alt="dynamic_thrown_ball GUI">
+
+<h3><code>dynamic_tumbling_body</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/tumbling_body.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (13 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_tumbling_body/dynamic_tumbling_body.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_tumbling_body.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/tumbling_body.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_tumbling_body/player_dynamic_tumbling_body.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_tumbling_body.png" alt="dynamic_tumbling_body GUI">
+
+<h3><code>dynamic_tunneling</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/tunneling.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (17 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_tunneling/dynamic_tunneling.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_tunneling.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/tunneling.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_tunneling/player_dynamic_tunneling.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_tunneling.png" alt="dynamic_tunneling GUI">
+
+<h3><code>dynamic_two_dumbbells</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/two_dumbbells.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_two_dumbbells/dynamic_two_dumbbells.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_two_dumbbells.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/two_dumbbells.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_two_dumbbells/player_dynamic_two_dumbbells.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_two_dumbbells.png" alt="dynamic_two_dumbbells GUI">
+
+<h3><code>dynamic_unequal_masses</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file dynamic_notebooks/unequal_masses.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_unequal_masses/dynamic_unequal_masses.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/dynamic_unequal_masses.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/dynamic_notebooks/unequal_masses.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/03_dynamics_and_routh/dynamic_unequal_masses/player_dynamic_unequal_masses.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/dynamic_unequal_masses.png" alt="dynamic_unequal_masses GUI">
+
+<h2>04_collisions</h2>
+
+<p>The collision-detection walkthroughs: elastic exchanges, restitution ladders, billiards, dumbbells, and the box-of-shapes stress test, all integrated by the pure-Rust engine.</p>
+
+<h3><code>collision_01_head_on_exchange</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/01_head_on_exchange.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_01_head_on_exchange/collision_01_head_on_exchange.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_01_head_on_exchange.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/01_head_on_exchange.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_01_head_on_exchange/player_collision_01_head_on_exchange.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_01_head_on_exchange.png" alt="collision_01_head_on_exchange GUI">
+
+<h3><code>collision_02_unequal_masses</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/02_unequal_masses.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_02_unequal_masses/collision_02_unequal_masses.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_02_unequal_masses.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/02_unequal_masses.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_02_unequal_masses/player_collision_02_unequal_masses.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_02_unequal_masses.png" alt="collision_02_unequal_masses GUI">
+
+<h3><code>collision_03_restitution_ladder</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/03_restitution_ladder.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (18 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_03_restitution_ladder/collision_03_restitution_ladder.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_03_restitution_ladder.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/03_restitution_ladder.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_03_restitution_ladder/player_collision_03_restitution_ladder.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_03_restitution_ladder.png" alt="collision_03_restitution_ladder GUI">
+
+<h3><code>collision_04_newtons_cradle</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/04_newtons_cradle.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_04_newtons_cradle/collision_04_newtons_cradle.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_04_newtons_cradle.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/04_newtons_cradle.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_04_newtons_cradle/player_collision_04_newtons_cradle.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_04_newtons_cradle.png" alt="collision_04_newtons_cradle GUI">
+
+<h3><code>collision_05_billiard_break</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/05_billiard_break.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_05_billiard_break/collision_05_billiard_break.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_05_billiard_break.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/05_billiard_break.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_05_billiard_break/player_collision_05_billiard_break.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_05_billiard_break.png" alt="collision_05_billiard_break GUI">
+
+<h3><code>collision_06_spin_up</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/06_spin_up.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_06_spin_up/collision_06_spin_up.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_06_spin_up.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/06_spin_up.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_06_spin_up/player_collision_06_spin_up.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_06_spin_up.png" alt="collision_06_spin_up GUI">
+
+<h3><code>collision_07_thin_wall_toi</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/07_thin_wall_toi.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_07_thin_wall_toi/collision_07_thin_wall_toi.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_07_thin_wall_toi.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/07_thin_wall_toi.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_07_thin_wall_toi/player_collision_07_thin_wall_toi.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_07_thin_wall_toi.png" alt="collision_07_thin_wall_toi GUI">
+
+<h3><code>collision_08_colliding_binary</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/08_colliding_binary.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_08_colliding_binary/collision_08_colliding_binary.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_08_colliding_binary.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/08_colliding_binary.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_08_colliding_binary/player_collision_08_colliding_binary.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_08_colliding_binary.png" alt="collision_08_colliding_binary GUI">
+
+<h3><code>collision_09_spinning_target</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/09_spinning_target.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_09_spinning_target/collision_09_spinning_target.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_09_spinning_target.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/09_spinning_target.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_09_spinning_target/player_collision_09_spinning_target.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_09_spinning_target.png" alt="collision_09_spinning_target GUI">
+
+<h3><code>collision_10_billiard_box</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/10_billiard_box.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_10_billiard_box/collision_10_billiard_box.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_10_billiard_box.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/10_billiard_box.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_10_billiard_box/player_collision_10_billiard_box.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_10_billiard_box.png" alt="collision_10_billiard_box GUI">
+
+<h3><code>collision_11_box_of_shapes</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/11_box_of_shapes.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_11_box_of_shapes/collision_11_box_of_shapes.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_11_box_of_shapes.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/11_box_of_shapes.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_11_box_of_shapes/player_collision_11_box_of_shapes.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_11_box_of_shapes.png" alt="collision_11_box_of_shapes GUI">
+
+<h3><code>collision_12_two_dumbbells</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file scripts/collisions/12_two_dumbbells.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/04_collisions/collision_12_two_dumbbells/collision_12_two_dumbbells.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/collision_12_two_dumbbells.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/scripts/collisions/12_two_dumbbells.posim</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/04_collisions/collision_12_two_dumbbells/player_collision_12_two_dumbbells.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/collision_12_two_dumbbells.png" alt="collision_12_two_dumbbells GUI">
+
+<h2>05_mechanism_videos</h2>
+
+<p>The thirteen recorded mechanism scenes: each notebook pairs with a recorded browser movie page in videos/ AND a live GUI server in gui/ that integrates the same scene in real time behind canvas controls with live physics readouts.</p>
+
+<h3><code>video_ball_joint_chain</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/ball_joint_chain.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (7 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_ball_joint_chain/video_ball_joint_chain.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_ball_joint_chain.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/ball_joint_chain.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/ball_joint_chain.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/ball_joint_chain/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_ball_joint_chain/player_video_ball_joint_chain.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_ball_joint_chain.png" alt="video_ball_joint_chain GUI">
+
+<h3><code>video_box_of_shapes</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/box_of_shapes.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (5 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_box_of_shapes/video_box_of_shapes.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_box_of_shapes.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/box_of_shapes.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/box_of_shapes.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/box_of_shapes/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_box_of_shapes/player_video_box_of_shapes.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_box_of_shapes.png" alt="video_box_of_shapes GUI">
+
+<h3><code>video_cardan_compass</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/cardan_compass.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_cardan_compass/video_cardan_compass.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_cardan_compass.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/cardan_compass.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/cardan_compass.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/cardan_compass/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_cardan_compass/player_video_cardan_compass.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_cardan_compass.png" alt="video_cardan_compass GUI">
+
+<h3><code>video_cardan_gear</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/cardan_gear.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_cardan_gear/video_cardan_gear.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_cardan_gear.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/cardan_gear.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/cardan_gear.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/cardan_gear/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_cardan_gear/player_video_cardan_gear.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_cardan_gear.png" alt="video_cardan_gear GUI">
+
+<h3><code>video_double_pendulum_hinges</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/double_pendulum_hinges.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (6 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_double_pendulum_hinges/video_double_pendulum_hinges.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_double_pendulum_hinges.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/double_pendulum_hinges.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/double_pendulum_hinges.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/double_pendulum_hinges/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_double_pendulum_hinges/player_video_double_pendulum_hinges.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_double_pendulum_hinges.png" alt="video_double_pendulum_hinges GUI">
+
+<h3><code>video_gyroscope_gimbal</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/gyroscope_gimbal.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_gyroscope_gimbal/video_gyroscope_gimbal.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_gyroscope_gimbal.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/gyroscope_gimbal.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/gyroscope_gimbal.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/gyroscope_gimbal/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_gyroscope_gimbal/player_video_gyroscope_gimbal.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_gyroscope_gimbal.png" alt="video_gyroscope_gimbal GUI">
+
+<h3><code>video_kepler_ellipse</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/kepler_ellipse.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (5 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_kepler_ellipse/video_kepler_ellipse.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_kepler_ellipse.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/kepler_ellipse.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/kepler_ellipse.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/kepler_ellipse/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_kepler_ellipse/player_video_kepler_ellipse.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_kepler_ellipse.png" alt="video_kepler_ellipse GUI">
+
+<h3><code>video_piston_crankshaft</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/piston_crankshaft.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_piston_crankshaft/video_piston_crankshaft.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_piston_crankshaft.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/piston_crankshaft.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/piston_crankshaft.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/piston_crankshaft/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_piston_crankshaft/player_video_piston_crankshaft.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_piston_crankshaft.png" alt="video_piston_crankshaft GUI">
+
+<h3><code>video_rack_and_pinion</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/rack_and_pinion.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_rack_and_pinion/video_rack_and_pinion.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_rack_and_pinion.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/rack_and_pinion.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/rack_and_pinion.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/rack_and_pinion/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_rack_and_pinion/player_video_rack_and_pinion.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_rack_and_pinion.png" alt="video_rack_and_pinion GUI">
+
+<h3><code>video_rod_pendulum_chain</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/rod_pendulum_chain.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_rod_pendulum_chain/video_rod_pendulum_chain.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_rod_pendulum_chain.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/rod_pendulum_chain.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/rod_pendulum_chain.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/rod_pendulum_chain/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_rod_pendulum_chain/player_video_rod_pendulum_chain.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_rod_pendulum_chain.png" alt="video_rod_pendulum_chain GUI">
+
+<h3><code>video_spinning_top</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/spinning_top.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_spinning_top/video_spinning_top.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_spinning_top.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/spinning_top.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/spinning_top.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/spinning_top/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_spinning_top/player_video_spinning_top.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_spinning_top.png" alt="video_spinning_top GUI">
+
+<h3><code>video_tumbling_racket</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/tumbling_racket.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_tumbling_racket/video_tumbling_racket.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_tumbling_racket.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/tumbling_racket.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/tumbling_racket.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/tumbling_racket/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_tumbling_racket/player_video_tumbling_racket.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_tumbling_racket.png" alt="video_tumbling_racket GUI">
+
+<h3><code>video_universal_joint</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file videos/scenes/universal_joint.posim in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/05_mechanism_videos/video_universal_joint/video_universal_joint.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/video_universal_joint.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/scenes/universal_joint.posim</code></li>
+<li><b>Movie page</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/videos/universal_joint.html</code></li>
+<li><b>Live GUI</b>: <code>python3 rustSolveIt_macos-silicon_SUNDIALS_7_8_0/gui/universal_joint/server.py</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/05_mechanism_videos/video_universal_joint/player_video_universal_joint.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<img src="encyclopedia/images/video_universal_joint.png" alt="video_universal_joint GUI">
+
+<h2>06_rust_compiled_examples</h2>
+
+<p>The compiled, self-checking Rust examples: each notebook builds and runs one physical_object example and asserts its SUCCESS verdict — the verdict is textual, so these entries carry no GUI image, honestly.</p>
+
+<h3><code>rust_bouncing_ball_restitution</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/bouncing_ball_restitution.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (8 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_bouncing_ball_restitution/rust_bouncing_ball_restitution.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_bouncing_ball_restitution.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/bouncing_ball_restitution.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_bouncing_ball_restitution/player_rust_bouncing_ball_restitution.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rust_charged_in_b_field</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/charged_in_b_field.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_charged_in_b_field/rust_charged_in_b_field.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_charged_in_b_field.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/charged_in_b_field.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_charged_in_b_field/player_rust_charged_in_b_field.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rust_kepler_orbit</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/kepler_orbit.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (10 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_kepler_orbit/rust_kepler_orbit.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_kepler_orbit.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/kepler_orbit.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_kepler_orbit/player_rust_kepler_orbit.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rust_newtons_cradle</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/newtons_cradle.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (11 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_newtons_cradle/rust_newtons_cradle.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_newtons_cradle.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/newtons_cradle.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_newtons_cradle/player_rust_newtons_cradle.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rust_outer_solar_system</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/outer_solar_system.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (11 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_outer_solar_system/rust_outer_solar_system.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_outer_solar_system.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/outer_solar_system.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_outer_solar_system/player_rust_outer_solar_system.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rust_tumbling_body</code></h3>
+
+<p>This notebook is one half of a pair. The other half is the example file physical_object/examples/tumbling_body.rs in this repository, which contains the same simulation written directly in the simulator&#x27;s own command language. This notebook runs that same simulation from Python, and explains every line of it.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (9 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_tumbling_body/rust_tumbling_body.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/notebooks/rust_tumbling_body.ipynb</code></li>
+<li><b>Paired scene/source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/physical_object/examples/tumbling_body.rs</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/06_rust_compiled_examples/rust_tumbling_body/player_rust_tumbling_body.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h2>07_nbody_rebound_rust</h2>
+
+<p>The N-body verification notebooks of the rebound/reboundx pure-Rust port: integrator equivalence, simulation archives, tides and spin, shearing sheets. Verdicts are textual (no browser GUI in this family).</p>
+
+<h3><code>addfmt_test</code></h3>
+
+<p>Adds the built-in solar system plus particles specified by orbital elements, by Pal coordinates, and by orbital period. Verified bit-identical against C.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/addfmt_test/addfmt_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/addfmt_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/addfmt_test/player_addfmt_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>archive_test</code></h3>
+
+<p>Writes a 3-snapshot Simulationarchive. The same file loads in the C build and continues bit-identically, and vice versa — the formats are fully interchangeable.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/archive_test/archive_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/archive_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/archive_test/player_archive_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>bs_pow_diff</code></h3>
+
+<p>The BS integrator picks its own step size using pow(). This evaluates exactly those pow() calls (200,000 samples) so the disagreement can be measured precisely: 56 differ, every one by exactly 1 ULP — the smallest difference two numbers can have.</p>
+
+<p>*[Encyclopedia note: the intro above describes the Windows/MSVC measurement; the executed run embedded in THIS copy reports zero pow divergences (&#x27;ULP distribution: none&#x27;) on macOS/Apple Silicon.]*</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/bs_pow_diff/bs_pow_diff.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/bs_pow_diff.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/bs_pow_diff/player_bs_pow_diff.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>derivatives_test</code></h3>
+
+<p>Evaluates all 65 reb_particle_derivative_* functions on two configurations and dumps raw bits; verified 130/130 lines bit-identical against the C build.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/derivatives_test/derivatives_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/derivatives_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/derivatives_test/player_derivatives_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>frequency_test</code></h3>
+
+<p>Runs REBOUND&#x27;s frequency analysis in all three modes on a synthetic three-frequency signal (true frequencies 0.30, 0.55, 0.11 radians per sample) and prints the recovered frequencies, amplitudes and phases.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/frequency_test/frequency_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/frequency_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/frequency_test/player_frequency_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>integrators_test</code></h3>
+
+<p>Runs the fixed three-body problem under a chosen integrator configuration and dumps the final state as raw IEEE-754 bits. 63 configurations of this harness were verified bit-identical against the MSVC C build. Change the arguments below to try others (e.g. &#x27;ias15&#x27;, &#x27;saba-h1064&#x27;, &#x27;mercurius&#x27;, &#x27;trace&#x27;).</p>
+
+<p>*[Encyclopedia note: the bit-identical-vs-MSVC claim is history from the port&#x27;s Windows lineage; the verdict embedded in THIS copy is the macOS/Apple Silicon run&#x27;s own.]*</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/integrators_test/integrators_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/integrators_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/integrators_test/player_integrators_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>kepler_rectilinear</code></h3>
+
+<p>Calls the Kepler solver with (near-)rectilinear hyperbolic motion — the regime that strains its iteration hardest. This probe found a genuine port defect: with a large timestep the Rust looped forever where the C returned, because while (a &gt; b) and if (a &lt;= b) break differ when a value is NaN. Now fixed; the two agree bit-for-bit.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/kepler_rectilinear/kepler_rectilinear.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/kepler_rectilinear.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/kepler_rectilinear/player_kepler_rectilinear.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>libm_diff</code></h3>
+
+<p>Samples 200,000 inputs per maths function and dumps raw bits, so the C and Rust results can be compared exactly. This is the measurement that underpins the whole project: sin, cos, tan, atan2, sqrt, fmod, exp, log and cbrt are bit-identical to Microsoft&#x27;s C library, and pow is the one exception.</p>
+
+<p>*[Encyclopedia note: the intro above is the notebook&#x27;s own Windows-lineage description; the executed run embedded in THIS copy reports &#x27;functions that differ: NONE - all bit-identical&#x27; on macOS/Apple Silicon.]*</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/libm_diff/libm_diff.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/libm_diff.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/libm_diff/player_libm_diff.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>movetocom_var</code></h3>
+
+<p>Probes reb_simulation_move_to_com with MEGNO variational particles. An audit found the first-order shift summed the wrong particle array, which silently changed every MEGNO/Lyapunov result. Now fixed and verified bit-identical against C.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var/movetocom_var.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/movetocom_var.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var/player_movetocom_var.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>movetocom_var_test</code></h3>
+
+<p>The probe written during the audit to demonstrate the variational centre-of-mass defect, kept as a regression check. It prints both dm accumulators so you can see why the wrong array mattered.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var_test/movetocom_var_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/movetocom_var_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var_test/player_movetocom_var_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>rebx_binary_roundtrip</code></h3>
+
+<p>Serialises a REBOUNDx state (forces and parameters of several types), reads it back into a fresh simulation, and checks every value returns with identical bits.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (3 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/rebx_binary_roundtrip/rebx_binary_roundtrip.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/rebx_binary_roundtrip.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/rebx_binary_roundtrip/player_rebx_binary_roundtrip.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>server_test</code></h3>
+
+<p>Starts the ported web server, fetches the /simulation binary over HTTP, then shuts it down with the &#x27;Q&#x27; key endpoint. The served blob is a valid REBOUND binary that the C build loads to the identical state.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (2 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/server_test/server_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/server_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/server_test/player_server_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>shearing_sheet</code></h3>
+
+<p>A straight port of REBOUND&#x27;s flagship example: a small sheared box of colliding ice particles, using the SEI integrator, octree self-gravity, tree collision search and shear-periodic boundaries. Note: like the stock C example, shearing_sheet integrates to infinity — you stop it with Ctrl+C. A notebook cannot run that, so this notebook builds it (to prove it compiles) and then runs the terminating seeded harness shearing_sheet_test for 400 steps to produce the plot. The two set up identical physics; the harness just fixes the random seed and stops.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet/shearing_sheet.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/shearing_sheet.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet/player_shearing_sheet.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>shearing_sheet_test</code></h3>
+
+<p>Runs the seeded 400-step shearing sheet and, if the C reference dump is present, verifies the two agree on every bit and prints both SHA-256 fingerprints. This is the project&#x27;s headline acceptance test: 1,482 particles and ~102,500 collisions.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet_test/shearing_sheet_test.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/shearing_sheet_test.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet_test/player_shearing_sheet_test.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>tides_spin_kozai</code></h3>
+
+<p>A planet with a distant stellar companion that periodically drives its orbit to high eccentricity. Uses the ADAPTIVE IAS15 integrator plus two REBOUNDx forces at once. Matching the C bit-for-bit here means both programs chose the identical sequence of thousands of adaptive steps.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_kozai/tides_spin_kozai.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/tides_spin_kozai.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_kozai/player_tides_spin_kozai.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>tides_spin_migration</code></h3>
+
+<p>Two Earth-sized planets migrating through a gas disk while tides evolve their spins. Exercises two REBOUNDx forces simultaneously and a parameter changed in the middle of the run (migration is switched off half-way). Verified bit-identical to the C.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_migration/tides_spin_migration.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/tides_spin_migration.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_migration/player_tides_spin_migration.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h3><code>tides_spin_pseudo</code></h3>
+
+<p>A giant planet orbiting very close to its star, starting slightly elliptical, tilted 30 degrees and spinning fast. Tides should circularise the orbit, damp the tilt, and settle the spin. Exercises WHFast plus REBOUNDx&#x27;s tides_spin force and its spin differential equations. Verified bit-identical to the C REBOUNDx.</p>
+
+<ul>
+<li><b>Executed</b>: PASS — every cell green (4 code cells)</li>
+<li><b>Copy</b>: <code>SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_pseudo/tides_spin_pseudo.ipynb</code> (header cell prepended: run commands, GUI commands, movies, data access, full player script)</li>
+<li><b>Canonical source</b>: <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/rebound_rust/notebooks/tides_spin_pseudo.ipynb</code></li>
+<li><b>Player</b>: <code>python3 SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_pseudo/player_tides_spin_pseudo.py run|gui|jump|capture out.png|data outdir</code></li>
+</ul>
+
+<p><i>(no browser GUI in this family — the verdict is textual, embedded in the executed notebook)</i></p>
+
+<h2>Appendix A — excluded duplicates</h2>
+
+<p>The workspace holds several parallel copies of the same notebooks; the encyclopedia uses one canonical edition of each and excludes, deliberately: the 109 earlier editions under <code>rustSolveIt_Using_SUNDIALS_7_8_0/version-7.8.0/notebooks/</code> (the pre-macOS lineage of the same notebooks), the two engine-mirror copies of the planet-Mercury notebooks under <code>rustSolveIt_macos-silicon_SUNDIALS_7_8_0/planet_Mercury/notebook/</code>, two strays at the workspace root (one byte-identical to its canonical copy; the other an earlier edition of the test-2 notebook superseded by the canonical one), and the duplicated <code>docs/ipython_examples</code> copy inside the vendored rebound sources. <code>StageNbks/*.posim</code> are posim REPL sessions, not Jupyter notebooks, and are documented in the engine&#x27;s own STAGENBKS_PROVENANCE.md.</p>
+
+<h2>Appendix B — vendored upstream reference notebooks (not executed)</h2>
+
+<p>The vendored third-party rebound / REBOUNDx sources ship their own example notebooks (they exercise the upstream C libraries, not this project&#x27;s Rust engine, and so are catalogued here as reference only):</p>
+
+<ul>
+<li><code>AdvWHFast.ipynb</code></li>
+<li><code>CentralForce.ipynb</code></li>
+<li><code>ChaoticHyperion.ipynb</code></li>
+<li><code>Cheartbeat.ipynb</code></li>
+<li><code>Checkpoints.ipynb</code></li>
+<li><code>Churyumov-Gerasimenko.ipynb</code></li>
+<li><code>CloseEncounters.ipynb</code></li>
+<li><code>CustomSplittingIntegrationSchemes.ipynb</code></li>
+<li><code>Custom_Effects.ipynb</code></li>
+<li><code>EccAndIncDamping.ipynb</code></li>
+<li><code>EccentricComets.ipynb</code></li>
+<li><code>EmbeddedOperatorSplittingMethods.ipynb</code></li>
+<li><code>EscapingParticles.ipynb</code></li>
+<li><code>ExponentialMigration.ipynb</code></li>
+<li><code>Forces.ipynb</code></li>
+<li><code>FourierSpectrum.ipynb</code></li>
+<li><code>FrequencyAnalysis.ipynb</code></li>
+<li><code>GasDampingTimescale.ipynb</code></li>
+<li><code>GasDynamicalFriction.ipynb</code></li>
+<li><code>GeneralRelativity.ipynb</code></li>
+<li><code>GettingStartedParameters.ipynb</code></li>
+<li><code>HighOrderSymplectic.ipynb</code></li>
+<li><code>Holmberg.ipynb</code></li>
+<li><code>Horizons.ipynb</code></li>
+<li><code>HybridIntegrationsWithTRACE.ipynb</code></li>
+<li><code>HyperbolicOrbits.ipynb</code></li>
+<li><code>InnerDiskEdge.ipynb</code></li>
+<li><code>IntegrateForce.ipynb</code></li>
+<li><code>IntegratingArbitraryODEs.ipynb</code></li>
+<li><code>J2.ipynb</code></li>
+<li><code>LenseThirring.ipynb</code></li>
+<li><code>Megno.ipynb</code></li>
+<li><code>Migration.ipynb</code></li>
+<li><code>ModifyMass.ipynb</code></li>
+<li><code>ObliquityEvolution.ipynb</code></li>
+<li><code>OperatorsOverview.ipynb</code></li>
+<li><code>OrbitPlot.ipynb</code></li>
+<li><code>OrbitalElements.ipynb</code></li>
+<li><code>ParameterInterpolation.ipynb</code></li>
+<li><code>PoincareMap.ipynb</code></li>
+<li><code>PoincareSurfaceOfSection.ipynb</code></li>
+<li><code>PrimordialEarth.ipynb</code></li>
+<li><code>RadialVelocity.ipynb</code></li>
+<li><code>Radiation_Forces_Circumplanetary_Dust.ipynb</code></li>
+<li><code>Radiation_Forces_Debris_Disk.ipynb</code></li>
+<li><code>RealtimeVisualizations.ipynb</code></li>
+<li><code>Resonances_of_Jupiters_moons.ipynb</code></li>
+<li><code>Rotations.ipynb</code></li>
+<li><code>SaturnsRings.ipynb</code></li>
+<li><code>SavingAndLoadingSimulations.ipynb</code></li>
+<li><code>Simulationarchive.ipynb</code></li>
+<li><code>SimulationarchiveRestart.ipynb</code></li>
+<li><code>SpinsIntro.ipynb</code></li>
+<li><code>Starman.ipynb</code></li>
+<li><code>StochasticForces.ipynb</code></li>
+<li><code>StochasticForcesCartesian.ipynb</code></li>
+<li><code>Testparticles.ipynb</code></li>
+<li><code>TidesConstantTimeLag.ipynb</code></li>
+<li><code>TidesDynamical.ipynb</code></li>
+<li><code>TidesSpinEarthMoon.ipynb</code></li>
+<li><code>TidesSpinPseudoSynchronization.ipynb</code></li>
+<li><code>TrackMinDistance.ipynb</code></li>
+<li><code>TransitTimingVariations.ipynb</code></li>
+<li><code>TypeIMigration.ipynb</code></li>
+<li><code>UniquelyIdentifyingParticlesWithNames.ipynb</code></li>
+<li><code>Units.ipynb</code></li>
+<li><code>User_Defined_Collision_Resolve.ipynb</code></li>
+<li><code>VariationalEquations.ipynb</code></li>
+<li><code>VariationalEquationsWithChainRule.ipynb</code></li>
+<li><code>WHFast.ipynb</code></li>
+<li><code>WHFast512.ipynb</code></li>
+<li><code>YarkovskyEffect.ipynb</code></li>
+</ul>
+
+<h2>Appendix C — reproduction commands</h2>
+
+<pre>
+# from the workspace root:
+cd rustSolveIt_macos-silicon_SUNDIALS_7_8_0 &amp;&amp; cargo build --release -p posim &amp;&amp; cd ..
+cd planet_Mercury/mercury_rs &amp;&amp; cargo build --release &amp;&amp; cd ../..
+python3 SolveIt_Notebooks_for_rust/_tools/gen.py       # regenerate copies+players
+python3 SolveIt_Notebooks_for_rust/_tools/run_copy.py SolveIt_Notebooks_for_rust/&lt;topic&gt;/&lt;tag&gt;/&lt;tag&gt;.ipynb
+python3 SolveIt_Notebooks_for_rust/_tools/shoot.py     # re-capture every GUI image
+python3 SolveIt_Notebooks_for_rust/_tools/encyclo.py   # rebuild this encyclopedia
+</pre>

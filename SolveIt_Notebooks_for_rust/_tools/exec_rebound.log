@@ -1,0 +1,84 @@
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+    resources={'metadata': {'path': sys.argv[2]}}).execute()
+                                                   ~~~~~~~^^
+  File "/Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/planet_Mercury/notebook/.venv/lib/python3.14/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/planet_Mercury/notebook/.venv/lib/python3.14/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+        cell, index, execution_count=self.code_cells_executed + 1
+    )
+  File "/Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/planet_Mercury/notebook/.venv/lib/python3.14/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/planet_Mercury/notebook/.venv/lib/python3.14/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import matplotlib.pyplot as plt
+p = os.path.join(WORK, "state_rust_final.txt")
+xs, ys, rs = [], [], []
+for line in open(p):
+    parts = line.split()
+    if len(parts) == 7 and parts[0].isdigit():
+        xs.append(unbits(parts[1]))
+        ys.append(unbits(parts[2]))
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.scatter(xs, ys, s=3, alpha=0.7)
+ax.set_xlabel("x  [m]")
+ax.set_ylabel("y  [m]")
+ax.set_title(f"Shearing sheet: {len(xs)} ring particles after 400 steps")
+ax.set_aspect("equal")
+plt.show()
+
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mModuleNotFoundError[39m                       Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 1[39m
+[32m----> [39m[32m1[39m [38;5;28;01mimport[39;00m matplotlib.pyplot [38;5;28;01mas[39;00m plt
+[32m      2[39m p = os.path.join(WORK, [33m"state_rust_final.txt"[39m)
+[32m      3[39m xs, ys, rs = [], [], []
+[32m      4[39m [38;5;28;01mfor[39;00m line [38;5;28;01min[39;00m open(p):
+
+[31mModuleNotFoundError[39m: No module named 'matplotlib'
+
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/addfmt_test/addfmt_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/addfmt_test/addfmt_test.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/archive_test/archive_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/archive_test/archive_test.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/bs_pow_diff/bs_pow_diff.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/bs_pow_diff/bs_pow_diff.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/derivatives_test/derivatives_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/derivatives_test/derivatives_test.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/frequency_test/frequency_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/frequency_test/frequency_test.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/integrators_test/integrators_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/integrators_test/integrators_test.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/kepler_rectilinear/kepler_rectilinear.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/kepler_rectilinear/kepler_rectilinear.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/libm_diff/libm_diff.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/libm_diff/libm_diff.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var/movetocom_var.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var/movetocom_var.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var_test/movetocom_var_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/movetocom_var_test/movetocom_var_test.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/rebx_binary_roundtrip/rebx_binary_roundtrip.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/rebx_binary_roundtrip/rebx_binary_roundtrip.ipynb  (3 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/server_test/server_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/server_test/server_test.ipynb  (2 cells)
+FAIL SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet/shearing_sheet.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet_test/shearing_sheet_test.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/shearing_sheet_test/shearing_sheet_test.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_kozai/tides_spin_kozai.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_kozai/tides_spin_kozai.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_migration/tides_spin_migration.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_migration/tides_spin_migration.ipynb  (4 cells)
+ok /Users/nsh/Developer/github/rustSolveIt_macos-silicon_SUNDIALS_7_8_0/SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_pseudo/tides_spin_pseudo.ipynb
+ok   SolveIt_Notebooks_for_rust/07_nbody_rebound_rust/tides_spin_pseudo/tides_spin_pseudo.ipynb  (4 cells)
+16 ok, 1 failed

@@ -1,0 +1,113 @@
+ok   collision_01_head_on_exchange
+ok   collision_02_unequal_masses
+ok   collision_03_restitution_ladder
+ok   collision_04_newtons_cradle
+ok   collision_05_billiard_break
+ok   collision_06_spin_up
+ok   collision_07_thin_wall_toi
+ok   collision_08_colliding_binary
+ok   collision_09_spinning_target
+ok   collision_10_billiard_box
+ok   collision_11_box_of_shapes
+FAIL collision_12_two_dumbbells: used %r: %s" % (cmd, r.get("error")))
+RuntimeError: posim refused 'def create_dumbell(name, m1 = 1, m2 = 1, m_rod = 0.5, r1 = 0.25, r2 = 0.25, rod_radius = 0.1, length = 1, position = [0, 0, 0], velocity = [0, 0, 0], angular_velocity = [0, 0, 0]) {': DEF: missing the closing `}` (unbalanced braces)
+
+ok   dynamic_billiard_box
+ok   dynamic_billiard_break
+ok   dynamic_bouncing_ball_restitution
+ok   dynamic_box_of_shapes
+ok   dynamic_box_of_shapes_m32
+ok   dynamic_charged_in_b_field
+ok   dynamic_charged_in_e_field
+ok   dynamic_colliding_binary
+ok   dynamic_double_slit
+ok   dynamic_head_on_exchange
+ok   dynamic_kepler_orbit
+ok   dynamic_magnetic_spin_up
+ok   dynamic_newtons_cradle
+ok   dynamic_outer_solar_system
+ok   dynamic_restitution_ladder
+ok   dynamic_routh_double_star_period
+ok   dynamic_routh_p1_apsidal_symmetry
+ok   dynamic_routh_p1_centre_of_gravity
+ok   dynamic_routh_p1_collinear_three_body
+ok   dynamic_routh_p1_equal_periods
+ok   dynamic_routh_p1_equilateral_three_body
+ok   dynamic_routh_p1_escape_velocity
+ok   dynamic_routh_p1_expanding_sphere
+ok   dynamic_routh_p1_geometric_progression
+ok   dynamic_routh_p1_hodograph_circle
+ok   dynamic_routh_p1_kepler_equation
+ok   dynamic_routh_p1_lambert_theorem
+ok   dynamic_routh_p1_oblique_impact
+ok   dynamic_routh_p1_parabola_of_safety
+ok   dynamic_routh_p1_sphere_exchange
+ok   dynamic_routh_p1_three_projectiles
+ok   dynamic_routh_p1_two_trajectories
+ok   dynamic_routh_p2_correlated_bodies
+ok   dynamic_routh_p2_fixed_couple
+ok   dynamic_routh_p2_impulsive_couple
+ok   dynamic_routh_p2_invariable_line
+ok   dynamic_routh_p2_mean_axis_instability
+ok   dynamic_routh_p2_period_ratio
+ok   dynamic_routh_p2_poinsot_rolling
+ok   dynamic_routh_p2_polhode_quarter_period
+ok   dynamic_routh_p2_principal_axes_in_space
+ok   dynamic_routh_p2_rolling_cones
+ok   dynamic_routh_p2_separatrix
+ok   dynamic_routh_p2_spin_stabilisation
+ok   dynamic_routh_p2_sylvester_time
+ok   dynamic_routh_p2_thin_rod
+ok   dynamic_routh_p2_two_quadrics
+ok   dynamic_routh_p2_uniaxal_precession
+ok   dynamic_routh_rectangle_diagonal
+ok   dynamic_spin_up
+ok   dynamic_spinning_target
+ok   dynamic_static_anchor
+ok   dynamic_thin_wall_toi
+ok   dynamic_three_bodies
+ok   dynamic_thrown_ball
+ok   dynamic_tumbling_body
+ok   dynamic_tunneling
+FAIL dynamic_two_dumbbells: used %r: %s" % (cmd, r.get("error")))
+RuntimeError: posim refused 'def create_dumbell(name, m1 = 1, m2 = 1, m_rod = 0.5, r1 = 0.25, r2 = 0.25, rod_radius = 0.1, length = 1, position = [0, 0, 0], velocity = [0, 0, 0], angular_velocity = [0, 0, 0]) {': DEF: missing the closing `}` (unbalanced braces)
+
+ok   dynamic_unequal_masses
+ok   solveit_01_elastic_head_on
+ok   solveit_02_keplers_third_law
+ok   solveit_03_three_conics
+ok   solveit_04_restitution_ladder
+ok   solveit_05_cyclotron_bdf
+ok   solveit_06_symplectic_vs_adaptive
+ok   solveit_07_dzhanibekov
+ok   solveit_08_magnetic_torque
+ok   solveit_09_newtons_cradle
+ok   solveit_10_no_tunnelling
+ok   solveit_11_lagrange_l4
+FAIL solveit_12_dumbbell_inertia: ertia/player_solveit_12_dumbbell_inertia.py", line 106, in rpc
+    raise RuntimeError("posim refused %r: %s" % (cmd, r.get("error")))
+RuntimeError: posim refused 'def barbell(m1 = 1, m2 = 1, m_rod = 0.5, r1 = 0.3, r2 = 0.3, rod_r = 0.05, len = 2) {': DEF: missing the closing `}` (unbalanced braces)
+
+ok   solveit_13_tilted_torus
+ok   solveit_14_particle_in_a_box
+ok   solveit_15_tunnelling
+ok   solveit_16_special_functions
+ok   solveit_17_pendulum_dae
+ok   solveit_18_equilibrium_and_sensitivity
+ok   solveit_19_hinged_door
+ok   video_ball_joint_chain
+ok   video_box_of_shapes
+ok   video_cardan_compass
+ok   video_cardan_gear
+ok   video_double_pendulum_hinges
+ok   video_gyroscope_gimbal
+ok   video_kepler_ellipse
+ok   video_piston_crankshaft
+ok   video_rack_and_pinion
+ok   video_rod_pendulum_chain
+ok   video_spinning_top
+ok   video_tumbling_racket
+ok   video_universal_joint
+ok   mercury_test2_jupiter_gr
+ok   mercury_tidal_locking
+102 captured, 3 failed: ['collision_12_two_dumbbells', 'dynamic_two_dumbbells', 'solveit_12_dumbbell_inertia']
